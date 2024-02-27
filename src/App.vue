@@ -1,5 +1,7 @@
-<script setup lang="ts"></script>
+<script lang="ts" setup></script>
 
-<template></template>
+<template>
+  <router-view class="min-h-screen" />
+</template>
 
 <style scoped></style>
