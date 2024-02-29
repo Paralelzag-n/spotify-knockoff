@@ -1,28 +1,114 @@
 <script setup lang="ts">
-import { defineModel } from "vue";
+import { ref, defineModel, computed } from "vue";
 
 const selected = defineModel<string>("primary");
 const itemNames = defineModel<string[]>({ default: [] });
+const size = defineModel<boolean>("size");
+
+const visibleElement = ref<HTMLElement | null>(null);
+const fullElement = ref<HTMLElement | null>(null);
+const scrolledToEnd = ref<boolean>(false);
+const scrolledToStart = ref<boolean>(true);
+
+const translateX = ref<number>(0);
+const shouldScrollExist = computed(() => {
+  if (fullElement.value && visibleElement.value) {
+    if (visibleElement.value?.clientWidth < fullElement.value?.scrollWidth) {
+      return true;
+    }
+    return false;
+  }
+});
+
+const isScrolledToStart = computed(
+  () => scrolledToStart.value && !scrolledToEnd.value
+);
+const isScrolledToEnd = computed(
+  () => scrolledToEnd.value && !scrolledToStart.value
+);
+
 const selectHandler = (item: string): void => {
+  if (selected.value === item) {
+    selected.value = "";
+    return;
+  }
   selected.value = item;
 };
+
+const scrollByVisibleWidth = (back: boolean) => {
+  if (visibleElement.value && fullElement.value) {
+    const actualWidth = fullElement.value.scrollWidth;
+    const visibleWidth = visibleElement.value.clientWidth;
+
+    if (!back) {
+      if (translateX.value + visibleWidth > actualWidth - visibleWidth) {
+        translateX.value = actualWidth - visibleWidth;
+
+        scrolledToEnd.value = true;
+        scrolledToStart.value = false;
+        console.log(translateX.value);
+        console.log("is scrolled to start : ", isScrolledToStart.value);
+        console.log("is scrolled to end : ", isScrolledToEnd.value);
+        return;
+      }
+      translateX.value += visibleWidth;
+      scrolledToStart.value = false;
+    }
+
+    if (back) {
+      console.log(translateX.value);
+      if (translateX.value - visibleWidth < 0 || translateX.value === 0) {
+        translateX.value = 0;
+        scrolledToStart.value = true;
+        scrolledToEnd.value = false;
+        console.log("is scrolled to end : ", isScrolledToEnd.value);
+        console.log("is scrolled to start : ", isScrolledToStart.value);
+        return;
+      }
+
+      translateX.value -= visibleWidth;
+      scrolledToEnd.value = false;
+    }
+  }
+};
+
+console.log("paralelify company search");
 </script>
 
 <template>
-  <div class="bg-black flex items-center gap-2">
+  <div v-show="!size" ref="visibleElement" class="relative overflow-hidden">
     <div
-      @click="selectHandler(item)"
-      :class="
-        selected === item
-          ? 'bg-white text-black hover:bg-white/95'
-          : 'hover:bg-button-gray-hover text-white'
-      "
-      v-for="item in itemNames"
-      :key="item"
-      class="bg-button-gray cursor-pointer leading-6 w-fit text-sm px-2 py-1 rounded-2xl"
+      ref="fullElement"
+      :style="{ transform: `translateX(-${translateX}px)` }"
+      class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
     >
-      {{ item }}
+      <div
+        @click="selectHandler(item)"
+        :class="{
+          'bg-white text-black hover:bg-white/95': selected === item,
+          'hover:bg-button-gray-hover text-white': selected !== item,
+        }"
+        v-for="item in itemNames"
+        :key="item"
+        class="bg-button-gray cursor-pointer text-nowrap leading-6 w-fit text-sm px-2 py-1 rounded-[100vh]"
+      >
+        {{ item }}
+      </div>
     </div>
+    <button
+      v-if="shouldScrollExist && !isScrolledToStart"
+      class="absolute text-white bg-button-gray p-3 rounded-full w-5 h-5 flex items-center justify-center hover:bg-button-gray-hover top-1/2 transform -translate-y-1/2 left-0"
+      @click="scrollByVisibleWidth(true)"
+    >
+      <i class="fa-solid text-white fa-chevron-left"></i>
+    </button>
+    <button
+      v-if="shouldScrollExist && !isScrolledToEnd"
+      class="absolute text-white bg-button-gray p-3 rounded-full w-5 h-5 flex items-center justify-center hover:bg-button-gray-hover top-1/2 transform -translate-y-1/2 right-0"
+      @click="scrollByVisibleWidth(false)"
+    >
+      <i class="fa-solid text-white fa-chevron-right"></i>
+    </button>
   </div>
 </template>
 

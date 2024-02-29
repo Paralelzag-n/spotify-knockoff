@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import SidebarComponent from "../components/SidebarComponent.vue";
+</script>
 
 <template>
-  <div></div>
+  <div>
+    <SidebarComponent></SidebarComponent>
+  </div>
 </template>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
