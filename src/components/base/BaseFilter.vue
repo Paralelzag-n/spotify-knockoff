@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ref, defineModel, computed } from "vue";
+<script lang="ts" setup>
+import { computed, defineModel, ref } from "vue";
 
 const selected = defineModel<string>("primary");
 const itemNames = defineModel<string[]>({ default: [] });
@@ -13,18 +13,15 @@ const scrolledToStart = ref<boolean>(true);
 const translateX = ref<number>(0);
 const shouldScrollExist = computed(() => {
   if (fullElement.value && visibleElement.value) {
-    if (visibleElement.value?.clientWidth < fullElement.value?.scrollWidth) {
-      return true;
-    }
-    return false;
+    return visibleElement.value.clientWidth < fullElement.value.scrollWidth;
   }
 });
 
 const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value
+  () => scrolledToStart.value && !scrolledToEnd.value,
 );
 const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value
+  () => scrolledToEnd.value && !scrolledToStart.value,
 );
 
 const selectHandler = (item: string): void => {
@@ -46,23 +43,15 @@ const scrollByVisibleWidth = (back: boolean) => {
 
         scrolledToEnd.value = true;
         scrolledToStart.value = false;
-        console.log(translateX.value);
-        console.log("is scrolled to start : ", isScrolledToStart.value);
-        console.log("is scrolled to end : ", isScrolledToEnd.value);
         return;
       }
       translateX.value += visibleWidth;
       scrolledToStart.value = false;
-    }
-
-    if (back) {
-      console.log(translateX.value);
+    } else {
       if (translateX.value - visibleWidth < 0 || translateX.value === 0) {
         translateX.value = 0;
         scrolledToStart.value = true;
         scrolledToEnd.value = false;
-        console.log("is scrolled to end : ", isScrolledToEnd.value);
-        console.log("is scrolled to start : ", isScrolledToStart.value);
         return;
       }
 
@@ -71,8 +60,6 @@ const scrollByVisibleWidth = (back: boolean) => {
     }
   }
 };
-
-console.log("paralelify company search");
 </script>
 
 <template>
@@ -83,14 +70,14 @@ console.log("paralelify company search");
       class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
     >
       <div
-        @click="selectHandler(item)"
+        v-for="item in itemNames"
+        :key="item"
         :class="{
           'bg-white text-black hover:bg-white/95': selected === item,
           'hover:bg-button-gray-hover text-white': selected !== item,
         }"
-        v-for="item in itemNames"
-        :key="item"
         class="bg-button-gray cursor-pointer text-nowrap leading-6 w-fit text-sm px-2 py-1 rounded-[100vh]"
+        @click="selectHandler(item)"
       >
         {{ item }}
       </div>
@@ -111,5 +98,3 @@ console.log("paralelify company search");
     </button>
   </div>
 </template>
-
-<style scoped></style>
