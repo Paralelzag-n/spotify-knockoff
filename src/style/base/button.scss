@@ -1,0 +1,14 @@
+@keyframes pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(10);
+    opacity: 0;
+  }
+}
+
+.ripple-animation {
+  animation: pop-in .25s ease-out forwards;
+}
