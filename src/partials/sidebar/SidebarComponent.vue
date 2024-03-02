@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import BaseFilter from "../components/base/BaseFilter.vue";
-import PlaylistCardComponent from "../components/PlaylistCardComponent.vue";
-import { IPlaylist } from "../ts/interfaces/playlist.interface.ts";
-import { EMediaCategory } from "../ts/enums/media.enum.ts";
+import BaseFilter from "../../components/base/BaseFilter.vue";
+import PlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
+import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
+import { EMediaCategory } from "../../ts/enums/media.enum.ts";
 import { useWindowSize } from "@vueuse/core";
 
 const filterNames = [
@@ -14,6 +14,7 @@ const filterNames = [
   "Tarkhna",
   "Lipo",
 ];
+
 const playlists = ref<IPlaylist[]>([
   {
     name: "Liked Songs",
@@ -37,22 +38,10 @@ const playlists = ref<IPlaylist[]>([
 ]);
 
 const selectedName = ref<string>("");
-const selectedPlaylistName = ref<string>("");
 
 const { width } = useWindowSize();
 const computedMinimized = computed(() => width.value < MINIMIZED_THRESHOLD);
-
 const MINIMIZED_THRESHOLD = 600;
-
-const filteredPlaylists = computed(() =>
-  playlists.value.filter((playlist) =>
-    selectedName.value
-      ? playlist.category.includes(
-          selectedName.value.slice(0, selectedName.value.length - 1),
-        )
-      : true,
-  ),
-);
 </script>
 
 <template>
@@ -74,7 +63,7 @@ const filteredPlaylists = computed(() =>
       </div>
     </div>
     <div
-      :class="computedMinimized ? 'items-center' : ''"
+      :class="computedMinimized && 'items-center'"
       class="bg-gray-back py-5 flex flex-col gap-5"
     >
       <div class="px-3 flex flex-col gap-10">
@@ -83,17 +72,16 @@ const filteredPlaylists = computed(() =>
           <h1 v-show="!computedMinimized" class="text-white">Your library</h1>
         </div>
         <BaseFilter
-          v-model="filterNames"
+          :filterNames="filterNames"
           v-model:primary="selectedName"
-          v-model:size="computedMinimized"
+          :sizeMinimized="computedMinimized"
         ></BaseFilter>
       </div>
-      <div :class="computedMinimized ? '' : 'px-3'">
+      <div :class="!computedMinimized && 'px-3'">
         <PlaylistCardComponent
-          v-model="filteredPlaylists"
-          v-model:primary="selectedPlaylistName"
-          v-model:size="computedMinimized"
-          v-model:unfiltered="playlists"
+          :selectedName="selectedName"
+          :sizeMinimized="computedMinimized"
+          :playlists="playlists"
         ></PlaylistCardComponent>
       </div>
     </div>

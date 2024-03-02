@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { computed, defineModel, ref } from "vue";
 
+const props = defineProps<{
+  sizeMinimized: boolean;
+  filterNames: string[];
+}>();
+
 const selected = defineModel<string>("primary");
-const itemNames = defineModel<string[]>({ default: [] });
-const size = defineModel<boolean>("size");
 
 const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
@@ -18,10 +21,10 @@ const shouldScrollExist = computed(() => {
 });
 
 const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value,
+  () => scrolledToStart.value && !scrolledToEnd.value
 );
 const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value,
+  () => scrolledToEnd.value && !scrolledToStart.value
 );
 
 const selectHandler = (item: string): void => {
@@ -63,17 +66,21 @@ const scrollByVisibleWidth = (back: boolean) => {
 </script>
 
 <template>
-  <div v-show="!size" ref="visibleElement" class="relative overflow-hidden">
+  <div
+    v-show="!props.sizeMinimized"
+    ref="visibleElement"
+    class="relative overflow-hidden"
+  >
     <div
       ref="fullElement"
       :style="{ transform: `translateX(-${translateX}px)` }"
       class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
     >
       <div
-        v-for="item in itemNames"
+        v-for="item in props.filterNames"
         :key="item"
         :class="{
-          'bg-white text-black hover:bg-white/95': selected === item,
+          'bg-primary-500 text-white hover:bg-primary-400': selected === item,
           'hover:bg-button-gray-hover text-white': selected !== item,
         }"
         class="bg-button-gray cursor-pointer text-nowrap leading-6 w-fit text-sm px-2 py-1 rounded-[100vh]"
