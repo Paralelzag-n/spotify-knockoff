@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { defineModel, ref } from "vue";
 import { IPlaylist } from "../ts/interfaces/playlist.interface";
 import tempImg from "../assets/lofi-girl-lofi.gif";
@@ -15,7 +15,6 @@ const dataLoaded = ref<boolean>(false);
 setTimeout(() => (dataLoaded.value = true), 3000);
 
 const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
-  //the logic should be changed,i made it just for the general view
   if (dataLoaded.value) {
     const audioElement = audioPlayer.value;
     selectedPlaylist.value = playlist.name;
@@ -44,10 +43,10 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
 <template>
   <div :class="size ? 'gap-10' : 'gap-5'" class="flex flex-col">
     <div
-      @click="playlistClickHandler(playlist, playlist.playing)"
       v-for="playlist in PlaylistInfo"
       :class="!size ? 'p-3 ' : ''"
       class="flex items-center justify-between cursor-pointer hover:bg-button-gray-hover rounded-md"
+      @click="playlistClickHandler(playlist, playlist.playing)"
     >
       <div v-show="!dataLoaded">
         <div class="flex items-center gap-2">
@@ -58,7 +57,7 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
           </div>
         </div>
       </div>
-      <div v-show="dataLoaded" :class="size ? '' : 'gap-2'" class="flex">
+      <div v-show="dataLoaded" :class="!size && 'gap-2'" class="flex">
         <img :src="tempImg" alt="" class="w-12 h-12 bg-black rounded-sm" />
 
         <div>
@@ -77,7 +76,7 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
           </div>
         </div>
       </div>
-      <div v-show="!size" v-if="dataLoaded" class="flex items-center gap-3">
+      <div v-if="dataLoaded" v-show="!size" class="flex items-center gap-3">
         <i
           v-if="playlist.playing"
           class="text-primary-500 fa-solid fa-circle-pause"
@@ -92,7 +91,7 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
         ></i>
       </div>
     </div>
-    <audio class="hidden" ref="audioPlayer" :src="audio" controls></audio>
+    <audio ref="audioPlayer" :src="audio" class="hidden" controls></audio>
   </div>
 </template>
 
