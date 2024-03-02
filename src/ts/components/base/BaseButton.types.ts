@@ -5,4 +5,5 @@ export enum EBaseButtonType {
 
 export interface IBaseButtonProps {
   type?: EBaseButtonType;
+  icon?: boolean;
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, useSlots } from "vue";
 import {
   EBaseButtonType,
   IBaseButtonProps,
@@ -11,12 +11,17 @@ const props = withDefaults(defineProps<IBaseButtonProps>(), {
 
 const buttonRef = ref<HTMLElement | null>(null);
 
+const slots = useSlots();
+const hasPrependSlot = computed(() => !!slots.prepend);
+
 const computedButtonClass = computed(() => {
   return {
     "bg-primary-500 hover:bg-primary-400":
       props.type === EBaseButtonType.filled,
     "border-2 border-white/50 hover:bg-gray-100/10 hover:border-white":
       props.type === EBaseButtonType.outlined,
+    "px-10 h-11": !props.icon,
+    "w-11 h-11": props.icon,
   };
 });
 
@@ -27,7 +32,7 @@ function addRippleEffect(x: number, y: number) {
   rippleElement.style.height = `20px`;
   rippleElement.style.top = `${y}px`;
   rippleElement.style.left = `${x}px`;
-  rippleElement.style.transform = "translate(-50%, -50%)";
+  rippleElement.style.translate = "-50% -50%";
   rippleElement.style.transformOrigin = "center";
 
   if (buttonRef.value) {
@@ -53,10 +58,10 @@ function handleButtonClick(e: MouseEvent) {
   <button
     ref="buttonRef"
     :class="computedButtonClass"
-    class="flex items-center justify-center transition-all gap-6 py-2 px-10 rounded-full overflow-hidden relative"
-    @click="handleButtonClick"
+    class="flex items-center justify-center transition-all gap-6 rounded-full overflow-hidden relative"
+    @mousedown.left="handleButtonClick"
   >
-    <h2 class="font-bold text-lg">
+    <h2 v-if="hasPrependSlot" class="font-bold text-lg">
       <slot name="prepend" />
     </h2>
 
