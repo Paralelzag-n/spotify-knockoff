@@ -5,6 +5,7 @@ import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
 import { useWindowSize, useElementSize } from "@vueuse/core";
+import SidebarSearchComponent from "./SidebarSearchComponent.vue";
 
 const homePageHeader = ref<HTMLElement | null>(null);
 const baseFilterRef = ref<HTMLElement | null>(null);
@@ -26,10 +27,6 @@ const doesScrollExist = computed<boolean>(
   () =>
     PlaylistCardComponentContainerHeight.value <
     PlaylistCardComponentHeight.value
-);
-
-onMounted(() =>
-  console.log(baseFilterheight.value, homePageHeaderHeight.value)
 );
 
 const filterNames = [
@@ -87,6 +84,7 @@ const playlists = ref<IPlaylist[]>([
   },
 ]);
 
+const searchedContent = ref<string>();
 const selectedName = ref<string>("");
 
 const { width, height } = useWindowSize();
@@ -121,11 +119,17 @@ const MINIMIZED_THRESHOLD = 600;
           <i class="fa-solid fa-xl text-white fa-book"></i>
           <h1 v-show="!computedMinimized" class="text-white">Your library</h1>
         </div>
-        <BaseFilter
-          :filterNames="filterNames"
-          v-model:primary="selectedName"
-          :sizeMinimized="computedMinimized"
-        ></BaseFilter>
+        <div class="flex flex-col gap-2">
+          <SidebarSearchComponent
+            v-if="!computedMinimized"
+            v-model="searchedContent"
+          ></SidebarSearchComponent>
+          <BaseFilter
+            :filterNames="filterNames"
+            v-model:primary="selectedName"
+            :sizeMinimized="computedMinimized"
+          ></BaseFilter>
+        </div>
       </div>
       <div
         :style="{ height: `${PlaylistCardComponentContainerHeight}px` }"

@@ -73,7 +73,7 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
         :class="!props.sizeMinimized && 'gap-2'"
         class="flex"
       >
-        <img :src="tempImg" alt="" class="w-12 h-12 bg-black rounded-sm" />
+        <img :src="tempImg" alt="" class="w-12 h-12 bg-black rounded" />
 
         <div>
           <h1
