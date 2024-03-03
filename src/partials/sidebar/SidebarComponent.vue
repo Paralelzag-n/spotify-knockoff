@@ -1,10 +1,36 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
-import PlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
+import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
-import { useWindowSize } from "@vueuse/core";
+import { useWindowSize, useElementSize } from "@vueuse/core";
+
+const homePageHeader = ref<HTMLElement | null>(null);
+const baseFilterRef = ref<HTMLElement | null>(null);
+
+const { height: homePageHeaderHeight } = useElementSize(homePageHeader);
+const { height: baseFilterheight } = useElementSize(baseFilterRef);
+
+const PlaylistCardComponentContainerHeight = computed<number>(
+  () => height.value - homePageHeaderHeight.value - baseFilterheight.value - 116
+);
+
+const PlaylistCardComponent = ref<HTMLElement | null>(null);
+
+const { height: PlaylistCardComponentHeight } = useElementSize(
+  PlaylistCardComponent
+);
+
+const doesScrollExist = computed<boolean>(
+  () =>
+    PlaylistCardComponentContainerHeight.value <
+    PlaylistCardComponentHeight.value
+);
+
+onMounted(() =>
+  console.log(baseFilterheight.value, homePageHeaderHeight.value)
+);
 
 const filterNames = [
   "Playlists",
@@ -35,39 +61,63 @@ const playlists = ref<IPlaylist[]>([
     category: EMediaCategory.album,
     playing: false,
   },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
 ]);
 
 const selectedName = ref<string>("");
 
-const { width } = useWindowSize();
+const { width, height } = useWindowSize();
 const computedMinimized = computed(() => width.value < MINIMIZED_THRESHOLD);
 const MINIMIZED_THRESHOLD = 600;
 </script>
 
 <template>
   <div
-    :class="computedMinimized ? 'w-fit items-center ' : 'w-[300px]'"
-    class="bg-black gap-5 flex flex-col"
+    :class="computedMinimized ? 'w-fit items-center ' : 'w-[300px] h-full '"
+    class="bg-black gap-2 flex flex-col p-2 rounded-r-lg"
   >
     <div
-      :class="!computedMinimized ? 'p-6 gap-6' : 'p-6 gap-12'"
-      class="flex bg-gray-back flex-col"
+      ref="homePageHeader"
+      class="flex p-6 rounded-lg gap-6 bg-gray-back flex-col"
     >
-      <div class="flex items-center gap-3 cursor-pointer">
+      <div class="flex items-center h-5 gap-3 cursor-pointer">
         <i class="text-white fa-lg fa-solid fa-house"></i>
         <h1 v-show="!computedMinimized" class="text-white">Home</h1>
       </div>
-      <div class="flex items-center gap-3 cursor-pointer">
+      <div class="flex items-center h-5 gap-3 cursor-pointer">
         <i class="text-icon-unselected fa-lg fa-solid fa-search"></i>
         <h1 v-show="!computedMinimized" class="text-white/50">Search</h1>
       </div>
     </div>
     <div
       :class="computedMinimized && 'items-center'"
-      class="bg-gray-back py-5 flex flex-col gap-5"
+      class="bg-gray-back flex flex-col gap-5 rounded-lg"
     >
-      <div class="px-3 flex flex-col gap-10">
-        <div class="flex items-center gap-3 px-3">
+      <div ref="baseFilterRef" class="px-3 flex flex-col pt-5 gap-5">
+        <div class="flex items-center h-5 gap-3 px-3">
           <i class="fa-solid fa-xl text-white fa-book"></i>
           <h1 v-show="!computedMinimized" class="text-white">Your library</h1>
         </div>
@@ -77,12 +127,17 @@ const MINIMIZED_THRESHOLD = 600;
           :sizeMinimized="computedMinimized"
         ></BaseFilter>
       </div>
-      <div :class="!computedMinimized && 'px-3'">
-        <PlaylistCardComponent
+      <div
+        :style="{ height: `${PlaylistCardComponentContainerHeight}px` }"
+        class="overflow-auto"
+      >
+        <SidebarPlaylistCardComponent
+          :hasScroll="doesScrollExist"
+          ref="PlaylistCardComponent"
           :selectedName="selectedName"
           :sizeMinimized="computedMinimized"
           :playlists="playlists"
-        ></PlaylistCardComponent>
+        ></SidebarPlaylistCardComponent>
       </div>
     </div>
   </div>

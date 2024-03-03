@@ -9,6 +9,7 @@ const props = defineProps<{
   sizeMinimized: boolean;
   selectedName: string;
   playlists: IPlaylist[];
+  hasScroll: boolean;
 }>();
 
 const selectedPlaylist = defineModel<string>("primary");
@@ -18,10 +19,6 @@ const audioPlayer = ref<HTMLAudioElement | null>(null);
 const dataLoaded = ref<boolean>(false);
 
 setTimeout(() => (dataLoaded.value = true), 3000);
-
-const mainMinimizedClass = computed(() => {
-  return props.sizeMinimized ? "gap-10" : "gap-5";
-});
 
 const filteredPlaylists = computed(() =>
   props.playlists.filter((playlist) =>
@@ -60,11 +57,10 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
 </script>
 
 <template>
-  <div :class="mainMinimizedClass" class="flex flex-col">
+  <div :class="props.hasScroll && 'pr-2'" class="flex flex-col gap-2">
     <div
       v-for="playlist in filteredPlaylists"
-      :class="!props.sizeMinimized && 'p-3 '"
-      class="flex items-center justify-between cursor-pointer hover:bg-button-gray-hover rounded-md"
+      class="flex items-center p-2 justify-between cursor-pointer hover:bg-button-gray-hover rounded-md"
       @click="playlistClickHandler(playlist, playlist.playing)"
     >
       <SidebarSkeleton
