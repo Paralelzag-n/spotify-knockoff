@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import BaseButton from "../components/base/BaseButton.vue";
 import { EBaseButtonType } from "../ts/components/base/BaseButton.types.ts";
+import BaseInput from "../components/base/BaseInput.vue";
+import {
+  emailRule,
+  lengthRule,
+  requiredRule,
+} from "../utils/validation-rules.ts";
 </script>
 <template>
   <div class="bg-body flex justify-center pt-20">
@@ -28,19 +34,22 @@ import { EBaseButtonType } from "../ts/components/base/BaseButton.types.ts";
           Continue with Apple
         </BaseButton>
       </div>
-      <div class="divider-x bg-br-module my-10"></div>
-      <div class="flex justify-between">
-        <BaseButton :type="EBaseButtonType.filled" icon>
-          <i class="fa-brands fa-google" />
-        </BaseButton>
-        <BaseButton :type="EBaseButtonType.outlined" icon>
-          <i class="fa-brands fa-meta" />
-        </BaseButton>
-        <BaseButton :type="EBaseButtonType.outlined" icon>
-          <i class="fa-brands fa-apple" />
+      <div class="divider-x bg-br-module my-10" />
+      <div class="flex flex-col gap-4 w-full">
+        <BaseInput
+          :rules="[requiredRule, emailRule]"
+          label="Email or username"
+          placeholder="Email or username"
+        />
+        <BaseInput
+          :rules="[requiredRule, lengthRule(8)]"
+          label="Password"
+          placeholder="Password"
+        />
+        <BaseButton :type="EBaseButtonType.filled" class="w-full mt-3">
+          Log In
         </BaseButton>
       </div>
-      <div class="divider-x bg-br-module my-10"></div>
     </div>
   </div>
 </template>
