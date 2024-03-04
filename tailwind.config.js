@@ -6,8 +6,13 @@ export default {
       colors: {
         body: "#090909",
         module: "#121212",
-
         "br-module": "#424242",
+
+          "button-gray": "#232323",
+          "button-gray-hover": "#2A2A2A",
+          "gray-back": "#121212",
+          "icon-unselected": "#898989",
+
         'primary': {
           '50': '#fef9ee',
           '100': '#fcf2d8',
