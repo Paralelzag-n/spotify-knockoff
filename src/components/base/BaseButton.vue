@@ -19,9 +19,10 @@ const computedButtonClass = computed(() => {
   return {
     "bg-primary-500 hover:bg-primary-400":
       props.type === EBaseButtonType.filled,
-    "border-2 border-white/50 hover:bg-gray-100/10 hover:border-white":
+    "border-white/50 hover:bg-gray-100/10 hover:border-white":
       props.type === EBaseButtonType.outlined,
-    "px-10 h-11": !props.icon,
+    "border-2 px-10 h-11": !props.icon && props.type !== EBaseButtonType.filled,
+    "border-0 px-10 h-11": !props.icon && props.type === EBaseButtonType.filled,
     "border-0": props.icon,
   };
 });

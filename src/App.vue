@@ -1,6 +1,5 @@
-
 <template>
-  <main class="h-screen">
+  <main class="min-h-screen">
     <RouterView />
   </main>
 </template>
