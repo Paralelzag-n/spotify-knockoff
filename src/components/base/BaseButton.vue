@@ -13,6 +13,7 @@ const buttonRef = ref<HTMLElement | null>(null);
 
 const slots = useSlots();
 const hasPrependSlot = computed(() => !!slots.prepend);
+const hasAppendSlot = computed(() => !!slots.append);
 
 const computedButtonClass = computed(() => {
   return {
@@ -21,13 +22,13 @@ const computedButtonClass = computed(() => {
     "border-2 border-white/50 hover:bg-gray-100/10 hover:border-white":
       props.type === EBaseButtonType.outlined,
     "px-10 h-11": !props.icon,
-    "w-11 h-11": props.icon,
+    "border-0": props.icon,
   };
 });
 
 function addRippleEffect(x: number, y: number) {
   const rippleElement = document.createElement("div");
-  rippleElement.classList.add("absolute", "rounded-full", "bg-primary-200");
+  rippleElement.classList.add("absolute", "rounded-full", "bg-primary-200/70");
   rippleElement.style.width = `20px`;
   rippleElement.style.height = `20px`;
   rippleElement.style.top = `${y}px`;
@@ -65,8 +66,15 @@ function handleButtonClick(e: MouseEvent) {
       <slot name="prepend" />
     </h2>
 
-    <h2 class="font-bold text-lg">
+    <h2
+      :class="{ 'd-flex justify-center items-center': props.icon }"
+      class="font-bold text-lg"
+    >
       <slot />
+    </h2>
+
+    <h2 v-if="hasAppendSlot" class="font-bold text-lg">
+      <slot name="append" />
     </h2>
   </button>
 </template>

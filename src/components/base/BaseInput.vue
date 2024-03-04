@@ -1,15 +1,21 @@
 <script lang="ts" setup>
-import { computed, ref, useSlots } from "vue";
+import { computed, ref, useSlots, watchEffect } from "vue";
 import { ValidationRule } from "../../utils/validation-rules.ts";
 
 const props = defineProps<{
   placeholder: string;
   label: string;
   rules?: ValidationRule[];
+  password?: boolean;
 }>();
 
 const inputValue = defineModel<string>({ default: "" });
+const inputFocused = ref<boolean>(false);
 const errors = ref<string[]>([]);
+
+const computedInputType = computed<string>(() =>
+  props.password ? "password" : "text",
+);
 
 const slots = useSlots();
 const computedHasPrepend = computed<boolean>(() => {
@@ -21,13 +27,25 @@ const computedHasAppend = computed<boolean>(() => {
 
 const computedInputStyling = computed(() => {
   return {
-    "border-white/50 hover:border-white/80 focus:border-primary-400 active:border-primary-400":
-      inputValue.value.length === 0 && errors.value.length === 0,
+    "border-white/50 hover:border-primary-400":
+      inputValue.value.length === 0 &&
+      errors.value.length === 0 &&
+      !inputFocused.value,
     "border-primary-400":
-      inputValue.value.length > 0 && errors.value.length === 0,
+      (inputValue.value.length > 0 || inputFocused.value) &&
+      errors.value.length === 0,
     "border-red-500": errors.value.length > 0,
   };
 });
+
+function onFocus() {
+  inputFocused.value = true;
+}
+
+function onBlur(e: any) {
+  validateInput(e);
+  inputFocused.value = false;
+}
 
 function validateInput(e: any) {
   if (!props.rules) return true;
@@ -40,6 +58,10 @@ function validateInput(e: any) {
 
   errors.value = tempErrors;
 }
+
+watchEffect(() => {
+  console.log(errors.value);
+});
 </script>
 
 <template>
@@ -48,8 +70,9 @@ function validateInput(e: any) {
       {{ props.label }}
     </h2>
     <div
+      ref="inputWrapper"
       :class="computedInputStyling"
-      class="w-full flex items-center transition-all border rounded-md h-11 px-3"
+      class="w-full flex items-center transition-all rounded-md border h-11 px-2"
     >
       <div v-if="computedHasPrepend" class="pr-2">
         <slot name="prepend"></slot>
@@ -57,8 +80,10 @@ function validateInput(e: any) {
       <input
         v-model="inputValue"
         :placeholder="props.placeholder"
+        :type="computedInputType"
         class="bg-transparent outline-0 min-w-0 flex-grow"
-        @blur="validateInput"
+        @blur="onBlur"
+        @focus="onFocus"
         @input="validateInput"
       />
       <div v-if="computedHasAppend" class="pl-2">
@@ -74,5 +99,3 @@ function validateInput(e: any) {
     </span>
   </div>
 </template>
-
-<style scoped></style>

@@ -7,6 +7,19 @@ import {
   lengthRule,
   requiredRule,
 } from "../utils/validation-rules.ts";
+import { computed, ref } from "vue";
+
+const passwordVisible = ref<boolean>(false);
+const computedPasswordVisibilityIcon = computed(() => {
+  return {
+    "fa-eye": !passwordVisible.value,
+    "fa-eye-slash": passwordVisible.value,
+  };
+});
+
+function togglePasswordVisibility() {
+  passwordVisible.value = !passwordVisible.value;
+}
 </script>
 <template>
   <div class="bg-body flex justify-center pt-20">
@@ -42,13 +55,21 @@ import {
           placeholder="Email or username"
         />
         <BaseInput
+          :password="passwordVisible"
           :rules="[requiredRule, lengthRule(8)]"
           label="Password"
           placeholder="Password"
         >
           <template #append>
-            <BaseButton :icon="true">
-              <i class="fa-solid fa-eye"></i>
+            <BaseButton
+              :icon="true"
+              class="w-9 h-9"
+              @click="togglePasswordVisibility"
+            >
+              <i
+                :class="computedPasswordVisibilityIcon"
+                class="fa-solid text-sm"
+              />
             </BaseButton>
           </template>
         </BaseInput>
