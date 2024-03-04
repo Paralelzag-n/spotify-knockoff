@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, useSlots } from "vue";
 import { ValidationRule } from "../../utils/validation-rules.ts";
 
 const props = defineProps<{
@@ -10,6 +10,15 @@ const props = defineProps<{
 
 const inputValue = defineModel<string>({ default: "" });
 const errors = ref<string[]>([]);
+
+const slots = useSlots();
+const computedHasPrepend = computed<boolean>(() => {
+  return !!slots.prepend;
+});
+const computedHasAppend = computed<boolean>(() => {
+  return !!slots.append;
+});
+
 const computedInputStyling = computed(() => {
   return {
     "border-white/50 hover:border-white/80 focus:border-primary-400 active:border-primary-400":
@@ -38,14 +47,24 @@ function validateInput(e: any) {
     <h2 v-if="props.label" class="text-sm text-white font-semibold">
       {{ props.label }}
     </h2>
-    <input
-      v-model="inputValue"
+    <div
       :class="computedInputStyling"
-      :placeholder="props.placeholder"
-      class="bg-transparent outline-0 transition-all border rounded-md h-11 w-full px-3 min-w-0"
-      @blur="validateInput"
-      @input="validateInput"
-    />
+      class="w-full flex items-center transition-all border rounded-md h-11 px-3"
+    >
+      <div v-if="computedHasPrepend" class="pr-2">
+        <slot name="prepend"></slot>
+      </div>
+      <input
+        v-model="inputValue"
+        :placeholder="props.placeholder"
+        class="bg-transparent outline-0 min-w-0 flex-grow"
+        @blur="validateInput"
+        @input="validateInput"
+      />
+      <div v-if="computedHasAppend" class="pl-2">
+        <slot name="append"></slot>
+      </div>
+    </div>
     <span
       v-if="errors.length"
       class="text-sm font-bold text-primary-300 flex items-center gap-2"

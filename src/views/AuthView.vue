@@ -45,7 +45,13 @@ import {
           :rules="[requiredRule, lengthRule(8)]"
           label="Password"
           placeholder="Password"
-        />
+        >
+          <template #append>
+            <BaseButton :icon="true">
+              <i class="fa-solid fa-eye"></i>
+            </BaseButton>
+          </template>
+        </BaseInput>
         <BaseButton :type="EBaseButtonType.filled" class="w-full mt-3">
           Log In
         </BaseButton>
