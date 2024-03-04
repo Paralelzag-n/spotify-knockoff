@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, useSlots, watchEffect } from "vue";
+import { computed, ref, useSlots } from "vue";
 import { ValidationRule } from "../../utils/validation-rules.ts";
 
 const props = defineProps<{
@@ -58,10 +58,6 @@ function validateInput(e: any) {
 
   errors.value = tempErrors;
 }
-
-watchEffect(() => {
-  console.log(errors.value);
-});
 </script>
 
 <template>

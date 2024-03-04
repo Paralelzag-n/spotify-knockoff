@@ -8,6 +8,13 @@ import {
 import BaseInput from "../base/BaseInput.vue";
 import BaseButton from "../base/BaseButton.vue";
 import { computed, ref } from "vue";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseApp } from "../../firebase";
+
+const auth = getAuth(firebaseApp);
+
+const email = ref<string>("");
+const password = ref<string>("");
 
 const passwordVisible = ref<boolean>(false);
 const computedPasswordVisibilityIcon = computed(() => {
@@ -20,13 +27,26 @@ const computedPasswordVisibilityIcon = computed(() => {
 function togglePasswordVisibility() {
   passwordVisible.value = !passwordVisible.value;
 }
+
+function logInUser() {
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(errorCode, errorMessage);
+    });
+}
 </script>
 
 <template>
   <div
     class="bg-module min-w-[600px] h-fit text-white py-16 px-32 flex flex-col justify-center items-center rounded-xl"
   >
-    <h2 class="text-4xl font-bold text-center pb-10">Log in to Paralelify</h2>
+    <h2 class="text-4xl font-bold text-center pb-10">Welcome to Paralelify</h2>
     <div class="flex flex-col gap-2">
       <BaseButton :type="EBaseButtonType.filled" class="w-full">
         <template #prepend>
@@ -50,11 +70,13 @@ function togglePasswordVisibility() {
     <div class="divider-x bg-br-module my-10" />
     <div class="flex flex-col gap-4 w-full">
       <BaseInput
+        v-model="email"
         :rules="[requiredRule, emailRule]"
         label="Email or username"
         placeholder="Email or username"
       />
       <BaseInput
+        v-model="password"
         :password="passwordVisible"
         :rules="[requiredRule, lengthRule(8)]"
         label="Password"
@@ -73,11 +95,19 @@ function togglePasswordVisibility() {
           </BaseButton>
         </template>
       </BaseInput>
-      <BaseButton :type="EBaseButtonType.filled" class="w-full mt-3">
+      <BaseButton
+        :type="EBaseButtonType.filled"
+        class="w-full mt-3"
+        @click="logInUser"
+      >
         Log In
       </BaseButton>
+      <RouterLink
+        :to="{ name: 'sign-up' }"
+        class="text-primary-500 hover:text-primary-400 text-center"
+      >
+        Don't have an account?
+      </RouterLink>
     </div>
   </div>
 </template>
-
-<style scoped></style>
