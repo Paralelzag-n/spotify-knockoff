@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
 import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
 import { useWindowSize, useElementSize } from "@vueuse/core";
 import SidebarSearchComponent from "./SidebarSearchComponent.vue";
+import BaseDropdown from "../../components/base/BaseDropdown.vue";
 
 const homePageHeader = ref<HTMLElement | null>(null);
 const baseFilterRef = ref<HTMLElement | null>(null);
@@ -29,6 +30,15 @@ const doesScrollExist = computed<boolean>(
     PlaylistCardComponentHeight.value
 );
 
+const selectableDropdownContent = ["Recents", "Alphabetical", "Creator"];
+
+const selectedContent = ref<string>();
+
+const nonSelectableDropdownContent = [
+  "Create a new playlist",
+  "Create a playlist folder",
+];
+
 const filterNames = [
   "Playlists",
   "Artists",
@@ -37,6 +47,8 @@ const filterNames = [
   "Tarkhna",
   "Lipo",
 ];
+
+const searchActive = ref<boolean>(false);
 
 const playlists = ref<IPlaylist[]>([
   {
@@ -115,15 +127,31 @@ const MINIMIZED_THRESHOLD = 600;
       class="bg-gray-back flex flex-col gap-5 rounded-lg"
     >
       <div ref="baseFilterRef" class="px-3 flex flex-col pt-5 gap-5">
-        <div class="flex items-center h-5 gap-3 px-3">
-          <i class="fa-solid fa-xl text-white fa-book"></i>
-          <h1 v-show="!computedMinimized" class="text-white">Your library</h1>
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center h-5 gap-3 px-3">
+            <i class="fa-solid fa-xl text-white fa-book"></i>
+            <h1 v-show="!computedMinimized" class="text-white">Your library</h1>
+          </div>
+          <BaseDropdown
+            v-show="!computedMinimized"
+            :selectable="false"
+            :contentNonSelectable="nonSelectableDropdownContent"
+          ></BaseDropdown>
         </div>
         <div class="flex flex-col gap-2">
-          <SidebarSearchComponent
-            v-if="!computedMinimized"
-            v-model="searchedContent"
-          ></SidebarSearchComponent>
+          <div class="flex items-center justify-between">
+            <SidebarSearchComponent
+              v-show="!computedMinimized"
+              v-model="searchedContent"
+              v-model:search="searchActive"
+            ></SidebarSearchComponent>
+            <BaseDropdown
+              v-model="selectedContent"
+              :contentSelectable="selectableDropdownContent"
+              v-show="!searchActive && !computedMinimized"
+              :selectable="true"
+            ></BaseDropdown>
+          </div>
           <BaseFilter
             :filterNames="filterNames"
             v-model:primary="selectedName"

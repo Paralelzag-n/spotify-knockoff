@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref, defineModel } from "vue";
 
 const searchComponentRef = ref<HTMLElement | null>(null);
-const searchActive = ref<boolean>(false);
+const searchActive = defineModel("search");
 const searchedContent = defineModel<string>();
 const searchInputRef = ref<HTMLElement | null>(null);
 
@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
         class="outline-none flex-grow text-white/50 bg-transparent"
       />
       <i
-        v-show="searchedContent"
+        :class="!searchedContent ? 'opacity-0' : ''"
         @click="searchedContent = ''"
         class="fa-solid text-white/80 fa-xmark pr-2"
       ></i>
