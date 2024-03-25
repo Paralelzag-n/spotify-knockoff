@@ -3,9 +3,11 @@ import SidebarComponent from "../partials/sidebar/SidebarComponent.vue";
 </script>
 
 <template>
-  <div class="flex bg-black">
+  <div class="min-h-screen flex bg-black">
     <SidebarComponent></SidebarComponent>
-    <div class="bg-gray-back flex-grow"></div>
+    <div class="bg-gray-back flex-grow">
+      <router-view />
+    </div>
   </div>
 </template>
 
