@@ -4,7 +4,7 @@ import { computed, ref } from "vue";
 
 const bannerVisible = ref<boolean>(true);
 const computedBannerClasses = computed(() => {
-  return "absolute bg-black/20 cursor-pointer w-48 select-none text-center text-white px-4 py-2 rounded-full top-4 right-4";
+  return "absolute bg-black/20 cursor-pointer w-48 text-center text-white px-4 py-2 rounded-full top-4 right-4";
 });
 
 function hideBanner() {

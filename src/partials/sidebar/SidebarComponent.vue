@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
 import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
-import { useWindowSize, useElementSize } from "@vueuse/core";
+import { useElementSize, useWindowSize } from "@vueuse/core";
 import SidebarSearchComponent from "./SidebarSearchComponent.vue";
 
 const homePageHeader = ref<HTMLElement | null>(null);
@@ -14,19 +14,20 @@ const { height: homePageHeaderHeight } = useElementSize(homePageHeader);
 const { height: baseFilterheight } = useElementSize(baseFilterRef);
 
 const PlaylistCardComponentContainerHeight = computed<number>(
-  () => height.value - homePageHeaderHeight.value - baseFilterheight.value - 116
+  () =>
+    height.value - homePageHeaderHeight.value - baseFilterheight.value - 113,
 );
 
 const PlaylistCardComponent = ref<HTMLElement | null>(null);
 
 const { height: PlaylistCardComponentHeight } = useElementSize(
-  PlaylistCardComponent
+  PlaylistCardComponent,
 );
 
 const doesScrollExist = computed<boolean>(
   () =>
     PlaylistCardComponentContainerHeight.value <
-    PlaylistCardComponentHeight.value
+    PlaylistCardComponentHeight.value,
 );
 
 const filterNames = [
@@ -125,8 +126,8 @@ const MINIMIZED_THRESHOLD = 600;
             v-model="searchedContent"
           ></SidebarSearchComponent>
           <BaseFilter
-            :filterNames="filterNames"
             v-model:primary="selectedName"
+            :filterNames="filterNames"
             :sizeMinimized="computedMinimized"
           ></BaseFilter>
         </div>
@@ -136,11 +137,11 @@ const MINIMIZED_THRESHOLD = 600;
         class="overflow-auto"
       >
         <SidebarPlaylistCardComponent
-          :hasScroll="doesScrollExist"
           ref="PlaylistCardComponent"
+          :hasScroll="doesScrollExist"
+          :playlists="playlists"
           :selectedName="selectedName"
           :sizeMinimized="computedMinimized"
-          :playlists="playlists"
         ></SidebarPlaylistCardComponent>
       </div>
     </div>
