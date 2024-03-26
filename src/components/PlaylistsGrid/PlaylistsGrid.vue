@@ -25,7 +25,7 @@ const computedGridSize = computed(() => {
   <div
     ref="playlistsGridContainerRef"
     :class="computedGridSize"
-    class="grid gap-4"
+    class="grid gap-3"
   >
     <div
       v-for="playlist in props.playlists"

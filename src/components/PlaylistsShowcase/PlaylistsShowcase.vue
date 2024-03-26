@@ -43,7 +43,7 @@ const computedFrontPagePlaylists = computed(() => {
 <template>
   <div>
     <div class="flex justify-between items-center px-2">
-      <h2 class="text-white font-bold text-2xl pb-1.5">
+      <h2 class="text-white font-bold text-2xl pb-0.5">
         {{ props.showcaseTitle }}
       </h2>
       <p class="show-all">Show All</p>
