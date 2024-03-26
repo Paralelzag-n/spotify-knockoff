@@ -16,13 +16,11 @@ function toggleHover(hovering: boolean) {
 
 <template>
   <div
-    class="flex flex-col rounded hover:bg-button-gray-hover transition-all pb-4"
+    class="playlist-container"
+    @mouseenter="toggleHover(true)"
+    @mouseleave="toggleHover(false)"
   >
-    <div
-      class="playlist-container p-3 pb-1 relative"
-      @mouseenter="toggleHover(true)"
-      @mouseleave="toggleHover(false)"
-    >
+    <div class="p-3 pb-1 relative">
       <img
         :src="props.playlist.thumbnail"
         alt="playlist thumbnail"
@@ -46,6 +44,10 @@ function toggleHover(hovering: boolean) {
 </template>
 
 <style lang="scss">
+.playlist-container {
+  @apply flex flex-col rounded hover:bg-button-gray-hover transition-all pb-4;
+}
+
 .slide-fade-enter-active,
 .slide-fade-leave-active {
   transition: all 500ms ease-in-out;
