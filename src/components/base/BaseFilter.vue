@@ -21,10 +21,10 @@ const shouldScrollExist = computed(() => {
 });
 
 const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value
+  () => scrolledToStart.value && !scrolledToEnd.value,
 );
 const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value
+  () => scrolledToEnd.value && !scrolledToStart.value,
 );
 
 const selectHandler = (item: string): void => {
@@ -83,7 +83,7 @@ const scrollByVisibleWidth = (back: boolean) => {
           'bg-primary-500 text-white hover:bg-primary-400': selected === item,
           'hover:bg-button-gray-hover text-white': selected !== item,
         }"
-        class="bg-button-gray cursor-pointer text-nowrap leading-6 w-fit text-sm px-2 py-1 rounded-[100vh]"
+        class="bg-button-gray cursor-pointer text-nowrap text-center leading-6 w-fit text-sm px-3 py-1 rounded-[100vh]"
         @click="selectHandler(item)"
       >
         {{ item }}

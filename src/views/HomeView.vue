@@ -1,12 +1,33 @@
 <script lang="ts" setup>
 import SidebarComponent from "../partials/sidebar/SidebarComponent.vue";
+import { computed } from "vue";
+import { useWindowSize } from "@vueuse/core";
+
+const { height: screenHeight } = useWindowSize();
+
+const computedMainPartialContainerHeight = computed<number | null>(() => {
+  if (screenHeight) return screenHeight.value - 16 ?? null;
+  return null;
+});
+
+const computedMainPartialStyle = computed(() => {
+  return { height: `${computedMainPartialContainerHeight.value}px` };
+});
 </script>
 
 <template>
-  <div class="flex bg-black">
+  <div class="min-h-screen flex bg-black">
     <SidebarComponent></SidebarComponent>
-    <div class="bg-gray-back flex-grow"></div>
+    <div class="py-2 pe-2">
+      <div :style="computedMainPartialStyle" class="mainPartialContainer">
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.mainPartialContainer {
+  @apply bg-gray-back h-full rounded-lg overflow-auto;
+}
+</style>
