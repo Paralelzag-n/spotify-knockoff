@@ -15,7 +15,7 @@ const { height: screenHeight } = useWindowSize();
 </script>
 
 <template>
-  <div class="p-2">
+  <div class="p-2 w-80">
     <div
       :style="computedMainPartialStyle"
       class="bg-gray-back rounded-lg p-2 overflow-auto"

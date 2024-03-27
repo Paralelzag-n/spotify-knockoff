@@ -85,7 +85,7 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
           </h1>
           <div
             v-show="!props.sizeMinimized"
-            class="flex text-white/50 items-center gap-3"
+            class="flex text-white/60 items-center gap-3"
           >
             <h2 class="text-sm">{{ playlist.category }}</h2>
             <h2 v-if="playlist.numOfSongs" class="text-sm">

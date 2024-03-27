@@ -19,7 +19,7 @@ import ArtistImg from "../../assets/img/Gorillaz-announce-top.webp";
         Follow
       </div>
     </div>
-    <p class="text-gray-400 text-sm max-w-72">
+    <p class="text-white/60 text-sm max-w-72">
       Gorillaz is the most dedismtyvnel group of all time Gorillaz is the most
       dedismtyvnel group of all time Gorillaz is the most dedismtyvnel group of
       all time Gorillaz is the most dedismtyvnel group of all time Gorillaz is
