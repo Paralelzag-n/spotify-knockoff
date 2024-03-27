@@ -50,12 +50,12 @@ onBeforeUnmount(() => {
         placeholder="Search in library"
         v-model="searchedContent"
         type="text"
-        class="outline-none flex-grow text-white/50 bg-transparent"
+        class="outline-none flex-grow text-white/60 bg-transparent"
       />
       <i
         v-show="searchedContent"
         @click="searchedContent = ''"
-        class="fa-solid text-white/80 fa-xmark pr-2"
+        class="fa-solid text-white/60 fa-xmark pr-2"
       ></i>
     </div>
   </div>

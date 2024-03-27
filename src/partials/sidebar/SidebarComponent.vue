@@ -14,20 +14,19 @@ const { height: homePageHeaderHeight } = useElementSize(homePageHeader);
 const { height: baseFilterheight } = useElementSize(baseFilterRef);
 
 const PlaylistCardComponentContainerHeight = computed<number>(
-  () =>
-    height.value - homePageHeaderHeight.value - baseFilterheight.value - 113,
+  () => height.value - homePageHeaderHeight.value - baseFilterheight.value - 113
 );
 
 const PlaylistCardComponent = ref<HTMLElement | null>(null);
 
 const { height: PlaylistCardComponentHeight } = useElementSize(
-  PlaylistCardComponent,
+  PlaylistCardComponent
 );
 
 const doesScrollExist = computed<boolean>(
   () =>
     PlaylistCardComponentContainerHeight.value <
-    PlaylistCardComponentHeight.value,
+    PlaylistCardComponentHeight.value
 );
 
 const filterNames = [
@@ -95,7 +94,7 @@ const MINIMIZED_THRESHOLD = 600;
 
 <template>
   <div
-    :class="computedMinimized ? 'w-fit items-center ' : 'w-[300px] h-full '"
+    :class="computedMinimized ? 'w-fit items-center ' : 'w-80 h-full '"
     class="bg-black gap-2 flex flex-col p-2 rounded-r-lg"
   >
     <div

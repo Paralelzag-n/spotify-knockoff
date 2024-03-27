@@ -3,6 +3,9 @@
 @import "scrollbar.scss";
 
 * {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
   font-family: "Nunito", sans-serif;
   box-sizing: border-box !important;
   user-select: none;
