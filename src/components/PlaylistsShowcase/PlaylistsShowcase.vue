@@ -3,11 +3,15 @@ import PlaylistComponent from "./PlaylistComponent.vue";
 import { IPlaylist } from "../../ts/pinia/playlist.types.ts";
 import { computed, ref } from "vue";
 import { useElementSize } from "@vueuse/core";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   showcaseTitle: string;
   playlists: IPlaylist[];
+  showAllPlaylists?: boolean;
 }>();
+
+const router = useRouter();
 
 const playlistsContainerRef = ref<HTMLElement | null>(null);
 const { width: playlistsContainerWidth } = useElementSize(
@@ -24,9 +28,11 @@ const computedFrontPagePlaylists = computed(() => {
     numberOfPlaylists = 6;
   }
 
-  const playlists = props.playlists
-    .slice(0, numberOfPlaylists)
-    .map((element) => JSON.parse(JSON.stringify(element)));
+  let playlists: IPlaylist[] = props.playlists;
+  if (!props.showAllPlaylists)
+    playlists = props.playlists
+      .slice(0, numberOfPlaylists)
+      .map((element) => JSON.parse(JSON.stringify(element)));
 
   const gridTemplateColumns = `repeat(${numberOfPlaylists}, minmax(0, 1fr))`;
 
@@ -38,6 +44,10 @@ const computedFrontPagePlaylists = computed(() => {
     },
   };
 });
+
+function viewPlaylistCollection() {
+  router.push({ name: "playlists", params: { id: "placeholderId" } });
+}
 </script>
 
 <template>
@@ -46,7 +56,13 @@ const computedFrontPagePlaylists = computed(() => {
       <h2 class="text-white font-bold text-2xl pb-0.5">
         {{ props.showcaseTitle }}
       </h2>
-      <p class="show-all">Show All</p>
+      <p
+        v-if="!props.showAllPlaylists"
+        class="show-all"
+        @click="viewPlaylistCollection"
+      >
+        Show All
+      </p>
     </div>
     <div ref="playlistsContainerRef" :style="computedFrontPagePlaylists.style">
       <PlaylistComponent

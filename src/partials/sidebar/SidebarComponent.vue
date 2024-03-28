@@ -5,8 +5,11 @@ import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
 import { useElementSize, useWindowSize } from "@vueuse/core";
+import { useRouter } from "vue-router";
 import SidebarSearchComponent from "./SidebarSearchComponent.vue";
+
 import BaseDropDown from "../../components/base/BaseDropdown.vue";
+
 
 const homePageHeader = ref<HTMLElement | null>(null);
 const baseFilterRef = ref<HTMLElement | null>(null);
@@ -15,19 +18,21 @@ const { height: homePageHeaderHeight } = useElementSize(homePageHeader);
 const { height: baseFilterheight } = useElementSize(baseFilterRef);
 
 const PlaylistCardComponentContainerHeight = computed<number>(
-  () => height.value - homePageHeaderHeight.value - baseFilterheight.value - 113
+  () =>
+    height.value - homePageHeaderHeight.value - baseFilterheight.value - 113,
 );
 
+const router = useRouter();
 const PlaylistCardComponent = ref<HTMLElement | null>(null);
 
 const { height: PlaylistCardComponentHeight } = useElementSize(
-  PlaylistCardComponent
+  PlaylistCardComponent,
 );
 
 const doesScrollExist = computed<boolean>(
   () =>
     PlaylistCardComponentContainerHeight.value <
-    PlaylistCardComponentHeight.value
+    PlaylistCardComponentHeight.value,
 );
 
 const filterNames = [
@@ -125,6 +130,10 @@ const searchActive = ref<boolean>(false);
 const { width, height } = useWindowSize();
 const computedMinimized = computed(() => width.value < MINIMIZED_THRESHOLD);
 const MINIMIZED_THRESHOLD = 600;
+
+function goHome() {
+  router.push({ name: "home" });
+}
 </script>
 
 <template>
@@ -136,7 +145,7 @@ const MINIMIZED_THRESHOLD = 600;
       ref="homePageHeader"
       class="flex p-6 rounded-lg gap-6 bg-gray-back flex-col"
     >
-      <div class="flex items-center h-5 gap-3 cursor-pointer">
+      <div class="flex items-center h-5 gap-3 cursor-pointer" @click="goHome()">
         <i class="text-white fa-lg fa-solid fa-house"></i>
         <h1 v-show="!computedMinimized" class="text-white">Home</h1>
       </div>

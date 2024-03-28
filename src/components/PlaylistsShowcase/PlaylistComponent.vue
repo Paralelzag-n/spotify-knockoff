@@ -2,10 +2,14 @@
 import { defineProps, ref } from "vue";
 import BasePlayButton from "../base/BasePlayButton.vue";
 import { IPlaylist } from "../../ts/pinia/playlist.types.ts";
+import { useElementSize } from "@vueuse/core";
 
 const props = defineProps<{
   playlist: IPlaylist;
 }>();
+
+const imageRef = ref<HTMLElement | null>(null);
+const { width: imageWidth } = useElementSize(imageRef);
 
 const mouseHovering = ref(false);
 
@@ -16,13 +20,15 @@ function toggleHover(hovering: boolean) {
 
 <template>
   <div
-    class="playlist-container"
+    class="playlist-container cursor-pointer"
     @mouseenter="toggleHover(true)"
     @mouseleave="toggleHover(false)"
   >
     <div class="p-3 pb-1 relative">
       <img
+        ref="imageRef"
         :src="props.playlist.thumbnail"
+        :style="{ height: `${imageWidth}px` }"
         alt="playlist thumbnail"
         class="w-full rounded shadow-card"
       />

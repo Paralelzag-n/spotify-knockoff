@@ -17,7 +17,7 @@ const computedPlaylists = computed<IPlaylist[]>(
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 py-4 px-4">
+  <div class="flex flex-col gap-6 p-4">
     <div class="flex flex-col gap-6 px-2">
       <TheAnnouncement />
       <BaseFilter

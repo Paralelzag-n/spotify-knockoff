@@ -32,6 +32,6 @@ const computedMainPartialStyle = computed(() => {
 
 <style lang="scss" scoped>
 .mainPartialContainer {
-  @apply bg-gray-back h-full rounded-lg overflow-auto;
+  @apply bg-gray-back rounded-lg overflow-auto;
 }
 </style>
