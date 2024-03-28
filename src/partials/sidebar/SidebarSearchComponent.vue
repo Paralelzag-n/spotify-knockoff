@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const searchComponentRef = ref<HTMLElement | null>(null);
-const searchActive = ref<boolean>(false);
+const searchActive = defineModel<boolean>("primary");
 const searchedContent = defineModel<string>();
 const searchInputRef = ref<HTMLElement | null>(null);
 

@@ -4,12 +4,17 @@ import tempImg from "../../assets/lofi-girl-lofi.gif";
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-white">Liked Songs</h1>
     <img class="w-72 rounded-lg" :src="tempImg" alt="" />
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-white">Andromeda</h1>
-        <h1 class="text-white/60">Gorillaz</h1>
+        <h1 class="text-white font-bold text-xl hover:underline cursor-pointer">
+          Andromeda
+        </h1>
+        <p
+          class="text-white/60 text-sm cursor-pointer hover:underline hover:text-white"
+        >
+          Gorillaz
+        </p>
       </div>
       <div class="flex items-center gap-3">
         <i class="text-primary-500 fa-solid fa-ellipsis"></i>

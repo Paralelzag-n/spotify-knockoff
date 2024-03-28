@@ -5,8 +5,11 @@ import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
 import { useElementSize, useWindowSize } from "@vueuse/core";
-import SidebarSearchComponent from "./SidebarSearchComponent.vue";
 import { useRouter } from "vue-router";
+import SidebarSearchComponent from "./SidebarSearchComponent.vue";
+
+import BaseDropDown from "../../components/base/BaseDropdown.vue";
+
 
 const homePageHeader = ref<HTMLElement | null>(null);
 const baseFilterRef = ref<HTMLElement | null>(null);
@@ -39,6 +42,14 @@ const filterNames = [
   "Album",
   "Tarkhna",
   "Lipo",
+  "Lipso",
+  "Lipao",
+  "Lipdo",
+  "Lipfo",
+  "Ligpo",
+  "Lispo",
+  "Lihpo",
+  "Ljpo",
 ];
 
 const playlists = ref<IPlaylist[]>([
@@ -85,10 +96,36 @@ const playlists = ref<IPlaylist[]>([
     category: EMediaCategory.album,
     playing: false,
   },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  },
+  {
+    name: "GODS",
+    img: "",
+    category: EMediaCategory.album,
+    playing: false,
+  }
 ]);
 
 const searchedContent = ref<string>();
 const selectedName = ref<string>("");
+const selectableDropdownSelectedValue = ref<string>('')
+const searchActive = ref<boolean>(false);
 
 const { width, height } = useWindowSize();
 const computedMinimized = computed(() => width.value < MINIMIZED_THRESHOLD);
@@ -122,15 +159,23 @@ function goHome() {
       class="bg-gray-back flex flex-col gap-5 rounded-lg"
     >
       <div ref="baseFilterRef" class="px-3 flex flex-col pt-5 gap-5">
-        <div class="flex items-center h-5 gap-3 px-3">
+        <div class="flex items-center justify-between ">
+          <div class="flex items-center h-5 gap-3 px-3">
           <i class="fa-solid fa-xl text-white fa-book"></i>
           <h1 v-show="!computedMinimized" class="text-white">Your library</h1>
         </div>
+          <BaseDropDown  :content="['create a new playlist','create a playlist folder']" :minimized="computedMinimized" </BaseDropDown>
+        </div>
         <div class="flex flex-col gap-2">
-          <SidebarSearchComponent
-            v-if="!computedMinimized"
-            v-model="searchedContent"
-          ></SidebarSearchComponent>
+          <div class="relative flex items-center justify-between">
+            <SidebarSearchComponent
+            class="flex-grow"
+              v-if="!computedMinimized"
+              v-model="searchedContent"
+              v-model:primary="searchActive"
+            ></SidebarSearchComponent>
+            <BaseDropDown :searchActive="searchActive" v-model="selectableDropdownSelectedValue" :selectable = 'true' :content="['recents','recently added','alphabetical','creator']" :minimized="computedMinimized" ></BaseDropDown>
+          </div>
           <BaseFilter
             v-model:primary="selectedName"
             :filterNames="filterNames"
@@ -140,7 +185,7 @@ function goHome() {
       </div>
       <div
         :style="{ height: `${PlaylistCardComponentContainerHeight}px` }"
-        class="overflow-auto"
+        class="overflow-auto px-2"
       >
         <SidebarPlaylistCardComponent
           ref="PlaylistCardComponent"
