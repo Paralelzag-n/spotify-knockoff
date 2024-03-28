@@ -1,14 +1,13 @@
 ::-webkit-scrollbar {
   width: 5px;
-  
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-primary-500/0
+  @apply bg-primary-500/0;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary-500/50 rounded-lg transition-all;
+  @apply bg-primary-500/20 rounded-lg cursor-pointer;
   &:hover {
     @apply bg-primary-500/60;
   }

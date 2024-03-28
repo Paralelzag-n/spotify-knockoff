@@ -57,10 +57,10 @@ const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
 </script>
 
 <template>
-  <div :class="props.hasScroll && 'pr-2'" class="flex flex-col gap-2">
+  <div class="flex flex-col gap-2">
     <div
       v-for="playlist in filteredPlaylists"
-      class="flex items-center p-2 justify-between cursor-pointer hover:bg-button-gray-hover rounded-md"
+      class="flex items-center p-2 justify-between cursor-pointer transition-all hover:bg-button-gray-hover rounded-md"
       @click="playlistClickHandler(playlist, playlist.playing)"
     >
       <SidebarSkeleton

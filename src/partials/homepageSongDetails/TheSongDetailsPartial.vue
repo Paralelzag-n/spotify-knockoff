@@ -20,8 +20,9 @@ const { height: screenHeight } = useWindowSize();
       :style="computedMainPartialStyle"
       class="bg-gray-back rounded-lg p-2 overflow-auto"
     >
+      <h1 class="text-white pl-2 font-bold">Liked Songs</h1>
       <CurrentlyListeningDetails class="p-2"></CurrentlyListeningDetails>
-      <ArtistDetails class="p-2"></ArtistDetails>
+      <ArtistDetails></ArtistDetails>
     </div>
   </div>
 </template>
