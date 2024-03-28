@@ -4,13 +4,17 @@ const authView = () => import("../views/AuthView.vue");
 const homeView = () => import("../views/HomeView.vue");
 
 // Home partials
-const homePartial = () =>
+const viewHome = () =>
   import("../partials/Main-Partials/HomePartial/TheHomePartial.vue");
-const homeArtist = () =>
+const viewArtist = () =>
   import("../partials/Main-Partials/ArtistPartial/TheArtistArtist.vue");
-const homePlaylist = () =>
+const viewPlaylist = () =>
   import("../partials/Main-Partials/PlaylistPartial/ThePlaylistPartial.vue");
-const searchPlaylist = () =>
+const viewPlaylists = () =>
+  import(
+    "../partials/Main-Partials/PlaylistCollectionPartial/ThePlaylistCollectionPartial.vue"
+  );
+const viewSearch = () =>
   import("../partials/Main-Partials/SearchPartial/TheSearchPartial.vue");
 
 const router = createRouter({
@@ -18,14 +22,18 @@ const router = createRouter({
   routes: [
     { path: "/", redirect: "/home" },
     {
-      path: "/home",
-      name: "home",
+      path: "/",
       component: homeView,
       children: [
-        { path: "", name: "homePartial", component: homePartial },
-        { path: "artist", name: "homeArtist", component: homeArtist },
-        { path: "playlist", name: "homePlaylist", component: homePlaylist },
-        { path: "search", name: "searchPlaylist", component: searchPlaylist },
+        { path: "home", name: "home", component: viewHome },
+        { path: "artist", name: "artist", component: viewArtist },
+        { path: "playlist", name: "playlist", component: viewPlaylist },
+        {
+          path: "playlists/:id",
+          name: "playlists",
+          component: viewPlaylists,
+        },
+        { path: "search", name: "search", component: viewSearch },
       ],
     },
     {
