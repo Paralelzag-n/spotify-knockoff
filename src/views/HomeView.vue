@@ -11,7 +11,7 @@ const headerRef = ref<HTMLElement | null>(null);
 const { height: headerHeight } = useElementSize(headerRef);
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
-  if (screenHeight) return screenHeight.value - headerHeight.value ?? null;
+  if (screenHeight) return screenHeight.value - headerHeight.value;
   return null;
 });
 

@@ -11,6 +11,7 @@ export default {
         "button-gray": "#232323",
         "button-gray-hover": "#2A2A2A",
         "card-gray": "#242424",
+        "br-card-gray": "#404040",
         "gray-back": "#121212",
         "icon-unselected": "#898989",
 

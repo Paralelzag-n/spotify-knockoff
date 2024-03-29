@@ -8,8 +8,13 @@ const viewHome = () =>
   import("../partials/Main-Partials/HomePartial/TheHomePartial.vue");
 const viewArtist = () =>
   import("../partials/Main-Partials/ArtistPartial/TheArtistArtist.vue");
+const viewNotifications = () =>
+  import(
+    "../partials/Main-Partials/NotificationsPartial/TheNotificationsPartial.vue"
+  );
 const viewPlaylist = () =>
   import("../partials/Main-Partials/PlaylistPartial/ThePlaylistPartial.vue");
+
 const viewPlaylists = () =>
   import(
     "../partials/Main-Partials/PlaylistCollectionPartial/ThePlaylistCollectionPartial.vue"
@@ -27,6 +32,11 @@ const router = createRouter({
       children: [
         { path: "home", name: "home", component: viewHome },
         { path: "artist", name: "artist", component: viewArtist },
+        {
+          path: "notifications",
+          name: "notifications",
+          component: viewNotifications,
+        },
         { path: "playlist/:id", name: "playlist", component: viewPlaylist },
         {
           path: "playlists/:id",
