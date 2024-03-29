@@ -49,8 +49,11 @@ const handleDragSidebar = (deltaX: number) => {
     <TheHeader ref="headerRef" />
     <div :style="computedMainPartialStyle" class="flex">
       <!--  START PARTIAL -->
-      <div :style="{ width: `${yourLibraryWidth}px` }" class="ps-2 pb-2 h-full">
-        <SidebarComponent class="flex-shrink-0 h-full" />
+      <div
+        :style="{ width: `${yourLibraryWidth}px` }"
+        class="flex-shrink-0 ps-2 pb-2 h-full"
+      >
+        <SidebarComponent class="h-full" />
       </div>
 
       <DragHandle
@@ -60,7 +63,7 @@ const handleDragSidebar = (deltaX: number) => {
       />
 
       <!--  MAIN PARTIAL -->
-      <div class="pb-2 flex-grow">
+      <div class="pb-2 w-full">
         <div class="mainPartialContainer">
           <router-view />
         </div>
@@ -72,8 +75,11 @@ const handleDragSidebar = (deltaX: number) => {
         :onDrag="handleDragSidebar"
       />
 
-      <div :style="{ width: `${sidebarWidth}px` }" class="pe-2 pb-2">
-        <TheSongDetailsPartial class="flex-shrink-0 h-full" />
+      <div
+        :style="{ width: `${sidebarWidth}px` }"
+        class="pe-2 pb-2 flex-shrink-0"
+      >
+        <TheSongDetailsPartial class="h-full" />
       </div>
     </div>
   </div>
