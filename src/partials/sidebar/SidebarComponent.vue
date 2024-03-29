@@ -121,7 +121,7 @@ const searchActive = ref<boolean>(false);
 <template>
   <div
     ref="sidebarComponentRef"
-    class="bg-black rounded-r-lg h-full w-80 flex flex-col"
+    class="bg-black rounded-r-lg h-full flex flex-col"
   >
     <div class="flex flex-col bg-gray-back rounded-lg">
       <div

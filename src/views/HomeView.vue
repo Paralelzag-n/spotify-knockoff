@@ -11,7 +11,7 @@ const headerRef = ref<HTMLElement | null>(null);
 const { height: headerHeight } = useElementSize(headerRef);
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
-  if (screenHeight) return screenHeight.value - headerHeight.value - 16 ?? null;
+  if (screenHeight) return screenHeight.value - headerHeight.value ?? null;
   return null;
 });
 
@@ -25,20 +25,20 @@ const computedMainPartialStyle = computed(() => {
     <TheHeader ref="headerRef" />
     <div :style="computedMainPartialStyle" class="flex">
       <!--  START PARTIAL -->
-      <div class="p-2 h-full">
-        <SidebarComponent class="flex-shrink-0 h-full"></SidebarComponent>
+      <div class="px-2 pb-2 h-full">
+        <SidebarComponent class="flex-shrink-0 h-full w-80"></SidebarComponent>
       </div>
 
       <!--  MAIN PARTIAL -->
-      <div class="py-2 flex-grow">
+      <div class="pb-2 flex-grow">
         <div class="mainPartialContainer">
           <router-view />
         </div>
       </div>
 
       <!--  END PARTIAL -->
-      <div class="p-2">
-        <TheSongDetailsPartial class="flex-shrink-0 h-full" />
+      <div class="px-2 pb-2">
+        <TheSongDetailsPartial class="flex-shrink-0 h-full w-80" />
       </div>
     </div>
   </div>
