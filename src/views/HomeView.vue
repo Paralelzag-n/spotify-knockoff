@@ -4,20 +4,44 @@ import TheSongDetailsPartial from "../partials/homepageSongDetails/TheSongDetail
 import { computed, ref } from "vue";
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import TheHeader from "../partials/header/TheHeader.vue";
+import DragHandle from "../components/DragHandle.vue";
+import { storeToRefs } from "pinia";
+import { useLayoutStore } from "../pinia/layout.pinia.ts";
 
 const { height: screenHeight } = useWindowSize();
 
 const headerRef = ref<HTMLElement | null>(null);
 const { height: headerHeight } = useElementSize(headerRef);
 
+const layoutStore = useLayoutStore();
+
 const computedMainPartialContainerHeight = computed<number | null>(() => {
   if (screenHeight) return screenHeight.value - headerHeight.value;
-  return null;
+  return 0;
 });
 
 const computedMainPartialStyle = computed(() => {
   return { height: `${computedMainPartialContainerHeight.value}px` };
 });
+
+const computedDragHandleHeight = computed(() => {
+  if (computedMainPartialContainerHeight.value)
+    return computedMainPartialContainerHeight.value - 40;
+  return 0;
+});
+
+const yourLibraryHandleRef = ref<HTMLElement | null>(null);
+const sidebarHandleRef = ref<HTMLElement | null>(null);
+
+const { sidebarWidth, yourLibraryWidth } = storeToRefs(layoutStore);
+
+const handleDragYourLibrary = (deltaX: number) => {
+  layoutStore.adjustYourLibraryWidth(deltaX);
+};
+
+const handleDragSidebar = (deltaX: number) => {
+  layoutStore.adjustSidebarWidth(deltaX);
+};
 </script>
 
 <template>
@@ -25,9 +49,15 @@ const computedMainPartialStyle = computed(() => {
     <TheHeader ref="headerRef" />
     <div :style="computedMainPartialStyle" class="flex">
       <!--  START PARTIAL -->
-      <div class="px-2 pb-2 h-full">
-        <SidebarComponent class="flex-shrink-0 h-full w-80"></SidebarComponent>
+      <div :style="{ width: `${yourLibraryWidth}px` }" class="ps-2 pb-2 h-full">
+        <SidebarComponent class="flex-shrink-0 h-full" />
       </div>
+
+      <DragHandle
+        ref="yourLibraryHandleRef"
+        :height="computedDragHandleHeight"
+        :onDrag="handleDragYourLibrary"
+      />
 
       <!--  MAIN PARTIAL -->
       <div class="pb-2 flex-grow">
@@ -36,9 +66,14 @@ const computedMainPartialStyle = computed(() => {
         </div>
       </div>
 
-      <!--  END PARTIAL -->
-      <div class="px-2 pb-2">
-        <TheSongDetailsPartial class="flex-shrink-0 h-full w-80" />
+      <DragHandle
+        ref="sidebarHandleRef"
+        :height="computedDragHandleHeight"
+        :onDrag="handleDragSidebar"
+      />
+
+      <div :style="{ width: `${sidebarWidth}px` }" class="pe-2 pb-2">
+        <TheSongDetailsPartial class="flex-shrink-0 h-full" />
       </div>
     </div>
   </div>
