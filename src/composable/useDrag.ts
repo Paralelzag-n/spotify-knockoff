@@ -7,6 +7,7 @@ export function useDrag(onDrag: (deltaX: number) => void) {
   const onMousedown = (event: MouseEvent) => {
     lastX.value = event.clientX;
     isDragging.value = true;
+    document.body.style.cursor = "grabbing";
   };
 
   const onMousemove = (event: MouseEvent) => {
@@ -19,7 +20,10 @@ export function useDrag(onDrag: (deltaX: number) => void) {
   };
 
   const stopDragging = () => {
-    isDragging.value = false;
+    if (isDragging.value) {
+      isDragging.value = false;
+      document.body.style.cursor = "";
+    }
   };
 
   onMounted(() => {
