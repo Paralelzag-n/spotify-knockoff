@@ -21,10 +21,10 @@ const shouldScrollExist = computed(() => {
 });
 
 const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value
+  () => scrolledToStart.value && !scrolledToEnd.value,
 );
 const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value
+  () => scrolledToEnd.value && !scrolledToStart.value,
 );
 
 const selectHandler = (item: string): void => {
@@ -90,11 +90,11 @@ const scrollByVisibleWidth = (back: boolean) => {
     <transition name="slide-fade-left">
       <div
         v-if="shouldScrollExist && !isScrolledToStart"
-        class="absolute top-1/2 -translate-y-1/2 -left-2"
+        class="absolute top-1/2 -translate-y-1/2 -left-1"
       >
         <div
           class="w-24 h-8 absolute pointer-events-none top-0 left-0 -z-50 bg-gradient-to-r from-gray-back/80 to-transparent"
-        ></div>
+        />
         <button
           class="text-white shadow-card bg-button-gray rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           @click="scrollByVisibleWidth(true)"
@@ -106,11 +106,11 @@ const scrollByVisibleWidth = (back: boolean) => {
     <transition name="slide-fade-right">
       <div
         v-if="shouldScrollExist && !isScrolledToEnd"
-        class="absolute top-1/2 -translate-y-1/2 -right-2"
+        class="absolute top-1/2 -translate-y-1/2 -right-1"
       >
         <div
           class="w-24 h-8 absolute pointer-events-none top-0 right-0 -z-50 bg-gradient-to-l from-gray-back/80 to-transparent"
-        ></div>
+        />
         <button
           class="text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           @click="scrollByVisibleWidth(false)"
@@ -136,6 +136,7 @@ const scrollByVisibleWidth = (back: boolean) => {
   opacity: 0;
   transform: translateX(8px) translateY(-50%);
 }
+
 .slide-fade-left-enter-from,
 .slide-fade-left-leave-to {
   opacity: 0;

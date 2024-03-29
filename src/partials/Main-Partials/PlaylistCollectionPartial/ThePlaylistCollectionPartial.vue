@@ -11,7 +11,7 @@ const computedPlaylists = computed<IPlaylist[]>(
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="p-4 flex-grow">
     <PlaylistsShowcase
       :playlists="computedPlaylists"
       showAllPlaylists
