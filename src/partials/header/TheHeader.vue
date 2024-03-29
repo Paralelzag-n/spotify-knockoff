@@ -61,7 +61,7 @@ watch(
 
 <template>
   <div class="h-16 flex justify-between items-center px-2">
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 w-40">
       <div class="home-link-button link-icon" @click="lastPage">
         <div class="home-link-button-bg" />
         <i class="fa-solid fa-chevron-left home-link-icon" />
@@ -108,7 +108,7 @@ watch(
         />
       </div>
     </div>
-    <div class="flex items-center gap-2 justify-end">
+    <div class="flex items-center gap-2 justify-end w-40">
       <div class="home-link-button link-icon" @click="routeToNotifications">
         <div class="home-link-button-bg" />
         <i class="fa-solid fa-bell home-link-icon" />
