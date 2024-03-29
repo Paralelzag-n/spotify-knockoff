@@ -27,7 +27,7 @@ const router = createRouter({
       children: [
         { path: "home", name: "home", component: viewHome },
         { path: "artist", name: "artist", component: viewArtist },
-        { path: "playlist", name: "playlist", component: viewPlaylist },
+        { path: "playlist/:id", name: "playlist", component: viewPlaylist },
         {
           path: "playlists/:id",
           name: "playlists",

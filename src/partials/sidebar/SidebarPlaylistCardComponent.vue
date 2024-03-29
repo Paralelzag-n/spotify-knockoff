@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineModel, ref, computed } from "vue";
+import { computed, defineModel, ref } from "vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface";
 import tempImg from "../../assets/lofi-girl-lofi.gif";
 import audio from "../../assets/rhcp.mp3";
@@ -24,10 +24,10 @@ const filteredPlaylists = computed(() =>
   props.playlists.filter((playlist) =>
     props.selectedName
       ? playlist.category.includes(
-          props.selectedName.slice(0, props.selectedName.length - 1)
+          props.selectedName.slice(0, props.selectedName.length - 1),
         )
-      : true
-  )
+      : true,
+  ),
 );
 
 const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {

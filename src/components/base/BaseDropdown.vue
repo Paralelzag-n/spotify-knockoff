@@ -1,5 +1,6 @@
-<script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+<script lang="ts" setup>
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+
 const props = defineProps<{
   selectable?: boolean;
   minimized?: boolean;
@@ -47,28 +48,28 @@ const selectHandler = (value: string): void => {
 
 <template>
   <div
-    ref="ComponentRef"
     v-if="!props.minimized && !props.searchActive"
+    ref="ComponentRef"
     class="flex flex-col gap-1 relative"
   >
-    <i @click="dropDownToggler" class="text-white fa-solid fa-plus"></i>
+    <i class="text-white fa-solid fa-plus" @click="dropDownToggler"></i>
     <div
       :style="elementHeightStyle"
-      class="w-40 absolute shadow-black shadow-2xl text-white transition-all top-5 z-10 left-0 overflow-hidden rounded-lg bg-button-gray"
+      class="w-40 absolute shadow-black shadow-2xl text-white transition-all top-5 z-50 left-0 overflow-hidden rounded-lg bg-button-gray"
     >
       <div class="flex flex-col p-2">
         <div
-          @click="selectHandler(item)"
           v-for="item in props.content"
           class="flex items-center px-1 py-2 rounded-lg cursor-pointer hover:bg-button-gray-hover justify-between"
+          @click="selectHandler(item)"
         >
           <h1
+            :key="item"
             :class="
               props.selectable && selected === item
                 ? 'text-primary-500'
                 : 'text-white'
             "
-            :key="item"
           >
             {{ item }}
           </h1>
