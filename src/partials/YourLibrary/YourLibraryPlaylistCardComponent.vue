@@ -3,7 +3,7 @@ import { computed, defineModel, ref } from "vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface";
 import tempImg from "../../assets/lofi-girl-lofi.gif";
 import audio from "../../assets/rhcp.mp3";
-import SidebarSkeleton from "./SidebarSkeleton.vue";
+import SidebarSkeleton from "./YourLibrarySkeleton.vue";
 
 const props = defineProps<{
   sizeMinimized: boolean;
