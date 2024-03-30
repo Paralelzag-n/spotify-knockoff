@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from "vue-router";
 import { computed, nextTick, ref, watch } from "vue";
-import userProfilePicture from "../../assets/img/user_pfp_temporary.png";
+import userProfilePicture from "../assets/img/user_pfp_temporary.png";
+import { useLayoutStore } from "../pinia/layout.pinia.ts";
+import { ESidebarItem } from "../ts/pinia/layout.types.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -9,6 +11,8 @@ const router = useRouter();
 const searchInput = ref<string>("");
 const searchInputRef = ref<any>(null);
 const SearchInputFocused = ref<boolean>(false);
+
+const layoutStore = useLayoutStore();
 
 const computedHomeColor = computed(() => {
   return route.path === "/home" && { color: "#ffffff" };
@@ -113,7 +117,12 @@ watch(
         <div class="home-link-button-bg" />
         <i class="fa-solid fa-bell home-link-icon" />
       </div>
-      <div class="home-link-button link-icon">
+      <div
+        class="home-link-button link-icon"
+        @click="
+          layoutStore.setSidebarItem(ESidebarItem.FRIEND_ACTIVITY_SIDEBAR)
+        "
+      >
         <div class="home-link-button-bg" />
         <i class="fa-solid fa-users home-link-icon" />
       </div>

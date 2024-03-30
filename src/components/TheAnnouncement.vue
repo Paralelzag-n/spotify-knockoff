@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import NewJeans from "../../../assets/img/banner/NewJeans.jpg";
+import NewJeans from "../assets/img/banner/NewJeans.jpg";
 import { computed, ref } from "vue";
 
 const bannerVisible = ref<boolean>(true);

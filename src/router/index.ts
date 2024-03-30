@@ -4,23 +4,18 @@ const authView = () => import("../views/AuthView.vue");
 const homeView = () => import("../views/HomeView.vue");
 
 // Home partials
-const viewHome = () =>
-  import("../partials/Main-Partials/HomePartial/TheHomePartial.vue");
+const viewHome = () => import("../partials/Main-Partials/TheHomePartial.vue");
 const viewArtist = () =>
-  import("../partials/Main-Partials/ArtistPartial/TheArtistArtist.vue");
+  import("../partials/Main-Partials/TheArtistArtist.vue");
 const viewNotifications = () =>
-  import(
-    "../partials/Main-Partials/NotificationsPartial/TheNotificationsPartial.vue"
-  );
+  import("../partials/Main-Partials/TheNotificationsPartial.vue");
 const viewPlaylist = () =>
-  import("../partials/Main-Partials/PlaylistPartial/ThePlaylistPartial.vue");
+  import("../partials/Main-Partials/ThePlaylistPartial.vue");
 
 const viewPlaylists = () =>
-  import(
-    "../partials/Main-Partials/PlaylistCollectionPartial/ThePlaylistCollectionPartial.vue"
-  );
+  import("../partials/Main-Partials/ThePlaylistCollectionPartial.vue");
 const viewSearch = () =>
-  import("../partials/Main-Partials/SearchPartial/TheSearchPartial.vue");
+  import("../partials/Main-Partials/TheSearchPartial.vue");
 
 const router = createRouter({
   history: createWebHistory(),
