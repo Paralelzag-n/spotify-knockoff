@@ -70,7 +70,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "9",
-        name: "Green noise",
+        name: "blue noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -78,7 +78,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "10",
-        name: "Green noise",
+        name: "pink noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -86,7 +86,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "11",
-        name: "Green noise",
+        name: "hazel noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -94,7 +94,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "12",
-        name: "Green noise",
+        name: "violet noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -102,7 +102,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "13",
-        name: "Green noise",
+        name: "red noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -110,7 +110,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "14",
-        name: "Green noise",
+        name: "yellow noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -118,7 +118,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "15",
-        name: "Green noise",
+        name: "orange noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -126,7 +126,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "16",
-        name: "Green noise",
+        name: "peach noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -134,7 +134,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "17",
-        name: "Green noise",
+        name: "strawberry noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",
@@ -142,7 +142,7 @@ export const useSongStore = defineStore("playlists", {
       },
       {
         id: "18",
-        name: "Green noise",
+        name: "samsung noise",
         thumbnail:
           "https://i.pinimg.com/736x/c6/25/90/c62590c1756680060e7c38011cd704b5.jpg",
         author: "Unknown",

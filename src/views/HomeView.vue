@@ -1,19 +1,27 @@
 <script lang="ts" setup>
-import SidebarComponent from "../partials/sidebar/SidebarComponent.vue";
-import TheSongDetailsPartial from "../partials/homepageSongDetails/TheSongDetailsPartial.vue";
+import SidebarComponent from "../partials/YourLibrary/SidebarComponent.vue";
 import { computed, ref } from "vue";
 import { useElementSize, useWindowSize } from "@vueuse/core";
-import TheHeader from "../partials/header/TheHeader.vue";
+import TheHeader from "../partials/TheHeader.vue";
 import DragHandle from "../components/DragHandle.vue";
-import { storeToRefs } from "pinia";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
+import { ESidebarItem } from "../ts/pinia/layout.types.ts";
 
+const yourLibraryHandleRef = ref<HTMLElement | null>(null);
+const sidebarHandleRef = ref<HTMLElement | null>(null);
+const headerRef = ref<HTMLElement | null>(null);
+
+const { height: headerHeight } = useElementSize(headerRef);
 const { height: screenHeight } = useWindowSize();
 
-const headerRef = ref<HTMLElement | null>(null);
-const { height: headerHeight } = useElementSize(headerRef);
-
 const layoutStore = useLayoutStore();
+const computedSidebarWidth = computed(() => layoutStore.getSidebarWidth);
+const computedYourLibraryWidth = computed(
+  () => layoutStore.getYourLibraryWidth,
+);
+const computedSelectedSidebarItem = computed<ESidebarItem>(
+  () => layoutStore.sidebarItem,
+);
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
   if (screenHeight) return screenHeight.value - headerHeight.value;
@@ -30,11 +38,6 @@ const computedDragHandleHeight = computed(() => {
   return 0;
 });
 
-const yourLibraryHandleRef = ref<HTMLElement | null>(null);
-const sidebarHandleRef = ref<HTMLElement | null>(null);
-
-const { sidebarWidth, yourLibraryWidth } = storeToRefs(layoutStore);
-
 const handleDragYourLibrary = (deltaX: number) => {
   layoutStore.adjustYourLibraryWidth(deltaX);
 };
@@ -50,7 +53,7 @@ const handleDragSidebar = (deltaX: number) => {
     <div :style="computedMainPartialStyle" class="flex">
       <!--  START PARTIAL -->
       <div
-        :style="{ width: `${yourLibraryWidth}px` }"
+        :style="{ width: `${computedYourLibraryWidth}px` }"
         class="flex-shrink-0 ps-2 pb-2 h-full"
       >
         <SidebarComponent class="h-full" />
@@ -76,10 +79,13 @@ const handleDragSidebar = (deltaX: number) => {
       />
 
       <div
-        :style="{ width: `${sidebarWidth}px` }"
+        :style="{ width: `${computedSidebarWidth}px` }"
         class="pe-2 pb-2 flex-shrink-0"
       >
-        <TheSongDetailsPartial class="h-full" />
+        <component
+          :is="computedSelectedSidebarItem"
+          class="h-full bg-gray-back"
+        />
       </div>
     </div>
   </div>

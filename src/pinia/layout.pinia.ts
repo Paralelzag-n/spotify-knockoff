@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
-import { ILayoutState } from "../ts/pinia/layout.types.ts";
+import { ESidebarItem, ILayoutState } from "../ts/pinia/layout.types.ts";
 
 export const useLayoutStore = defineStore("layout", {
   state: (): ILayoutState => ({
     yourLibraryWidth: 360,
     sidebarWidth: 360,
-    selectedSidebarItem: "",
+    sidebarItem: ESidebarItem.SONG_DETAILS_SIDEBAR,
   }),
   getters: {
     getYourLibraryWidth: (state: ILayoutState): number => {
@@ -13,6 +13,9 @@ export const useLayoutStore = defineStore("layout", {
     },
     getSidebarWidth: (state: ILayoutState): number => {
       return state.sidebarWidth;
+    },
+    getSelectedSidebarItem: (state: ILayoutState): ESidebarItem => {
+      return state.sidebarItem;
     },
   },
   actions: {
@@ -35,6 +38,9 @@ export const useLayoutStore = defineStore("layout", {
         yourLibraryMinWidth,
         Math.min(yourLibraryMaxWidth, newWidth),
       );
+    },
+    setSidebarItem(sidebar: ESidebarItem): void {
+      this.sidebarItem = sidebar;
     },
   },
 });
