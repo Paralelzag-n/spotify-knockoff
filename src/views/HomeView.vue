@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import SidebarComponent from "../partials/YourLibrary/SidebarComponent.vue";
+import SidebarComponent from "../partials/YourLibrary/YourLibraryComponent.vue";
 import { computed, ref } from "vue";
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import TheHeader from "../partials/TheHeader.vue";

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
-import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
+import SidebarPlaylistCardComponent from "./YourLibraryPlaylistCardComponent.vue";
 import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
 import { EMediaCategory } from "../../ts/enums/media.enum.ts";
 import { useElementSize } from "@vueuse/core";
 
 import BaseDropDown from "../../components/base/BaseDropdown.vue";
-import SidebarSearchComponent from "./SidebarSearchComponent.vue";
+import SidebarSearchComponent from "./YourLibrarySearchComponent.vue";
 
 const sidebarHeaderRef = ref<HTMLElement | null>(null);
 const sidebarComponentRef = ref<HTMLElement | null>(null);
