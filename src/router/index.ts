@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from "vue-router";
 const authView = () => import("../views/AuthView.vue");
 const homeView = () => import("../views/HomeView.vue");
 
+// Auth Forms
+const SignInForm = () => import("../components/auth/SignInFormComponent.vue");
+const SignOutForm = () => import("../components/auth/SignOutFormComponent.vue");
 // Home partials
 const viewHome = () => import("../partials/Main-Partials/TheHomePartial.vue");
 const viewArtist = () =>
@@ -11,7 +14,6 @@ const viewNotifications = () =>
   import("../partials/Main-Partials/TheNotificationsPartial.vue");
 const viewPlaylist = () =>
   import("../partials/Main-Partials/ThePlaylistPartial.vue");
-
 const viewPlaylists = () =>
   import("../partials/Main-Partials/ThePlaylistCollectionPartial.vue");
 const viewSearch = () =>
@@ -20,9 +22,9 @@ const viewSearch = () =>
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", redirect: "/home" },
     {
       path: "/",
+      redirect: "/home",
       component: homeView,
       children: [
         { path: "home", name: "home", component: viewHome },
@@ -45,6 +47,10 @@ const router = createRouter({
       path: "/auth",
       name: "auth",
       component: authView,
+      children: [
+        { path: "sign-in", name: "sign-in", component: SignInForm },
+        { path: "sign-out", name: "sign-out", component: SignOutForm },
+      ],
     },
   ],
 });

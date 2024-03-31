@@ -123,7 +123,7 @@ const searchActive = ref<boolean>(false);
     ref="sidebarComponentRef"
     class="bg-black rounded-r-lg h-full flex flex-col"
   >
-    <div class="flex flex-col bg-gray-back rounded-lg">
+    <div class="flex flex-col bg-module rounded-lg">
       <div
         ref="sidebarHeaderRef"
         class="flex flex-col gap-2 justify-between p-4 pb-2"

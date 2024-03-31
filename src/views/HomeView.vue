@@ -12,13 +12,21 @@ const sidebarHandleRef = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
 
 const { height: headerHeight } = useElementSize(headerRef);
-const { height: screenHeight } = useWindowSize();
+const { height: screenHeight, width: screenWidth } = useWindowSize();
 
 const layoutStore = useLayoutStore();
 const computedSidebarWidth = computed(() => layoutStore.getSidebarWidth);
 const computedYourLibraryWidth = computed(
   () => layoutStore.getYourLibraryWidth,
 );
+const computedMainViewWidth = computed(
+  () =>
+    screenWidth.value -
+    computedSidebarWidth.value -
+    computedYourLibraryWidth.value -
+    16,
+);
+
 const computedSelectedSidebarItem = computed<ESidebarItem>(
   () => layoutStore.sidebarItem,
 );
@@ -66,7 +74,7 @@ const handleDragSidebar = (deltaX: number) => {
       />
 
       <!--  MAIN PARTIAL -->
-      <div class="pb-2 w-full">
+      <div :style="{ width: `${computedMainViewWidth}px` }" class="pb-2">
         <div class="mainPartialContainer">
           <router-view />
         </div>
@@ -82,10 +90,7 @@ const handleDragSidebar = (deltaX: number) => {
         :style="{ width: `${computedSidebarWidth}px` }"
         class="pe-2 pb-2 flex-shrink-0"
       >
-        <component
-          :is="computedSelectedSidebarItem"
-          class="h-full bg-gray-back"
-        />
+        <component :is="computedSelectedSidebarItem" class="h-full bg-module" />
       </div>
     </div>
   </div>
@@ -93,6 +98,6 @@ const handleDragSidebar = (deltaX: number) => {
 
 <style lang="scss" scoped>
 .mainPartialContainer {
-  @apply bg-gray-back h-full rounded-lg overflow-auto;
+  @apply bg-module h-full rounded-lg overflow-auto;
 }
 </style>
