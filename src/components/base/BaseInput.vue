@@ -1,101 +1,69 @@
 <script lang="ts" setup>
-import { computed, ref, useSlots, watchEffect } from "vue";
-import { ValidationRule } from "../../utils/validation-rules.ts";
+import { computed } from "vue";
+
+const input = defineModel<string>({ default: "" });
 
 const props = defineProps<{
-  placeholder: string;
   label: string;
-  rules?: ValidationRule[];
-  password?: boolean;
+  placeholder: string;
+  error: string;
+  appendIcon?: string;
+  prependIcon?: string;
 }>();
 
-const inputValue = defineModel<string>({ default: "" });
-const inputFocused = ref<boolean>(false);
-const errors = ref<string[]>([]);
-
-const computedInputType = computed<string>(() =>
-  props.password ? "password" : "text",
-);
-
-const slots = useSlots();
-const computedHasPrepend = computed<boolean>(() => {
-  return !!slots.prepend;
-});
-const computedHasAppend = computed<boolean>(() => {
-  return !!slots.append;
-});
-
-const computedInputStyling = computed(() => {
+const computedErrorClasses = computed(() => {
   return {
-    "border-white/50 hover:border-primary-400":
-      inputValue.value.length === 0 &&
-      errors.value.length === 0 &&
-      !inputFocused.value,
-    "border-primary-400":
-      (inputValue.value.length > 0 || inputFocused.value) &&
-      errors.value.length === 0,
-    "border-red-500": errors.value.length > 0,
+    "input-border-error": props.error,
+    "input-border": !props.error,
+    "ps-4": !props.appendIcon,
+    "pe-4": !props.prependIcon,
   };
-});
-
-function onFocus() {
-  inputFocused.value = true;
-}
-
-function onBlur(e: any) {
-  validateInput(e);
-  inputFocused.value = false;
-}
-
-function validateInput(e: any) {
-  if (!props.rules) return true;
-  const tempErrors: string[] = [];
-
-  props.rules.forEach((rule) => {
-    const ruleValue = rule(e.target.value);
-    if (ruleValue !== true) tempErrors.push(ruleValue);
-  });
-
-  errors.value = tempErrors;
-}
-
-watchEffect(() => {
-  console.log(errors.value);
 });
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <h2 v-if="props.label" class="text-sm text-white font-semibold">
-      {{ props.label }}
-    </h2>
+  <div class="flex flex-col gap-1">
+    <label class="text-tx-button-white font-bold">{{ props.label }}</label>
     <div
-      ref="inputWrapper"
-      :class="computedInputStyling"
-      class="w-full flex items-center transition-all rounded-md border h-11 px-2"
+      :class="computedErrorClasses"
+      class="h-12 w-full rounded transition-all grid grid-cols-7 items-center"
     >
-      <div v-if="computedHasPrepend" class="pr-2">
-        <slot name="prepend"></slot>
+      <div v-if="props.appendIcon" class="flex items-center justify-center">
+        <i :class="props.appendIcon" class="fa-solid fa-brand text-white/40" />
       </div>
       <input
-        v-model="inputValue"
+        v-model.trim="input"
         :placeholder="props.placeholder"
-        :type="computedInputType"
-        class="bg-transparent outline-0 min-w-0 flex-grow"
-        @blur="onBlur"
-        @focus="onFocus"
-        @input="validateInput"
+        class="input-classes"
+        type="text"
       />
-      <div v-if="computedHasAppend" class="pl-2">
-        <slot name="append"></slot>
+      <div
+        v-if="props.prependIcon"
+        class="flex items-center justify-center pe-2"
+      >
+        <div class="icon-button">
+          <i :class="props.prependIcon" class="fa-solid fa-brand" />
+        </div>
       </div>
     </div>
-    <span
-      v-if="errors.length"
-      class="text-sm font-bold text-primary-300 flex items-center gap-2"
-    >
-      <i class="fa-solid fa-triangle-exclamation text-primary-500" />
-      {{ errors[0] }}
-    </span>
+    <p v-show="props.error" class="text-red-500 text-xs">{{ props.error }}</p>
   </div>
 </template>
+
+<style scoped>
+.icon-button {
+  @apply duration-100 transition-all rounded-full cursor-pointer hover:bg-br-module/40 text-white/40 hover:text-white h-9 w-9 flex items-center justify-center;
+}
+
+.input-classes {
+  @apply w-full h-full bg-transparent text-white outline-0 col-span-5;
+}
+
+.input-border {
+  @apply border border-br-button hover:border-white;
+}
+
+.input-border-error {
+  @apply border border-red-400 hover:border-red-500;
+}
+</style>

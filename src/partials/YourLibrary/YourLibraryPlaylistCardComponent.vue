@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
-
 import { usePlaylistsStore } from "../../pinia/playlists.pinia";
 import { useSongStore } from "../../pinia/songs.pinia";
-import SidebarSkeleton from "./SidebarSkeleton.vue";
+
 import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
+
+import YourLibrarySkeleton from "./YourLibrarySkeleton.vue";
 
 const playlistStore = usePlaylistsStore();
 const songStore = useSongStore();
@@ -29,7 +30,7 @@ setTimeout(() => (dataLoaded.value = true), 500);
       v-for="playlist in computedPlaylists"
       class="flex items-center p-2 justify-between cursor-pointer transition-all hover:bg-button-gray-hover rounded-md"
     >
-      <SidebarSkeleton v-show="!dataLoaded"></SidebarSkeleton>
+      <YourLibrarySkeleton v-show="!dataLoaded"></YourLibrarySkeleton>
 
       <div v-show="dataLoaded" class="flex items-center gap-2">
         <img

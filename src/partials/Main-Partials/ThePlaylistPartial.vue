@@ -10,7 +10,7 @@ import BasePlayButton from "../../components/base/BasePlayButton.vue";
 import BaseDropdown from "../../components/base/BaseDropdown.vue";
 import userPfp from "../../assets/img/user_pfp_temporary.png"
 import BaseFilter from "../../components/base/BaseFilter.vue";
-import SidebarSearchComponent from "../YourLibrary/SidebarSearchComponent.vue";
+import YourLibrarySearchComponent from "../YourLibrary/YourLibrarySearchComponent.vue";
 
 const selectableDropdownSelectedValue = ref<string>('recents')
 
@@ -98,15 +98,15 @@ watch(
       </div>
       
       <div class="flex items-center gap-2">
-        <SidebarSearchComponent></SidebarSearchComponent>
+        <YourLibrarySearchComponent></YourLibrarySearchComponent>
         <h1 class="text-white/60">{{ selectableDropdownSelectedValue }}</h1>
         <BaseDropdown  v-model="selectableDropdownSelectedValue"
               :content="['recents', 'recently added', 'alphabetical', 'creator']" :selectable="true" </BaseDropdown>
       </div>
     </div>
     <div class="flex flex-col">
-      <div class="w-[300px]">
-        <BaseFilter class="w-full" :filterNames="filterNames"></BaseFilter>
+      <div >
+        <BaseFilter  :filterNames="filterNames"></BaseFilter>
       </div>
       <div
         class="flex items-center gap-4 p-3 cursor-pointer transition-all border-b-2 border-button-gray-hover"

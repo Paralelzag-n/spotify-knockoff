@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
-import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
 
 import { useElementSize } from "@vueuse/core";
 
 import BaseDropDown from "../../components/base/BaseDropdown.vue";
-import SidebarSearchComponent from "./SidebarSearchComponent.vue";
+import YourLibrarySearchComponent from "./YourLibrarySearchComponent.vue";
+import YourLibraryPlaylistCardComponent from "./YourLibraryPlaylistCardComponent.vue";
 
 const sidebarHeaderRef = ref<HTMLElement | null>(null);
 const sidebarComponentRef = ref<HTMLElement | null>(null);
@@ -42,7 +42,7 @@ const searchActive = ref<boolean>(false);
     ref="sidebarComponentRef"
     class="bg-black rounded-r-lg h-full flex flex-col"
   >
-    <div class="flex flex-col bg-gray-back rounded-lg">
+    <div class="flex flex-col bg-module rounded-lg">
       <div
         ref="sidebarHeaderRef"
         class="flex flex-col gap-2 justify-between p-4 pb-2"
@@ -64,7 +64,7 @@ const searchActive = ref<boolean>(false);
         class="overflow-auto px-2 pb-2"
       >
         <div class="flex items-center pb-2">
-          <SidebarSearchComponent
+          <YourLibrarySearchComponent
             v-model="searchedContent"
             v-model:primary="searchActive"
             class="flex-grow"
@@ -76,7 +76,7 @@ const searchActive = ref<boolean>(false);
             :selectable="true"
           />
         </div>
-        <SidebarPlaylistCardComponent ref="playlistCardComponent" />
+        <YourLibraryPlaylistCardComponent ref="playlistCardComponent" />
       </div>
     </div>
   </div>
