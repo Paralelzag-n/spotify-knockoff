@@ -5,7 +5,7 @@ const homeView = () => import("../views/HomeView.vue");
 
 // Auth Forms
 const SignInForm = () => import("../components/auth/SignInFormComponent.vue");
-const SignOutForm = () => import("../components/auth/SignOutFormComponent.vue");
+const SignUpForm = () => import("../components/auth/SignUpFormComponent.vue");
 // Home partials
 const viewHome = () => import("../partials/Main-Partials/TheHomePartial.vue");
 const viewArtist = () =>
@@ -49,7 +49,7 @@ const router = createRouter({
       component: authView,
       children: [
         { path: "sign-in", name: "sign-in", component: SignInForm },
-        { path: "sign-out", name: "sign-out", component: SignOutForm },
+        { path: "sign-up", name: "sign-up", component: SignUpForm },
       ],
     },
   ],
