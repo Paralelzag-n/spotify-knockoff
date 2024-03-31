@@ -27,6 +27,13 @@ export function requiredRule(value: string): string {
   return !!value ? "" : "This field is required.";
 }
 
+export function passwordMatchRule(
+  password: string,
+  repeatPassword: string,
+): string {
+  return password === repeatPassword ? "" : "Passwords do not match.";
+}
+
 //GLOBAL VALIDATION RULE
 export function validate(
   value: string,

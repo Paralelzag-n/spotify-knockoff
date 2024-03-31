@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { IBaseInputProps } from "../../ts/components/base/BaseInput.ts";
 
 const input = defineModel<string>({ default: "" });
 
-const props = defineProps<{
-  label: string;
-  placeholder: string;
-  error: string;
-  appendIcon?: string;
-  prependIcon?: string;
+const props = withDefaults(defineProps<IBaseInputProps>(), {
+  error: "",
+  type: "text",
+});
+
+const emits = defineEmits<{
+  (e: "prepend-icon-click"): void;
 }>();
 
 const computedErrorClasses = computed(() => {
@@ -19,6 +21,10 @@ const computedErrorClasses = computed(() => {
     "pe-4": !props.prependIcon,
   };
 });
+
+function emitPrependIconClick() {
+  emits("prepend-icon-click");
+}
 </script>
 
 <template>
@@ -34,14 +40,11 @@ const computedErrorClasses = computed(() => {
       <input
         v-model.trim="input"
         :placeholder="props.placeholder"
+        :type="props.type"
         class="input-classes"
-        type="text"
       />
-      <div
-        v-if="props.prependIcon"
-        class="flex items-center justify-center pe-2"
-      >
-        <div class="icon-button">
+      <div v-if="props.prependIcon" class="flex items-center justify-center">
+        <div class="icon-button" @click="emitPrependIconClick">
           <i :class="props.prependIcon" class="fa-solid fa-brand" />
         </div>
       </div>

@@ -4,6 +4,7 @@ import { computed, ref, watch } from "vue";
 import BaseInput from "../base/BaseInput.vue";
 import {
   emailRule,
+  passwordMatchRule,
   requiredRule,
   validate,
 } from "../../utils/validation-rules.ts";
@@ -15,6 +16,10 @@ const emailError = ref<string>("");
 
 const password = ref<string>("");
 const passwordError = ref<string>("");
+
+const repeatPassword = ref<string>("");
+const repeatPasswordError = ref<string>("");
+
 const passwordVisible = ref<boolean>(false);
 
 const router = useRouter();
@@ -26,23 +31,36 @@ watch(password, (newPassword) => {
   passwordError.value = validate(newPassword, [requiredRule]);
 });
 
+watch(repeatPassword, () => {
+  repeatPasswordError.value = passwordMatchRule(
+    password.value,
+    repeatPassword.value,
+  );
+});
+
 const computedHasError = computed(
   () => emailError.value || passwordError.value,
 );
 
-const computedPasswordVisibility = computed<{ icon: string; type: string }>(
-  () => {
-    return {
-      icon: passwordVisible.value ? "fa-eye" : "fa-eye-slash",
-      type: passwordVisible.value ? "text" : "password",
-    };
-  },
-);
+const computedPasswordVisibility = computed<{
+  icon: string;
+  type: string;
+  placeholder: string;
+}>(() => {
+  return {
+    icon: passwordVisible.value ? "fa-eye" : "fa-eye-slash",
+    type: passwordVisible.value ? "text" : "password",
+    placeholder: passwordVisible.value ? "password" : "●●●●●●●●",
+  };
+});
 
 function validateAllFields() {
-  // emailRule
-  emailError.value = validate(email.value, [requiredRule]);
+  emailError.value = validate(email.value, [emailRule, requiredRule]);
   passwordError.value = validate(password.value, [requiredRule]);
+  repeatPasswordError.value = passwordMatchRule(
+    password.value,
+    repeatPassword.value,
+  );
 }
 
 function togglePasswordVisibility() {
@@ -56,8 +74,8 @@ function logInForm() {
   router.push({ name: "home" });
 }
 
-function goToSignUp() {
-  router.push({ name: "sign-up" });
+function goToSignIn() {
+  router.push({ name: "sign-in" });
 }
 </script>
 
@@ -66,7 +84,7 @@ function goToSignUp() {
     class="w-[750px] py-12 h-fit bg-module rounded-lg flex flex-col items-center"
   >
     <h1 class="text-white pb-8 text-3xl text-center font-bold">
-      Log in to Spotify
+      Welcome to spotify!
     </h1>
 
     <div class="w-[400px] flex flex-col gap-2">
@@ -90,18 +108,27 @@ function goToSignUp() {
       <BaseInput
         v-model="password"
         :error="passwordError"
+        :placeholder="computedPasswordVisibility.placeholder"
         :prepend-icon="computedPasswordVisibility.icon"
         :type="computedPasswordVisibility.type"
         append-icon="fa-lock"
         label="Password"
-        placeholder="●●●●●●●●"
+        @prepend-icon-click="togglePasswordVisibility"
+      />
+      <BaseInput
+        v-model="repeatPassword"
+        :error="repeatPasswordError"
+        :placeholder="computedPasswordVisibility.placeholder"
+        :prepend-icon="computedPasswordVisibility.icon"
+        :type="computedPasswordVisibility.type"
+        append-icon="fa-lock"
+        label="Repeat password"
         @prepend-icon-click="togglePasswordVisibility"
       />
       <BaseSwitch label="Remember me" />
-      <BaseButton class="bg-primary-500 mt-6" @click="logInForm"
-        >Log In
+      <BaseButton class="bg-primary-500 mt-6" @click="logInForm">
+        Register
       </BaseButton>
-      <p class="text-link text-center mx-auto">Forgot your password?</p>
     </div>
 
     <div class="w-full py-10 px-28">
@@ -110,13 +137,13 @@ function goToSignUp() {
 
     <div class="flex items-center gap-2">
       <p class="text-tx-button-white text-center w-fit mx-auto">
-        Don't have an account?
+        Already registered?
       </p>
       <p
         class="text-link text-center w-fit mx-auto -pb-[1px]"
-        @click="goToSignUp"
+        @click="goToSignIn"
       >
-        Sign up for Spotify
+        Sign In
       </p>
     </div>
   </div>
