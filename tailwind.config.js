@@ -8,11 +8,16 @@ export default {
         module: "#121212",
         "br-module": "#424242",
 
+        "br-button": "#727272",
+        "br-button-hover": "#ffffff",
+
+        "tx-button-white": "#e8e8e8",
+        "tx-button-black": "#000000",
+
         "button-gray": "#232323",
         "button-gray-hover": "#2A2A2A",
         "card-gray": "#242424",
         "br-card-gray": "#404040",
-        "gray-back": "#121212",
         "icon-unselected": "#898989",
 
         primary: {
