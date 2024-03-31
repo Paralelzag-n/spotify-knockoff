@@ -64,13 +64,16 @@ export const usePlaylistsStore = defineStore("playlists", {
   }),
 
   getters: {
-    getPlaylistById: (state: IPlaylistState) => {
-      return (playlistId: string) =>
-        state.playlists.find(
-          (playlist: IPlaylist) => playlist.id === playlistId,
+    getPlaylistById:
+      (state: IPlaylistState) =>
+      (playlistId: string): IPlaylist | null => {
+        return (
+          state.playlists.find(
+            (playlist: IPlaylist) => playlist.id === playlistId
+          ) ?? null
         );
-    },
-    getAllPlaylists: (state: IPlaylistState) => {
+      },
+    getAllPlaylists: (state: IPlaylistState): IPlaylist[] => {
       return state.playlists;
     },
   },

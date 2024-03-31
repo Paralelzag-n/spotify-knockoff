@@ -52,7 +52,8 @@ const selectHandler = (value: string): void => {
     ref="ComponentRef"
     class="flex flex-col gap-1 relative"
   >
-    <i class="text-white fa-solid fa-plus" @click="dropDownToggler"></i>
+    <i class="text-white fa-solid fa-bars" @click="dropDownToggler"></i>
+
     <div
       :style="elementHeightStyle"
       class="w-40 absolute shadow-black shadow-2xl text-white transition-all top-5 z-50 left-0 overflow-hidden rounded-lg bg-button-gray"

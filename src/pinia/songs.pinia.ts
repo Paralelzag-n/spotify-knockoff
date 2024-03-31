@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ISong, ISongState } from "../ts/pinia/songs.types";
 
-export const useSongStore = defineStore("playlists", {
+export const useSongStore = defineStore("songs", {
   state: (): ISongState => ({
     songs: [
       {
@@ -159,9 +159,11 @@ export const useSongStore = defineStore("playlists", {
     getAllSongs: (state: ISongState) => {
       return state.songs;
     },
-    getSongByPlaylistId: (state: ISongState) => {
-      return (playlistId: string) =>
-        state.songs.find((song: ISong) => song.playlistId.includes(playlistId));
+    getSongsByPlaylistId: (state: ISongState) => {
+      return (playlistId: string): ISong[] | null =>
+        state.songs.filter((song: ISong) =>
+          song.playlistId.includes(playlistId)
+        ) ?? null;
     },
   },
 });

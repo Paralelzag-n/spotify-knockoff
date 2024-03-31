@@ -17,10 +17,10 @@ const { height: screenHeight } = useWindowSize();
 const layoutStore = useLayoutStore();
 const computedSidebarWidth = computed(() => layoutStore.getSidebarWidth);
 const computedYourLibraryWidth = computed(
-  () => layoutStore.getYourLibraryWidth,
+  () => layoutStore.getYourLibraryWidth
 );
 const computedSelectedSidebarItem = computed<ESidebarItem>(
-  () => layoutStore.sidebarItem,
+  () => layoutStore.sidebarItem
 );
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {

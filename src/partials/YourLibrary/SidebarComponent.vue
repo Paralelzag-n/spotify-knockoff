@@ -2,8 +2,7 @@
 import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
 import SidebarPlaylistCardComponent from "./SidebarPlaylistCardComponent.vue";
-import { IPlaylist } from "../../ts/interfaces/playlist.interface.ts";
-import { EMediaCategory } from "../../ts/enums/media.enum.ts";
+
 import { useElementSize } from "@vueuse/core";
 
 import BaseDropDown from "../../components/base/BaseDropdown.vue";
@@ -11,13 +10,9 @@ import SidebarSearchComponent from "./SidebarSearchComponent.vue";
 
 const sidebarHeaderRef = ref<HTMLElement | null>(null);
 const sidebarComponentRef = ref<HTMLElement | null>(null);
-const PlaylistCardComponent = ref<HTMLElement | null>(null);
 
 const { height: sidebarHeaderRefHeight } = useElementSize(sidebarHeaderRef);
 const { height: sidebarComponentHeight } = useElementSize(sidebarComponentRef);
-const { height: playlistsComponentHeight } = useElementSize(
-  PlaylistCardComponent,
-);
 
 const computedPlaylistsContainerHeight = computed<number>(() => {
   return sidebarComponentHeight.value - sidebarHeaderRefHeight.value - 26;
@@ -25,12 +20,6 @@ const computedPlaylistsContainerHeight = computed<number>(() => {
 
 const computedPlaylistsContainerHeightStyle = computed(() => {
   return { height: `${computedPlaylistsContainerHeight.value}px` };
-});
-
-const computedDoesScrollExist = computed<boolean>(() => {
-  return (
-    computedPlaylistsContainerHeight.value < playlistsComponentHeight.value
-  );
 });
 
 const filterNames = [
@@ -41,76 +30,6 @@ const filterNames = [
   "Tarkhna",
   "Lipo",
 ];
-
-const playlists = ref<IPlaylist[]>([
-  {
-    name: "Liked Songs",
-    img: "",
-    category: EMediaCategory.playlist,
-    playing: false,
-    numOfSongs: 1003,
-  },
-  {
-    name: "Tame Impala",
-    img: "",
-    category: EMediaCategory.artist,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-  {
-    name: "GODS",
-    img: "",
-    category: EMediaCategory.album,
-    playing: false,
-  },
-]);
 
 const searchedContent = ref<string>();
 const selectedName = ref<string>("");
@@ -157,12 +76,7 @@ const searchActive = ref<boolean>(false);
             :selectable="true"
           />
         </div>
-        <SidebarPlaylistCardComponent
-          ref="playlistCardComponent"
-          :hasScroll="computedDoesScrollExist"
-          :playlists="playlists"
-          :selectedName="selectedName"
-        />
+        <SidebarPlaylistCardComponent ref="playlistCardComponent" />
       </div>
     </div>
   </div>

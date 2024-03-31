@@ -1,119 +1,54 @@
 <script lang="ts" setup>
-import { computed, defineModel, ref } from "vue";
-import { IPlaylist } from "../../ts/interfaces/playlist.interface";
-import tempImg from "../../assets/lofi-girl-lofi.gif";
-import audio from "../../assets/rhcp.mp3";
+import { computed, ref } from "vue";
+
+import { usePlaylistsStore } from "../../pinia/playlists.pinia";
+import { useSongStore } from "../../pinia/songs.pinia";
 import SidebarSkeleton from "./SidebarSkeleton.vue";
+import { useRouter } from "vue-router";
 
-const props = defineProps<{
-  sizeMinimized: boolean;
-  selectedName: string;
-  playlists: IPlaylist[];
-  hasScroll: boolean;
-}>();
+const playlistStore = usePlaylistsStore();
+const songStore = useSongStore();
 
-const selectedPlaylist = defineModel<string>("primary");
+const router = useRouter();
 
-const audioPlayer = ref<HTMLAudioElement | null>(null);
+const numOfSongs = (id: string): number => {
+  return songStore.getSongsByPlaylistId(id)?.length ?? 0;
+};
+
+const computedPlaylists = computed(() => playlistStore.getAllPlaylists);
 
 const dataLoaded = ref<boolean>(false);
 
-setTimeout(() => (dataLoaded.value = true), 3000);
-
-const filteredPlaylists = computed(() =>
-  props.playlists.filter((playlist) =>
-    props.selectedName
-      ? playlist.category.includes(
-          props.selectedName.slice(0, props.selectedName.length - 1),
-        )
-      : true,
-  ),
-);
-
-const playlistClickHandler = (playlist: IPlaylist, status: boolean): void => {
-  if (dataLoaded.value) {
-    const audioElement = audioPlayer.value;
-    selectedPlaylist.value = playlist.name;
-    if (status) {
-      playlist.playing = false;
-      if (audioElement) {
-        audioElement.pause();
-        audioElement.currentTime = 0;
-      }
-      return;
-    }
-    props.playlists.map((item: IPlaylist) => {
-      item.playing = false;
-    });
-
-    playlist.playing = true;
-    if (audioElement) {
-      audioElement.pause();
-      audioElement.currentTime = 0;
-      audioElement.play();
-    }
-  }
-};
+setTimeout(() => (dataLoaded.value = true), 500);
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col">
     <div
-      v-for="playlist in filteredPlaylists"
+      @click="router.push({ name: 'playlist', params: { id: playlist.id } })"
+      v-for="playlist in computedPlaylists"
       class="flex items-center p-2 justify-between cursor-pointer transition-all hover:bg-button-gray-hover rounded-md"
-      @click="playlistClickHandler(playlist, playlist.playing)"
     >
-      <SidebarSkeleton
-        v-show="!dataLoaded"
-        :sizeMinimized="props.sizeMinimized"
-      ></SidebarSkeleton>
+      <SidebarSkeleton v-show="!dataLoaded"></SidebarSkeleton>
 
-      <div
-        v-show="dataLoaded"
-        :class="!props.sizeMinimized && 'gap-2'"
-        class="flex"
-      >
-        <img :src="tempImg" alt="" class="w-12 h-12 bg-black rounded" />
+      <div v-show="dataLoaded" class="flex items-center gap-2">
+        <img
+          :src="playlist.thumbnail"
+          alt=""
+          class="w-12 h-12 bg-black rounded"
+        />
 
         <div>
-          <h1
-            v-show="!props.sizeMinimized"
-            :class="playlist.playing ? 'text-primary-500' : 'text-white'"
-            class=""
-          >
+          <h1 class="text-white">
             {{ playlist.name }}
           </h1>
-          <div
-            v-show="!props.sizeMinimized"
-            class="flex text-white/60 items-center gap-3"
-          >
-            <h2 class="text-sm">{{ playlist.category }}</h2>
-            <h2 v-if="playlist.numOfSongs" class="text-sm">
-              {{ playlist.numOfSongs }} songs
-            </h2>
+          <div class="flex text-white/60 items-center gap-3">
+            <h2 class="text-sm">playlist</h2>
+            <h2 class="text-sm">{{ numOfSongs(playlist.id) }} songs</h2>
           </div>
         </div>
       </div>
-      <div
-        v-if="dataLoaded"
-        v-show="!props.sizeMinimized"
-        class="flex items-center gap-3"
-      >
-        <i
-          v-if="playlist.playing"
-          class="text-primary-500 fa-solid fa-circle-pause"
-        ></i>
-        <i
-          v-if="!playlist.playing"
-          class="text-primary-500 fa-solid fa-circle-play"
-        ></i>
-        <i
-          v-if="playlist.playing"
-          class="text-primary-500 fa-solid fa-volume-high"
-        ></i>
-      </div>
     </div>
-    <audio ref="audioPlayer" :src="audio" class="hidden" controls></audio>
   </div>
 </template>
 

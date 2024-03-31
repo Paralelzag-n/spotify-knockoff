@@ -3,14 +3,21 @@ import { IPlaylist } from "../../ts/pinia/playlist.types.ts";
 import BasePlayButton from "../base/BasePlayButton.vue";
 import { computed, ref } from "vue";
 import { useElementSize } from "@vueuse/core";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   playlists: IPlaylist[];
 }>();
 
+const router = useRouter();
+
+const changeRoute = (currentId: string) => {
+  router.push({ name: "playlist", params: { id: currentId } });
+};
+
 const playlistsGridContainerRef = ref<HTMLElement | null>(null);
 const { width: playlistsGridContainerWidth } = useElementSize(
-  playlistsGridContainerRef,
+  playlistsGridContainerRef
 );
 
 const computedGridSize = computed(() => {
@@ -28,6 +35,7 @@ const computedGridSize = computed(() => {
     class="grid gap-3"
   >
     <div
+      @click="changeRoute(playlist.id)"
       v-for="playlist in props.playlists"
       :key="playlist.id"
       class="flex rounded overflow-hidden group cursor-pointer"

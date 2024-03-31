@@ -2,7 +2,6 @@
 import { computed, defineModel, ref } from "vue";
 
 const props = defineProps<{
-  sizeMinimized: boolean;
   filterNames: string[];
 }>();
 
@@ -21,10 +20,10 @@ const shouldScrollExist = computed(() => {
 });
 
 const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value,
+  () => scrolledToStart.value && !scrolledToEnd.value
 );
 const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value,
+  () => scrolledToEnd.value && !scrolledToStart.value
 );
 
 const selectHandler = (item: string): void => {
@@ -66,7 +65,7 @@ const scrollByVisibleWidth = (back: boolean) => {
 </script>
 
 <template>
-  <div v-show="!props.sizeMinimized" class="relative">
+  <div class="relative">
     <div ref="visibleElement" class="overflow-hidden py-2 rounded-full">
       <div
         ref="fullElement"
