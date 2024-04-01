@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import BaseLoadingSpinner from "./BaseLoadingSpinner.vue";
+import { IBaseButtonProps } from "../../ts/components/base/BaseButton.types.ts";
 
-const props = defineProps<{
-  icon?: string;
-  border?: boolean;
-}>();
+const props = withDefaults(defineProps<IBaseButtonProps>(), {
+  loading: false,
+  type: "button",
+});
 
 const computedButtonStyle = computed(() => {
   return {
@@ -15,7 +17,7 @@ const computedButtonStyle = computed(() => {
 </script>
 
 <template>
-  <div :class="computedButtonStyle" class="button-style">
+  <button :class="computedButtonStyle" class="button-style" type="submit">
     <div class="flex justify-center">
       <i
         v-if="props.icon"
@@ -24,11 +26,12 @@ const computedButtonStyle = computed(() => {
       />
     </div>
     <div class="col-span-3 flex justify-center">
-      <p class="text-tx-button-white font-bold">
+      <p v-if="!props.loading" class="text-tx-button-white font-bold">
         <slot />
       </p>
+      <BaseLoadingSpinner v-else :size="7" />
     </div>
-  </div>
+  </button>
 </template>
 
 <style scoped>

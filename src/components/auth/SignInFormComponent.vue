@@ -9,6 +9,7 @@ import {
 } from "../../utils/validation-rules.ts";
 import BaseSwitch from "../base/BaseSwitch.vue";
 import { useRouter } from "vue-router";
+import { useAuth } from "../../composable/useAuth.ts";
 
 const email = ref<string>("");
 const emailError = ref<string>("");
@@ -18,6 +19,7 @@ const passwordError = ref<string>("");
 const passwordVisible = ref<boolean>(false);
 
 const router = useRouter();
+const { signIn, signInLoading } = useAuth();
 
 watch(email, (newEmail) => {
   emailError.value = validate(newEmail, [emailRule, requiredRule]);
@@ -49,11 +51,14 @@ function togglePasswordVisibility() {
   passwordVisible.value = !passwordVisible.value;
 }
 
-function logInForm() {
+async function logInForm() {
   validateAllFields();
   if (computedHasError.value) return;
 
-  router.push({ name: "home" });
+  const user = await signIn(email.value, password.value);
+  if (!user) return;
+
+  await router.push({ name: "home" });
 }
 
 function goToSignUp() {
@@ -79,7 +84,7 @@ function goToSignUp() {
       <div class="w-full bg-white/15 h-[1px]" />
     </div>
 
-    <div class="w-[400px] flex flex-col gap-4">
+    <form class="w-[400px] flex flex-col gap-4" @submit.prevent="logInForm">
       <BaseInput
         v-model="email"
         :error="emailError"
@@ -98,11 +103,15 @@ function goToSignUp() {
         @prepend-icon-click="togglePasswordVisibility"
       />
       <BaseSwitch label="Remember me" />
-      <BaseButton class="bg-primary-500 mt-6" @click="logInForm"
-        >Log In
+      <BaseButton
+        :loading="signInLoading"
+        class="bg-primary-500 mt-6"
+        type="submit"
+      >
+        Log In
       </BaseButton>
       <p class="text-link text-center mx-auto">Forgot your password?</p>
-    </div>
+    </form>
 
     <div class="w-full py-10 px-28">
       <div class="w-full bg-white/15 h-[1px]" />

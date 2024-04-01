@@ -4,6 +4,7 @@ import { computed, nextTick, ref, watch } from "vue";
 import userProfilePicture from "../assets/img/user_pfp_temporary.png";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
 import { ESidebarItem } from "../ts/pinia/layout.types.ts";
+import { useAuth } from "../composable/useAuth.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -13,6 +14,7 @@ const searchInputRef = ref<any>(null);
 const SearchInputFocused = ref<boolean>(false);
 
 const layoutStore = useLayoutStore();
+const { signOut } = useAuth();
 
 const computedHomeColor = computed(() => {
   return route.path === "/home" && { color: "#ffffff" };
@@ -44,6 +46,15 @@ function forwardsPage() {
 
 function lastPage() {
   router.back();
+}
+
+async function signOutUser() {
+  try {
+    await signOut();
+    await router.replace({ name: "sign-in" });
+  } catch (error: any) {
+    console.log(error);
+  }
 }
 
 watch(
@@ -126,7 +137,7 @@ watch(
         <div class="home-link-button-bg" />
         <i class="fa-solid fa-users home-link-icon" />
       </div>
-      <div class="user-pfp-container">
+      <div class="user-pfp-container" @click="signOutUser">
         <img
           :src="userProfilePicture"
           alt="user_profile_picture"
