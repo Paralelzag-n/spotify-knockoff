@@ -19,7 +19,7 @@ const passwordError = ref<string>("");
 const passwordVisible = ref<boolean>(false);
 
 const router = useRouter();
-const { signIn, signInLoading } = useAuth();
+const { signIn, signInLoading, signInWithGoogle } = useAuth();
 
 watch(email, (newEmail) => {
   emailError.value = validate(newEmail, [emailRule, requiredRule]);
@@ -61,6 +61,13 @@ async function logInForm() {
   await router.push({ name: "home" });
 }
 
+async function logInWithGoogle() {
+  const response = await signInWithGoogle();
+  if (!response) return;
+
+  await router.push({ name: "home" });
+}
+
 function goToSignUp() {
   router.push({ name: "sign-up" });
 }
@@ -75,7 +82,9 @@ function goToSignUp() {
     </h1>
 
     <div class="w-[400px] flex flex-col gap-2">
-      <BaseButton border icon="fa-google">Continue with Google</BaseButton>
+      <BaseButton border icon="fa-google" @click="logInWithGoogle">
+        Continue with Google
+      </BaseButton>
       <BaseButton border icon="fa-meta">Continue with Meta</BaseButton>
       <BaseButton border icon="fa-apple">Continue with Apple</BaseButton>
     </div>

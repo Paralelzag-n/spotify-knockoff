@@ -1,8 +1,10 @@
-import { auth } from "../firebase/index.ts";
+import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { ref } from "vue";
 
@@ -67,6 +69,28 @@ export function useAuth() {
     }
   }
 
+  const googleAuthProvider = new GoogleAuthProvider();
+
+  async function signInWithGoogle() {
+    try {
+      const userCredential = await signInWithPopup(auth, googleAuthProvider);
+      const credential =
+        GoogleAuthProvider.credentialFromResult(userCredential);
+      if (!credential) return;
+      const token = credential.accessToken;
+      const user = userCredential.user;
+
+      return { token, user };
+    } catch (error: any) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+
+      console.log(errorCode, errorMessage, email, credential);
+    }
+  }
+
   return {
     signUp,
     signIn,
@@ -75,5 +99,6 @@ export function useAuth() {
     signUpLoading,
     signInLoading,
     signOutLoading,
+    signInWithGoogle,
   };
 }
