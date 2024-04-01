@@ -17,6 +17,8 @@ const viewPlaylist = () =>
   import("../partials/Main-Partials/ThePlaylistPartial.vue");
 const viewPlaylists = () =>
   import("../partials/Main-Partials/ThePlaylistCollectionPartial.vue");
+const viewProfile = () =>
+  import("../partials/Main-Partials/TheProfilePartial.vue");
 const viewSearch = () =>
   import("../partials/Main-Partials/TheSearchPartial.vue");
 
@@ -42,6 +44,7 @@ const router = createRouter({
           name: "playlists",
           component: viewPlaylists,
         },
+        { path: "profile", name: "profile", component: viewProfile },
         { path: "search", name: "search", component: viewSearch },
       ],
     },
