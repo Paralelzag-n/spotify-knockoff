@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import authGuard, { guestGuard } from "../middleware/auth.middleware.ts";
 
 const authView = () => import("../views/AuthView.vue");
 const homeView = () => import("../views/HomeView.vue");
@@ -25,6 +26,7 @@ const router = createRouter({
     {
       path: "/",
       redirect: "/home",
+      beforeEnter: [authGuard],
       component: homeView,
       children: [
         { path: "home", name: "home", component: viewHome },
@@ -47,6 +49,7 @@ const router = createRouter({
       path: "/auth",
       name: "auth",
       component: authView,
+      beforeEnter: [guestGuard],
       children: [
         { path: "sign-in", name: "sign-in", component: SignInForm },
         { path: "sign-up", name: "sign-up", component: SignUpForm },

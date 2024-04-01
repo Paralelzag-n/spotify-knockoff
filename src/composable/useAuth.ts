@@ -1,6 +1,7 @@
 import { auth } from "../firebase/index.ts";
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { ref } from "vue";
@@ -9,6 +10,15 @@ export function useAuth() {
   const signInLoading = ref<boolean>(false);
   const signUpLoading = ref<boolean>(false);
   const signOutLoading = ref<boolean>(false);
+
+  function isUserLoggedIn() {
+    return new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+  }
 
   async function signUp(email: string, password: string) {
     try {
@@ -61,6 +71,7 @@ export function useAuth() {
     signUp,
     signIn,
     signOut,
+    isUserLoggedIn,
     signUpLoading,
     signInLoading,
     signOutLoading,
