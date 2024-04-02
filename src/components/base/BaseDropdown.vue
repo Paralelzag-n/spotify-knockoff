@@ -5,7 +5,10 @@ const props = defineProps<{
   selectable?: boolean;
   minimized?: boolean;
   content: string[];
-  searchActive?: boolean;
+}>();
+
+const emits = defineEmits<{
+  (e: "contentClicked", value: string): void;
 }>();
 
 const selected = defineModel<string>();
@@ -38,25 +41,43 @@ const dropDownToggler = (): void => {
 };
 
 const selectHandler = (value: string): void => {
-  if (selected.value === value) {
+  if (props.selectable && selected.value === value) {
     selected.value = "";
     return;
   }
   selected.value = value;
+  if (!props.selectable) {
+    emits("contentClicked", value);
+  }
 };
 </script>
 
 <template>
   <div
-    v-if="!props.minimized && !props.searchActive"
+    v-if="!props.minimized"
     ref="ComponentRef"
-    class="flex flex-col gap-1 relative"
+    class="flex flex-col gap-1 relative pl-1"
   >
-    <i class="text-white fa-solid fa-bars" @click="dropDownToggler"></i>
-
+    <div class="flex items-center gap-1">
+      <h1
+        @click="dropDownToggler"
+        v-if="props.selectable"
+        class="text-white/60 cursor-pointer hover:text-white text-xs"
+      >
+        {{ selected }}
+      </h1>
+      <div
+        @click="dropDownToggler"
+        :class="dropDownOpen ? 'bg-button-gray' : 'bg-transparent'"
+        class="hover:bg-button-gray-hover cursor-pointer transition-all w-7 h-7 rounded-full hover:scale-110 flex items-center justify-center"
+      >
+        <i class="text-white fa-solid fa-bars"></i>
+      </div>
+    </div>
     <div
       :style="elementHeightStyle"
-      class="w-40 absolute shadow-black shadow-2xl text-white transition-all top-5 z-50 left-0 overflow-hidden rounded-lg bg-button-gray"
+      :class="!props.selectable ? 'z-50' : 'z-40'"
+      class="w-40 absolute shadow-black shadow-2xl text-white transition-all top-9 right-0 overflow-hidden rounded-lg bg-button-gray"
     >
       <div class="flex flex-col p-2">
         <div
@@ -65,6 +86,7 @@ const selectHandler = (value: string): void => {
           @click="selectHandler(item)"
         >
           <h1
+            @click="() => !props.selectable && dropDownToggler()"
             :key="item"
             :class="
               props.selectable && selected === item

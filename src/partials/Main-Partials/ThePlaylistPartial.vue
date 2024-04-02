@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useSongStore } from "../../pinia/songs.pinia";
 import { usePlaylistsStore } from "../../pinia/playlists.pinia";
 import { ISong } from "../../ts/pinia/songs.types";
@@ -15,6 +15,7 @@ import YourLibrarySearchComponent from "../YourLibrary/YourLibrarySearchComponen
 const selectableDropdownSelectedValue = ref<string>('recents')
 
 const route = useRoute();
+const router = useRouter();
 
 const songStore = useSongStore();
 
@@ -79,8 +80,8 @@ watch(
           {{ currentPlaylist?.name }}
         </h1>
         <div class="flex items-center gap-3">
-          <img :src="userPfp" class="w-8 h-8 rounded-full"alt="">
-          <h1 class="text-white">user</h1>
+          <img @click="router.push({name:'profile'})" :src="userPfp" class="w-8 h-8 rounded-full hover:scale-110 cursor-pointer transition-all"alt="">
+          <h1 @click="router.push({name:'profile'})" class="text-white/60 hover:text-white hover:underline hover:scale-110 cursor-pointer ">user</h1>
           <p class="text-white text-xs">●</p>
           <h1 class="text-white">{{ currentPlaylistSongs.length }} songs</h1>
         </div>
@@ -99,7 +100,7 @@ watch(
       
       <div class="flex items-center gap-2">
         <YourLibrarySearchComponent></YourLibrarySearchComponent>
-        <h1 class="text-white/60">{{ selectableDropdownSelectedValue }}</h1>
+
         <BaseDropdown  v-model="selectableDropdownSelectedValue"
               :content="['recents', 'recently added', 'alphabetical', 'creator']" :selectable="true" </BaseDropdown>
       </div>

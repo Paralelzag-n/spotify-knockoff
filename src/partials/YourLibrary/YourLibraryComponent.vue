@@ -35,6 +35,11 @@ const searchedContent = ref<string>();
 const selectedName = ref<string>("");
 const selectableDropdownSelectedValue = ref<string>("");
 const searchActive = ref<boolean>(false);
+
+const contentClickedHandler = (value: string): string => {
+  return value;
+};
+console.log(contentClickedHandler);
 </script>
 
 <template>
@@ -53,6 +58,7 @@ const searchActive = ref<boolean>(false);
             <h1 class="text-white font-bold">Your library</h1>
           </div>
           <BaseDropDown
+            @contentClicked="contentClickedHandler"
             :content="['create a new playlist', 'create a playlist folder']"
           />
         </div>
@@ -61,18 +67,17 @@ const searchActive = ref<boolean>(false);
 
       <div
         :style="computedPlaylistsContainerHeightStyle"
-        class="overflow-auto px-2 pb-2"
+        class="overflow-auto px-3 pb-2"
       >
-        <div class="flex items-center pb-2">
+        <div class="flex items-center justify-between pb-2">
           <YourLibrarySearchComponent
             v-model="searchedContent"
             v-model:primary="searchActive"
-            class="flex-grow"
+            class="flex-grow pr-2"
           />
           <BaseDropDown
             v-model="selectableDropdownSelectedValue"
             :content="['recents', 'recently added', 'alphabetical', 'creator']"
-            :searchActive="searchActive"
             :selectable="true"
           />
         </div>

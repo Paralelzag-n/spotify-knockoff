@@ -15,7 +15,7 @@ const router = useRouter();
 
 const playlistsContainerRef = ref<HTMLElement | null>(null);
 const { width: playlistsContainerWidth } = useElementSize(
-  playlistsContainerRef,
+  playlistsContainerRef
 );
 
 const computedFrontPagePlaylists = computed(() => {
@@ -66,6 +66,7 @@ function viewPlaylistCollection() {
     </div>
     <div ref="playlistsContainerRef" :style="computedFrontPagePlaylists.style">
       <PlaylistComponent
+        @click="router.push({ name: 'playlist', params: { id: playlist.id } })"
         v-for="playlist in computedFrontPagePlaylists.playlists"
         :playlist="playlist"
       />
