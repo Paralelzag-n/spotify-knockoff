@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 const searchComponentRef = ref<HTMLElement | null>(null);
@@ -42,20 +42,20 @@ onBeforeUnmount(() => {
     >
       <i
         :class="!searchActive && 'hover:bg-white/20 cursor-pointer'"
-        @click="toggleInput"
         class="fa-solid text-white/80 p-2 rounded-full fa-magnifying-glass"
+        @click="toggleInput"
       ></i>
       <input
         ref="searchInputRef"
-        placeholder="Search in library"
         v-model="searchedContent"
+        class="outline-none flex-grow text-xs w-full text-white/60 bg-transparent"
+        placeholder="Search in library"
         type="text"
-        class="outline-none flex-grow text-xs text-white/60 bg-transparent"
       />
       <i
-        @click="searchedContent = ''"
         :class="!searchedContent ? 'opacity-0' : ''"
         class="fa-solid text-white/60 cursor-pointer hover:text-white fa-xmark pr-2"
+        @click="searchedContent = ''"
       ></i>
     </div>
   </div>

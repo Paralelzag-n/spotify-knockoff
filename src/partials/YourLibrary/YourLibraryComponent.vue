@@ -8,9 +8,6 @@ import YourLibraryPlaylistCardComponent from "./YourLibraryPlaylistCardComponent
 
 import { useLayoutStore } from "../../pinia/layout.pinia";
 
-const sidebarHeaderRef = ref<HTMLElement | null>(null);
-const sidebarComponentRef = ref<HTMLElement | null>(null);
-
 const layoutStore = useLayoutStore();
 
 const filterNames = [
@@ -51,7 +48,6 @@ console.log(contentClickedHandler);
 
 <template>
   <div
-    ref="sidebarComponentRef"
     :class="!isExpanded ? ` items-start` : ``"
     class="bg-black rounded-r-lg h-full flex flex-col"
   >
