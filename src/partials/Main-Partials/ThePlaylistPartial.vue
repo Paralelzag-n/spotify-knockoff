@@ -5,12 +5,12 @@ import { useSongStore } from "../../pinia/songs.pinia";
 import { usePlaylistsStore } from "../../pinia/playlists.pinia";
 import { ISong } from "../../ts/pinia/songs.types";
 import { IPlaylist } from "../../ts/pinia/playlist.types";
-import { useAverageColor } from "../../composable/useAverageElementColor";
 import BasePlayButton from "../../components/base/BasePlayButton.vue";
 import BaseDropdown from "../../components/base/BaseDropdown.vue";
 import userPfp from "../../assets/img/user_pfp_temporary.png"
 import BaseFilter from "../../components/base/BaseFilter.vue";
 import YourLibrarySearchComponent from "../YourLibrary/YourLibrarySearchComponent.vue";
+import {useLayoutStore} from "../../pinia/layout.pinia.ts";
 
 const selectableDropdownSelectedValue = ref<string>('recents')
 
@@ -18,29 +18,12 @@ const route = useRoute();
 const router = useRouter();
 
 const songStore = useSongStore();
-
 const playlistsStore = usePlaylistsStore();
+const layoutStore = useLayoutStore();
 
 const currentId = ref<string>("");
-
 const filterNames = ref<string[]>([
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
-  "Mutlebi",
+ "Scala", "Javascript", "PHP", "Java", "Rust"
 ])
 
 const currentPlaylistSongs = computed<ISong[]>(() => {
@@ -51,13 +34,12 @@ const currentPlaylist = computed<IPlaylist | null>(() => {
   return playlistsStore.getPlaylistById(currentId.value);
 });
 
-const { dominantColor } = useAverageColor(currentPlaylist);
 
 watch(
   () => route.path,
   () => {
     currentId.value = route.params.id[0];
-    console.log(currentId.value);
+    layoutStore.setMainPartialColor(currentPlaylist.value?.thumbnailAverageColor || null)
   },
   { immediate: true }
 );
@@ -66,7 +48,6 @@ watch(
 <template>
   <div class="p-4 flex flex-col gap-4">
     <div
-      :style="{ backgroundColor: `${dominantColor}` }"
       class="flex rounded-lg items-center p-4 gap-2"
     >
       <img
@@ -76,7 +57,7 @@ watch(
       />
       <div class="flex flex-col">
         <h1 class="text-white">Playlist</h1>
-        <h1 class="text-white font-bold text-7xl">
+        <h1 class="text-white font-bold w-full text-7xl">
           {{ currentPlaylist?.name }}
         </h1>
         <div class="flex items-center gap-3">
@@ -117,7 +98,7 @@ watch(
       </div>
       <div v-for="(song, index) in currentPlaylistSongs">
         <div
-          class="flex items-center gap-4 hover:bg-button-gray-hover p-2 cursor-pointer transition-all"
+          class="flex items-center gap-4 hover:bg-button-gray-hover p-2 cursor-pointer"
         >
           <h1 class="text-white text-xs w-5">{{ index + 1 }}</h1>
           <img

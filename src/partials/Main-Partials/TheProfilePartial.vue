@@ -14,7 +14,7 @@ async function signOutUser() {
     await signOut();
     await router.replace({ name: "sign-in" });
   } catch (error: any) {
-    console.log(error);
+    console.error(error);
   }
 }
 </script>
@@ -22,6 +22,7 @@ async function signOutUser() {
 <template>
   <div class="border-l-blue-600 text-pink-600">PROFILE</div>
   <h3 class="text-white">{{ userStore.user }}</h3>
+  <img :src="userStore.user.photoURL" alt="" />
   <BaseButton :loading="signOutLoading" class="bg-red-500" @click="signOutUser">
     Log Out
   </BaseButton>

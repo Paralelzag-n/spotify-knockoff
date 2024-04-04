@@ -39,7 +39,6 @@ const searchActive = ref<boolean>(false);
 const contentClickedHandler = (value: string): string => {
   return value;
 };
-console.log(contentClickedHandler);
 </script>
 
 <template>
@@ -58,8 +57,8 @@ console.log(contentClickedHandler);
             <h1 class="text-white font-bold">Your library</h1>
           </div>
           <BaseDropDown
-            @contentClicked="contentClickedHandler"
             :content="['create a new playlist', 'create a playlist folder']"
+            @contentClicked="contentClickedHandler"
           />
         </div>
         <BaseFilter v-model:primary="selectedName" :filterNames="filterNames" />

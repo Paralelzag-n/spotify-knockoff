@@ -7,6 +7,8 @@ export interface ILayoutState {
   yourLibraryWidth: number;
   sidebarWidth: number;
   sidebarItem: ESidebarItem;
+
+  mainPartialColor: string;
 }
 
 export enum ESidebarItem {
