@@ -4,20 +4,31 @@ import BasePlayButton from "../base/BasePlayButton.vue";
 import { computed, ref } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useRouter } from "vue-router";
+import { useLayoutStore } from "../../pinia/layout.pinia.ts";
 
 const props = defineProps<{
   playlists: IPlaylist[];
 }>();
 
 const router = useRouter();
+const layoutStore = useLayoutStore();
 
-const changeRoute = (currentId: string) => {
+function changeRoute(currentId: string) {
   router.push({ name: "playlist", params: { id: currentId } });
-};
+}
+
+async function generateNewBackdrop(playlist: IPlaylist) {
+  try {
+    const averageColorHex = playlist.thumbnailAverageColor;
+    layoutStore.setMainPartialColor(averageColorHex);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 const playlistsGridContainerRef = ref<HTMLElement | null>(null);
 const { width: playlistsGridContainerWidth } = useElementSize(
-  playlistsGridContainerRef
+  playlistsGridContainerRef,
 );
 
 const computedGridSize = computed(() => {
@@ -35,10 +46,11 @@ const computedGridSize = computed(() => {
     class="grid gap-3"
   >
     <div
-      @click="changeRoute(playlist.id)"
       v-for="playlist in props.playlists"
       :key="playlist.id"
       class="flex rounded overflow-hidden group cursor-pointer"
+      @click="changeRoute(playlist.id)"
+      @mouseenter="generateNewBackdrop(playlist)"
     >
       <img
         :src="playlist.thumbnail"

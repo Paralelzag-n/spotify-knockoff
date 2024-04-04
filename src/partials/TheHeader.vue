@@ -4,9 +4,11 @@ import { computed, nextTick, ref, watch } from "vue";
 import userProfilePicture from "../assets/img/user_pfp_temporary.png";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
 import { ESidebarItem } from "../ts/pinia/layout.types.ts";
+import { useUserStore } from "../pinia/user.pinia.ts";
 
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 
 const searchInput = ref<string>("");
 const searchInputRef = ref<any>(null);
@@ -132,7 +134,7 @@ watch(
       </div>
       <div class="user-pfp-container" @click="routeToProfile">
         <img
-          :src="userProfilePicture"
+          :src="userStore?.user?.photoURL ?? userProfilePicture"
           alt="user_profile_picture"
           class="w-8 h-8 shadow-card rounded-full object-cover"
         />

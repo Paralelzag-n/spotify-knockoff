@@ -43,7 +43,6 @@ const sizingToggler = (): void => {
 const contentClickedHandler = (value: string): string => {
   return value;
 };
-console.log(contentClickedHandler);
 </script>
 
 <template>

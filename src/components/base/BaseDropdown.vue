@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
+import { useElementBounding } from "@vueuse/core";
 
 const props = defineProps<{
   selectable?: boolean;
-  minimized?: boolean;
   content: string[];
 }>();
 
@@ -13,102 +13,96 @@ const emits = defineEmits<{
 
 const selected = defineModel<string>();
 
-const elementHeightStyle = computed(() => {
-  const elementHeight = props.content.length * 64;
-  return dropDownOpen.value
-    ? { maxHeight: `${elementHeight + 32}px` }
-    : { maxHeight: `0px` };
-});
+const selected = ref<string | null>(null);
+const dropDownOpen = ref(false);
 
-const ComponentRef = ref<HTMLElement | null>(null);
-const closeHandler = (e: any): void => {
-  if (ComponentRef.value && !ComponentRef.value.contains(e.target)) {
-    dropDownOpen.value = false;
-  }
-};
+const dropdownToggleButtonRef = ref(null);
+const { x, y } = useElementBounding(dropdownToggleButtonRef);
 
 onMounted(() => {
-  document.addEventListener("click", (e: any) => closeHandler(e));
+  console.log(dropdownToggleButtonRef.value);
+  console.log(x.value, y.value);
 });
 
-onBeforeUnmount(() => {
-  document.removeEventListener("click", (e: any) => closeHandler(e));
-});
-
-const dropDownOpen = ref<boolean>();
-const dropDownToggler = (): void => {
+const toggleDropDown = () => {
   dropDownOpen.value = !dropDownOpen.value;
 };
 
-const selectHandler = (value: string): void => {
-  if (props.selectable && selected.value === value) {
-    selected.value = "";
-    return;
-  }
-  selected.value = value;
-  if (!props.selectable) {
+const selectHandler = (value: string) => {
+  if (props.selectable) {
+    selected.value = selected.value === value ? "" : value;
+  } else {
     emits("contentClicked", value);
+    if (!props.selectable) toggleDropDown();
   }
 };
+
+const computedDropdownContainerStyle = computed(() => ({
+  top: `${y.value + 20}px`,
+  left: `${x.value}px`,
+  maxHeight: dropDownOpen.value ? `${props.content.length * 64 + 32}px` : "0px",
+}));
+
+const computedDropDownClass = computed(() => ({
+  "bg-button-gray": dropDownOpen.value,
+  "bg-transparent": !dropDownOpen.value,
+  "hover:bg-button-gray-hover cursor-pointer transition-all w-7 h-7 rounded-full hover:scale-110 flex items-center justify-center":
+    true,
+}));
+
+function dropDownItemClass(item: string) {
+  return {
+    "text-primary-500": props.selectable && selected.value === item,
+    "text-white": !props.selectable || selected.value !== item,
+    "flex items-center px-1 py-2 rounded-lg cursor-pointer hover:bg-button-gray-hover justify-between":
+      true,
+  };
+}
 </script>
 
 <template>
-  <div
-    v-if="!props.minimized"
-    ref="ComponentRef"
-    class="flex flex-col gap-1 relative pl-1"
-  >
-    <div class="flex items-center gap-1 hover-text-white">
+  <div class="flex flex-col gap-1 pl-1">
+    <div class="flex items-center gap-1">
       <h1
-        @click="dropDownToggler"
         v-if="props.selectable"
-        class="text-white/60 cursor-pointer text-xs"
+        ref="dropdownToggleButtonRef"
+        class="text-white/60 cursor-pointer hover:text-white text-xs"
+        @click="toggleDropDown"
       >
         {{ selected }}
       </h1>
-      <div
-        @click="dropDownToggler"
-        :class="dropDownOpen ? 'bg-button-gray' : 'bg-transparent'"
-        class="hover:bg-button-gray-hover cursor-pointer transition-all w-7 h-7 rounded-full hover:scale-110 flex items-center justify-center"
-      >
-        <i class="text-white/60 fa-solid fa-bars"></i>
+      <div :class="computedDropDownClass" @click="toggleDropDown">
+        <i class="text-white fa-solid fa-bars" />
       </div>
     </div>
-    <div
-      :style="elementHeightStyle"
-      :class="!props.selectable ? 'z-50' : 'z-40'"
-      class="w-40 absolute shadow-black shadow-2xl text-white transition-all top-9 right-0 overflow-hidden rounded-lg bg-button-gray"
-    >
-      <div class="flex flex-col p-2">
-        <div
-          v-for="item in props.content"
-          class="flex items-center px-1 py-2 rounded-lg cursor-pointer hover:bg-button-gray-hover justify-between"
-          @click="selectHandler(item)"
-        >
-          <h1
-            @click="() => !props.selectable && dropDownToggler()"
+    <teleport to="#fixed-components">
+      <div
+        :style="computedDropdownContainerStyle"
+        class="dropdown-container pointer-events-auto"
+      >
+        <div class="flex flex-col p-2">
+          <div
+            v-for="item in props.content"
             :key="item"
-            :class="
-              props.selectable && selected === item
-                ? 'text-primary-500'
-                : 'text-white'
-            "
+            :class="dropDownItemClass(item)"
+            @click="selectHandler(item)"
           >
-            {{ item }}
-          </h1>
-          <i
-            v-if="props.selectable && selected === item"
-            class="fa-solid text-primary-500 fa-check"
-          ></i>
+            <h1 @click="() => !props.selectable && toggleDropDown()">
+              {{ item }}
+            </h1>
+            <i
+              v-if="props.selectable && selected === item"
+              class="fa-solid text-primary-500 fa-check"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
 <style scoped>
-.hover-text-white:hover h1,
-.hover-text-white:hover i {
-  color: white;
+.dropdown-container {
+  @apply w-40 absolute shadow-black shadow-2xl text-white transition-all overflow-hidden rounded-lg bg-button-gray;
 }
 </style>

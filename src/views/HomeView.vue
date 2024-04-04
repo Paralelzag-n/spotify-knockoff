@@ -17,7 +17,7 @@ const { height: screenHeight, width: screenWidth } = useWindowSize();
 const layoutStore = useLayoutStore();
 const computedSidebarWidth = computed(() => layoutStore.getSidebarWidth);
 const computedYourLibraryWidth = computed(
-  () => layoutStore.getYourLibraryWidth
+  () => layoutStore.getYourLibraryWidth,
 );
 const computedMainViewWidth = computed(
   () =>
@@ -28,7 +28,7 @@ const computedMainViewWidth = computed(
 );
 
 const computedSelectedSidebarItem = computed<ESidebarItem>(
-  () => layoutStore.sidebarItem
+  () => layoutStore.sidebarItem,
 );
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
@@ -44,6 +44,14 @@ const computedDragHandleHeight = computed(() => {
   if (computedMainPartialContainerHeight.value)
     return computedMainPartialContainerHeight.value - 40;
   return 0;
+});
+
+const computedMainPartialGradientStyle = computed(() => {
+  const gradientHexValue = layoutStore.getMainPartialColor;
+  return {
+    width: `${computedMainViewWidth.value}px`,
+    background: `linear-gradient(180deg, ${gradientHexValue}70, transparent)`,
+  };
 });
 
 const handleDragYourLibrary = (deltaX: number) => {
@@ -76,6 +84,10 @@ const handleDragSidebar = (deltaX: number) => {
       <!--  MAIN PARTIAL -->
       <div :style="{ width: `${computedMainViewWidth}px` }" class="pb-2">
         <div class="mainPartialContainer">
+          <div
+            :style="computedMainPartialGradientStyle"
+            class="h-80 absolute top-0 left-0 bg-gradient-to-b from-pink-300/50 to-module -z-10"
+          />
           <router-view />
         </div>
       </div>
@@ -98,6 +110,6 @@ const handleDragSidebar = (deltaX: number) => {
 
 <style lang="scss" scoped>
 .mainPartialContainer {
-  @apply bg-module h-full rounded-lg overflow-auto;
+  @apply bg-module h-full rounded-lg overflow-auto overflow-x-hidden relative z-20;
 }
 </style>

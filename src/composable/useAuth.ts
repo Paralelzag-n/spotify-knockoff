@@ -35,7 +35,7 @@ export function useAuth() {
     } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
+      console.error(errorCode, errorMessage);
     } finally {
       signUpLoading.value = false;
     }
@@ -50,7 +50,7 @@ export function useAuth() {
     } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
+      console.error(errorCode, errorMessage);
     } finally {
       signInLoading.value = false;
     }
@@ -63,7 +63,7 @@ export function useAuth() {
     } catch (error: any) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
+      console.error(errorCode, errorMessage);
     } finally {
       signOutLoading.value = false;
     }
@@ -87,7 +87,7 @@ export function useAuth() {
       const email = error.customData.email;
       const credential = GoogleAuthProvider.credentialFromError(error);
 
-      console.log(errorCode, errorMessage, email, credential);
+      console.error(errorCode, errorMessage, email, credential);
     }
   }
 
