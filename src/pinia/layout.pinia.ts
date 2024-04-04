@@ -25,23 +25,23 @@ export const useLayoutStore = defineStore("layout", {
   },
   actions: {
     adjustSidebarWidth(delta: number): void {
-      const sidebarMaxWidth = 450;
+      const sidebarMaxWidth = 400;
       const sidebarMinWidth = 300;
 
       const newWidth = this.sidebarWidth - delta;
       this.sidebarWidth = Math.max(
         sidebarMinWidth,
-        Math.min(sidebarMaxWidth, newWidth)
+        Math.min(sidebarMaxWidth, newWidth),
       );
     },
     adjustYourLibraryWidth(delta: number): void {
-      const yourLibraryMaxWidth = 450;
-      const yourLibraryMinWidth = 80;
+      const yourLibraryMaxWidth = 400;
+      const yourLibraryMinWidth = 120;
 
       const newWidth = this.yourLibraryWidth + delta;
       this.yourLibraryWidth = Math.max(
         yourLibraryMinWidth,
-        Math.min(yourLibraryMaxWidth, newWidth)
+        Math.min(yourLibraryMaxWidth, newWidth),
       );
     },
     setYourLibraryWidth(width: number): void {

@@ -34,7 +34,7 @@ const sizingToggler = (): void => {
 
     console.log("if");
   } else {
-    layoutStore.setYourLibraryWidth(80);
+    layoutStore.setYourLibraryWidth(120);
 
     console.log("else");
   }
