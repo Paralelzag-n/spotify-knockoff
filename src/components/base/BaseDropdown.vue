@@ -58,11 +58,11 @@ const selectHandler = (value: string): void => {
     ref="ComponentRef"
     class="flex flex-col gap-1 relative pl-1"
   >
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1 hover-text-white">
       <h1
         @click="dropDownToggler"
         v-if="props.selectable"
-        class="text-white/60 cursor-pointer hover:text-white text-xs"
+        class="text-white/60 cursor-pointer text-xs"
       >
         {{ selected }}
       </h1>
@@ -71,7 +71,7 @@ const selectHandler = (value: string): void => {
         :class="dropDownOpen ? 'bg-button-gray' : 'bg-transparent'"
         class="hover:bg-button-gray-hover cursor-pointer transition-all w-7 h-7 rounded-full hover:scale-110 flex items-center justify-center"
       >
-        <i class="text-white fa-solid fa-bars"></i>
+        <i class="text-white/60 fa-solid fa-bars"></i>
       </div>
     </div>
     <div
@@ -106,4 +106,9 @@ const selectHandler = (value: string): void => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.hover-text-white:hover h1,
+.hover-text-white:hover i {
+  color: white;
+}
+</style>

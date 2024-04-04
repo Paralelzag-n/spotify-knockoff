@@ -4,7 +4,7 @@ import tempImg from "../../assets/lofi-girl-lofi.gif";
 
 <template>
   <div class="flex flex-col gap-2">
-    <img class="w-72 rounded-lg" :src="tempImg" alt="" />
+    <img class="w-full rounded-lg" :src="tempImg" alt="" />
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-white font-bold text-xl hover:underline cursor-pointer">

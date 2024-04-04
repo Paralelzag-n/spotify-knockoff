@@ -8,8 +8,12 @@ import BaseDropDown from "../../components/base/BaseDropdown.vue";
 import YourLibrarySearchComponent from "./YourLibrarySearchComponent.vue";
 import YourLibraryPlaylistCardComponent from "./YourLibraryPlaylistCardComponent.vue";
 
+import { useLayoutStore } from "../../pinia/layout.pinia";
+
 const sidebarHeaderRef = ref<HTMLElement | null>(null);
 const sidebarComponentRef = ref<HTMLElement | null>(null);
+
+const layoutStore = useLayoutStore();
 
 const { height: sidebarHeaderRefHeight } = useElementSize(sidebarHeaderRef);
 const { height: sidebarComponentHeight } = useElementSize(sidebarComponentRef);
@@ -35,6 +39,22 @@ const searchedContent = ref<string>();
 const selectedName = ref<string>("");
 const selectableDropdownSelectedValue = ref<string>("");
 const searchActive = ref<boolean>(false);
+const isExpanded = computed(() => {
+  return layoutStore.getYourLibraryWidth > 120;
+});
+
+const sizingToggler = (): void => {
+  console.log("isExpanded :", isExpanded.value);
+  if (!isExpanded.value) {
+    layoutStore.setYourLibraryWidth(300);
+
+    console.log("if");
+  } else {
+    layoutStore.setYourLibraryWidth(80);
+
+    console.log("else");
+  }
+};
 
 const contentClickedHandler = (value: string): string => {
   return value;
@@ -45,31 +65,45 @@ console.log(contentClickedHandler);
 <template>
   <div
     ref="sidebarComponentRef"
-    class="bg-black rounded-r-lg h-full flex flex-col"
+    :class="!isExpanded ? ` items-start` : ``"
+    class="bg-black rounded-r-lg flex flex-col"
   >
-    <div class="flex flex-col bg-module rounded-lg">
+    <div
+      :class="!isExpanded ? ` gap-3 items-center` : ``"
+      class="flex flex-col pt-2 w-full bg-module rounded-lg"
+    >
       <div
         ref="sidebarHeaderRef"
+        :class="!isExpanded ? 'items-center ' : ''"
         class="flex flex-col gap-2 justify-between p-4 pb-2"
       >
         <div class="flex justify-between items-center">
           <div class="flex gap-2 items-center">
-            <i class="fa-solid fa-xl text-white fa-compact-disc"></i>
-            <h1 class="text-white font-bold">Your library</h1>
+            <i
+              @click="sizingToggler"
+              class="fa-solid fa-xl text-white fa-compact-disc"
+            ></i>
+            <h1 v-if="isExpanded" class="text-white font-bold">Your library</h1>
           </div>
           <BaseDropDown
+            v-if="isExpanded"
             @contentClicked="contentClickedHandler"
             :content="['create a new playlist', 'create a playlist folder']"
           />
         </div>
-        <BaseFilter v-model:primary="selectedName" :filterNames="filterNames" />
+        <BaseFilter
+          v-if="isExpanded"
+          v-model:primary="selectedName"
+          :filterNames="filterNames"
+        />
       </div>
 
       <div
         :style="computedPlaylistsContainerHeightStyle"
-        class="overflow-auto px-3 pb-2"
+        :class="isExpanded ? 'px-3' : 'px-1'"
+        class="overflow-auto"
       >
-        <div class="flex items-center justify-between pb-2">
+        <div v-if="isExpanded" class="flex items-center justify-between pb-2">
           <YourLibrarySearchComponent
             v-model="searchedContent"
             v-model:primary="searchActive"
@@ -81,7 +115,11 @@ console.log(contentClickedHandler);
             :selectable="true"
           />
         </div>
-        <YourLibraryPlaylistCardComponent ref="playlistCardComponent" />
+
+        <YourLibraryPlaylistCardComponent
+          :isExpanded="isExpanded"
+          ref="playlistCardComponent"
+        />
       </div>
     </div>
   </div>

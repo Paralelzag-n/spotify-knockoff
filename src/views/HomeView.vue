@@ -24,7 +24,7 @@ const computedMainViewWidth = computed(
     screenWidth.value -
     computedSidebarWidth.value -
     computedYourLibraryWidth.value -
-    16,
+    16
 );
 
 const computedSelectedSidebarItem = computed<ESidebarItem>(
@@ -62,9 +62,9 @@ const handleDragSidebar = (deltaX: number) => {
       <!--  START PARTIAL -->
       <div
         :style="{ width: `${computedYourLibraryWidth}px` }"
-        class="flex-shrink-0 ps-2 pb-2 h-full"
+        class="flex-grow flex-shrink-0 ps-2 pb-2 h-full"
       >
-        <SidebarComponent class="h-full" />
+        <SidebarComponent class="h-full w-full" />
       </div>
 
       <DragHandle
