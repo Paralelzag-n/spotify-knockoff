@@ -12,8 +12,6 @@ const emits = defineEmits<{
 }>();
 
 const selected = defineModel<string>();
-
-const selected = ref<string | null>(null);
 const dropDownOpen = ref(false);
 
 const dropdownToggleButtonRef = ref(null);
