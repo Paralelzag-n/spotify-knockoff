@@ -10,6 +10,10 @@ import { useLayoutStore } from "../../pinia/layout.pinia";
 
 const layoutStore = useLayoutStore();
 
+const computedYourLibraryWidth = computed(
+  () => layoutStore.getYourLibraryWidth
+);
+
 const filterNames = [
   "Playlists",
   "Artists",
@@ -51,21 +55,27 @@ const contentClickedHandler = (value: string): string => {
     class="bg-black rounded-r-lg h-full flex flex-col"
   >
     <div
-      :class="!isExpanded ? ` gap-3 items-center` : ``"
-      class="flex flex-col pt-2 h-full w-full bg-module rounded-lg"
+      :class="!isExpanded ? ` gap-3 items-center pt-3` : ``"
+      class="flex flex-col h-full w-full bg-module rounded-lg"
     >
       <div
         ref="sidebarHeaderRef"
-        :class="!isExpanded ? 'items-center ' : ''"
-        class="flex flex-col gap-2 justify-between p-4 pb-2"
+        class="flex flex-col gap-2 justify-between p-4"
       >
         <div class="flex justify-between items-center">
-          <div class="flex gap-2 items-center">
+          <div
+            @click="sizingToggler"
+            class="flex group gap-2 items-center cursor-pointer"
+          >
             <i
-              class="fa-solid fa-xl text-white fa-compact-disc"
-              @click="sizingToggler"
+              class="fa-solid fa-xl text-white/60 bg-button-gray-hover transition-all group-hover:text-white fa-compact-disc"
             ></i>
-            <h1 v-if="isExpanded" class="text-white font-bold">Your library</h1>
+            <h1
+              v-if="isExpanded"
+              class="text-white/60 transition-all group-hover:text-white font-bold"
+            >
+              Your library
+            </h1>
           </div>
           <BaseDropDown
             v-if="isExpanded"
@@ -77,6 +87,7 @@ const contentClickedHandler = (value: string): string => {
           v-if="isExpanded"
           v-model:primary="selectedName"
           :filterNames="filterNames"
+          :style="{ width: `${computedYourLibraryWidth - 36}px` }"
         />
       </div>
 
