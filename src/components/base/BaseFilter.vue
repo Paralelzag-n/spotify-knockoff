@@ -18,12 +18,7 @@ const { width: visibleElementWidth } = useElementSize(visibleElement);
 const translateX = ref<number>(0);
 const shouldScrollExist = computed(() => {
   if (fullElement.value && visibleElement.value) {
-    console.log(
-      visibleElement.value.clientWidth,
-      " : ",
-      fullElement.value.scrollWidth
-    );
-    return visibleElementWidth.value < fullElement.value.scrollWidth;
+    return visibleElementWidth.value < fullElement.value.scrollWidth - 5;
   }
 });
 
@@ -97,7 +92,7 @@ const scrollByVisibleWidth = (back: boolean) => {
 
 <template>
   <div class="relative">
-    <div ref="visibleElement" class="overflow-hidden w-full py-2 rounded-full">
+    <div ref="visibleElement" class="overflow-hidden py-2 rounded-full">
       <div
         ref="fullElement"
         :style="{ transform: `translateX(-${translateX}px)` }"
