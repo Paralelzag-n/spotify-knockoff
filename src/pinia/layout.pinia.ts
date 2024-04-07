@@ -8,6 +8,7 @@ export const useLayoutStore = defineStore("layout", {
     sidebarItem: ESidebarItem.SONG_DETAILS_SIDEBAR,
 
     mainPartialColor: "#5963ee",
+    mainPartialScrolledDown: false,
   }),
   getters: {
     getYourLibraryWidth: (state: ILayoutState): number => {
@@ -21,6 +22,9 @@ export const useLayoutStore = defineStore("layout", {
     },
     getMainPartialColor: (state: ILayoutState): string => {
       return state.mainPartialColor;
+    },
+    getMainPartialScrolledDown: (state: ILayoutState): boolean => {
+      return state.mainPartialScrolledDown;
     },
   },
   actions: {
@@ -51,6 +55,9 @@ export const useLayoutStore = defineStore("layout", {
       color
         ? (this.mainPartialColor = color)
         : (this.mainPartialColor = "#5963ee");
+    },
+    setMainPartialScrolledDown(scrolled: boolean): void {
+      this.mainPartialScrolledDown = scrolled;
     },
   },
 });
