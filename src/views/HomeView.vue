@@ -127,6 +127,6 @@ const handleDragSidebar = (deltaX: number) => {
 
 <style lang="scss" scoped>
 .mainPartialContainer {
-  @apply bg-module h-full overflow-auto overflow-x-hidden relative z-20;
+  @apply bg-module h-full rounded-lg overflow-auto overflow-x-hidden relative z-20;
 }
 </style>
