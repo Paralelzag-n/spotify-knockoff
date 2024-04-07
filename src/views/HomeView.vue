@@ -24,7 +24,7 @@ const computedMainViewWidth = computed(
     screenWidth.value -
     computedSidebarWidth.value -
     computedYourLibraryWidth.value -
-    16
+    16,
 );
 
 const computedSelectedSidebarItem = computed<ESidebarItem>(
