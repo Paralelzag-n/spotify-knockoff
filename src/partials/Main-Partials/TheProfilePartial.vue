@@ -5,20 +5,22 @@ import { useAuth } from "../../composable/useAuth.ts";
 import { User } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { computed, ref } from "vue";
-import { useElementSize } from "@vueuse/core";
+import ProfilePictureComponent from "../../components/ProfilePictureComponent.vue";
+import EditProfileDialog from "../../components/dialog/EditProfileDialog.vue";
 
 const router = useRouter();
-
 const userStore = useUserStore();
 
-const theProfilePartialRef = ref<HTMLElement | null>(null);
-const { width: theProfilePartialWidth } = useElementSize(theProfilePartialRef);
-
 const { signOut, signOutLoading } = useAuth();
+const editProfileDialog = ref<boolean>(false);
 
 const computedUser = computed<User | null>(() => {
   return userStore.getUser;
 });
+
+function editProfile() {
+  editProfileDialog.value = true;
+}
 
 async function signOutUser() {
   try {
@@ -32,23 +34,12 @@ async function signOutUser() {
 
 <template>
   <main class="p-4">
+    <EditProfileDialog v-model="editProfileDialog" />
     <div class="flex gap-6">
-      <div
-        class="relative h-52 w-52 rounded-full overflow-hidden cursor-pointer"
-      >
-        <img
-          v-if="computedUser?.photoURL"
-          :src="computedUser?.photoURL"
-          alt="user profile"
-          class="rounded-full shadow-card h-full w-full"
-        />
-        <div
-          class="absolute top-1/2 left-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 opacity-0 bg-module/60 hover:opacity-100 transition-all flex justify-center items-center flex-col gap-2"
-        >
-          <i class="fa-solid fa-pen text-white" />
-          <p class="text-white">Choose photo</p>
-        </div>
-      </div>
+      <ProfilePictureComponent
+        :image-url="computedUser?.photoURL"
+        @click="editProfile"
+      />
       <div class="flex justify-end flex-col gap-3">
         <p class="text-white text-sm">Profile</p>
         <h2 class="text-white text-7xl font-bold">
