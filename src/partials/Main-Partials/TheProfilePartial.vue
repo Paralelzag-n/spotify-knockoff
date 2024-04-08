@@ -37,6 +37,7 @@ async function signOutUser() {
     <EditProfileDialog v-model="editProfileDialog" />
     <div class="flex gap-6">
       <ProfilePictureComponent
+        v-if="computedUser?.photoURL"
         :image-url="computedUser?.photoURL"
         @click="editProfile"
       />

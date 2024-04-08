@@ -110,6 +110,7 @@ onMounted(() => {
     />
     <div class="flex gap-6">
       <ProfilePictureComponent
+        v-if="computedFileInputImage"
         :image-url="computedFileInputImage"
         @click="uploadImage"
       />
@@ -120,7 +121,7 @@ onMounted(() => {
         <BaseInput
           v-model="displayName"
           :error="displayNameError"
-          :placeholder="computedUser?.displayName"
+          :placeholder="computedUser?.displayName ?? ''"
           label="Username"
         />
         <div class="flex justify-end">
