@@ -1,14 +1,20 @@
 import { defineStore } from "pinia";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../firebase";
+import { IUserState } from "../ts/pinia/user.types.ts";
 
 export const useUserStore = defineStore("user", {
-  state: () => ({
+  state: (): IUserState => ({
     user: null,
     authInitialized: false,
   }),
+  getters: {
+    getUser: (state: IUserState): User | null => {
+      return state.user;
+    },
+  },
   actions: {
-    setUser(user: any): void {
+    setUser(user: User): void {
       this.user = user;
       this.authInitialized = true;
     },
@@ -17,7 +23,7 @@ export const useUserStore = defineStore("user", {
       this.authInitialized = false;
     },
     initializeAuthListener() {
-      onAuthStateChanged(auth, (user: any): void => {
+      onAuthStateChanged(auth, (user: User | null): void => {
         user ? this.setUser(user) : this.clearUser();
       });
     },

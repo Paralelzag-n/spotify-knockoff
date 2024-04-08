@@ -9,6 +9,7 @@ export interface ILayoutState {
   sidebarItem: ESidebarItem;
 
   mainPartialColor: string;
+  mainPartialScrolledDown: boolean;
 }
 
 export enum ESidebarItem {

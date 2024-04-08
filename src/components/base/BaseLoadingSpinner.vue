@@ -4,6 +4,7 @@ import { computed } from "vue";
 
 const props = withDefaults(defineProps<IBaseLoadingSpinnerProps>(), {
   size: 10,
+  color: "white",
 });
 
 const computedLoaderSize = computed(() => {
@@ -15,12 +16,16 @@ const computedLoaderSize = computed(() => {
 </script>
 
 <template>
-  <span :style="computedLoaderSize" class="loader" />
+  <span
+    :class="`border-${props.color}`"
+    :style="computedLoaderSize"
+    class="loader"
+  />
 </template>
 
 <style lang="scss" scoped>
 .loader {
-  border: 4px solid #fff;
+  border: 4px solid;
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

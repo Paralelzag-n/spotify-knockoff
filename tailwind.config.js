@@ -8,6 +8,8 @@ export default {
         module: "#121212",
         "br-module": "#424242",
 
+        card: "#282828",
+
         "br-button": "#727272",
         "br-button-hover": "#ffffff",
 

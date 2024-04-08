@@ -6,6 +6,7 @@ import { IBaseButtonProps } from "../../ts/components/base/BaseButton.types.ts";
 const props = withDefaults(defineProps<IBaseButtonProps>(), {
   loading: false,
   type: "button",
+  text: "tx-button-white",
 });
 
 const computedButtonStyle = computed(() => {
@@ -21,15 +22,15 @@ const computedButtonStyle = computed(() => {
     <div class="flex justify-center">
       <i
         v-if="props.icon"
-        :class="props.icon"
-        class="fa-brands fa-solid text-tx-button-white"
+        :class="`${props.icon} text-${props.text}`"
+        class="fa-brands fa-solid"
       />
     </div>
     <div class="col-span-3 flex justify-center">
-      <p v-if="!props.loading" class="text-tx-button-white font-bold">
+      <p v-if="!props.loading" :class="props.text" class="font-bold">
         <slot />
       </p>
-      <BaseLoadingSpinner v-else :size="7" />
+      <BaseLoadingSpinner v-else :color="props.text" :size="7" />
     </div>
   </button>
 </template>

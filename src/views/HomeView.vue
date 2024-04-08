@@ -1,15 +1,27 @@
 <script lang="ts" setup>
 import SidebarComponent from "../partials/YourLibrary/YourLibraryComponent.vue";
-import { computed, ref } from "vue";
-import { useElementSize, useWindowSize } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
+import { useElementSize, useScroll, useWindowSize } from "@vueuse/core";
 import TheHeader from "../partials/TheHeader.vue";
 import DragHandle from "../components/DragHandle.vue";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
 import { ESidebarItem } from "../ts/pinia/layout.types.ts";
+import MainPartialHeader from "../components/MainPartialHeader.vue";
 
 const yourLibraryHandleRef = ref<HTMLElement | null>(null);
 const sidebarHandleRef = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
+
+const mainPartialContainerRef = ref<HTMLElement | null>(null);
+const { y: mainPartialContainerScroll } = useScroll(mainPartialContainerRef);
+const scrollEnabledWidth = 225;
+
+watch(mainPartialContainerScroll, (value, oldValue) => {
+  if (value > scrollEnabledWidth && oldValue <= scrollEnabledWidth)
+    layoutStore.setMainPartialScrolledDown(true);
+  else if (value <= scrollEnabledWidth && oldValue > scrollEnabledWidth)
+    layoutStore.setMainPartialScrolledDown(false);
+});
 
 const { height: headerHeight } = useElementSize(headerRef);
 const { height: screenHeight, width: screenWidth } = useWindowSize();
@@ -19,6 +31,7 @@ const computedSidebarWidth = computed(() => layoutStore.getSidebarWidth);
 const computedYourLibraryWidth = computed(
   () => layoutStore.getYourLibraryWidth,
 );
+
 const computedMainViewWidth = computed(
   () =>
     screenWidth.value -
@@ -82,8 +95,12 @@ const handleDragSidebar = (deltaX: number) => {
       />
 
       <!--  MAIN PARTIAL -->
-      <div :style="{ width: `${computedMainViewWidth}px` }" class="pb-2">
-        <div class="mainPartialContainer">
+      <div
+        :style="{ width: `${computedMainViewWidth}px` }"
+        class="pb-2 relative rounded-lg overflow-hidden"
+      >
+        <MainPartialHeader :width="computedMainViewWidth" />
+        <div ref="mainPartialContainerRef" class="mainPartialContainer">
           <div
             :style="computedMainPartialGradientStyle"
             class="h-80 absolute top-0 left-0 bg-gradient-to-b from-pink-300/50 to-module -z-10"
