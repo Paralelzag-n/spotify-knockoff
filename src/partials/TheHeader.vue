@@ -3,7 +3,6 @@ import { useRoute, useRouter } from "vue-router";
 import { computed, nextTick, ref, watch } from "vue";
 import userProfilePicture from "../assets/img/user_pfp_temporary.png";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
-import { ESidebarItem } from "../ts/pinia/layout.types.ts";
 import { useUserStore } from "../pinia/user.pinia.ts";
 
 const route = useRoute();
@@ -125,9 +124,7 @@ watch(
       </div>
       <div
         class="home-link-button link-icon"
-        @click="
-          layoutStore.setSidebarItem(ESidebarItem.FRIEND_ACTIVITY_SIDEBAR)
-        "
+        @click="layoutStore.setSidebarItem('FRIEND_ACTIVITY_SIDEBAR')"
       >
         <div class="home-link-button-bg" />
         <i class="fa-solid fa-users home-link-icon" />

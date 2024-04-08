@@ -6,14 +6,20 @@ import TheFriendActivitySidebar from "../../partials/sidebar-partials/TheFriendA
 export interface ILayoutState {
   yourLibraryWidth: number;
   sidebarWidth: number;
-  sidebarItem: ESidebarItem;
+  sidebarItem: SidebarItemKey;
 
   mainPartialColor: string;
   mainPartialScrolledDown: boolean;
 }
 
-export enum ESidebarItem {
-  SONG_DETAILS_SIDEBAR = markRaw(TheSongDetailsSidebar),
-  QUEUE_SIDEBAR = markRaw(TheQueueSidebar),
-  FRIEND_ACTIVITY_SIDEBAR = markRaw(TheFriendActivitySidebar),
-}
+export type SidebarItemKey =
+  | "SONG_DETAILS_SIDEBAR"
+  | "QUEUE_SIDEBAR"
+  | "FRIEND_ACTIVITY_SIDEBAR";
+
+// Mapping keys to components
+export const sidebarComponentMap = {
+  SONG_DETAILS_SIDEBAR: markRaw(TheSongDetailsSidebar),
+  QUEUE_SIDEBAR: markRaw(TheQueueSidebar),
+  FRIEND_ACTIVITY_SIDEBAR: markRaw(TheFriendActivitySidebar),
+};

@@ -1,11 +1,15 @@
 import { defineStore } from "pinia";
-import { ESidebarItem, ILayoutState } from "../ts/pinia/layout.types.ts";
+import {
+  ILayoutState,
+  sidebarComponentMap,
+  SidebarItemKey,
+} from "../ts/pinia/layout.types.ts";
 
 export const useLayoutStore = defineStore("layout", {
   state: (): ILayoutState => ({
     yourLibraryWidth: 360,
     sidebarWidth: 360,
-    sidebarItem: ESidebarItem.SONG_DETAILS_SIDEBAR,
+    sidebarItem: "SONG_DETAILS_SIDEBAR",
 
     mainPartialColor: "#5963ee",
     mainPartialScrolledDown: false,
@@ -17,8 +21,8 @@ export const useLayoutStore = defineStore("layout", {
     getSidebarWidth: (state: ILayoutState): number => {
       return state.sidebarWidth;
     },
-    getSelectedSidebarItem: (state: ILayoutState): ESidebarItem => {
-      return state.sidebarItem;
+    getSidebarComponent: (state: ILayoutState): any => {
+      return sidebarComponentMap[state.sidebarItem];
     },
     getMainPartialColor: (state: ILayoutState): string => {
       return state.mainPartialColor;
@@ -51,8 +55,8 @@ export const useLayoutStore = defineStore("layout", {
     setYourLibraryWidth(width: number): void {
       this.yourLibraryWidth = width;
     },
-    setSidebarItem(sidebar: ESidebarItem): void {
-      this.sidebarItem = sidebar;
+    setSidebarItem(sidebarKey: SidebarItemKey): void {
+      this.sidebarItem = sidebarKey;
     },
     setMainPartialColor(color: string | null): void {
       color

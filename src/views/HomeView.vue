@@ -5,7 +5,6 @@ import { useElementSize, useScroll, useWindowSize } from "@vueuse/core";
 import TheHeader from "../partials/TheHeader.vue";
 import DragHandle from "../components/DragHandle.vue";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
-import { ESidebarItem } from "../ts/pinia/layout.types.ts";
 import MainPartialHeader from "../components/MainPartialHeader.vue";
 
 const yourLibraryHandleRef = ref<HTMLElement | null>(null);
@@ -40,8 +39,8 @@ const computedMainViewWidth = computed(
     16,
 );
 
-const computedSelectedSidebarItem = computed<ESidebarItem>(
-  () => layoutStore.sidebarItem,
+const computedSelectedSidebarItem = computed(
+  () => layoutStore.getSidebarComponent,
 );
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
