@@ -9,6 +9,8 @@ const props = defineProps<{
 
 const selected = defineModel<string>("primary");
 
+const selectedItems = ref<string[]>([]);
+
 const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
 const scrolledToEnd = ref<boolean>(false);
@@ -50,9 +52,39 @@ const isScrolledToEnd = computed(
 const selectHandler = (item: string): void => {
   if (selected.value === item) {
     selected.value = "";
+    selectedItems.value = [];
     return;
   }
-  selected.value = item;
+
+  if (selectedItems.value.length < 2) {
+    selected.value = item;
+    selectedItems.value?.push(item);
+    console.log(selectedItems.value);
+    return;
+  }
+
+  if (
+    selectedItems.value?.length === 2 &&
+    !selectedItems.value.includes(item)
+  ) {
+    return;
+  }
+  if (selectedItems.value?.length === 2 && selectedItems.value.includes(item)) {
+    selected.value = selectedItems.value.find((element) => element !== item);
+    console.log(selected.value);
+    selectedItems.value = selectedItems.value.filter(
+      (element) => element === selected.value
+    );
+
+    console.log(3);
+    return;
+  }
+
+  if (selected.value && selected.value != item) {
+    selectedItems.value?.push(item);
+    console.log(selectedItems.value);
+    return;
+  }
 };
 
 const scrollByVisibleWidth = (back: boolean) => {
@@ -98,18 +130,42 @@ const scrollByVisibleWidth = (back: boolean) => {
         :style="{ transform: `translateX(-${translateX}px)` }"
         class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
       >
-        <div
-          v-for="item in props.filterNames"
-          :key="item"
-          :class="{
-            'bg-primary-500 text-white hover:bg-primary-400': selected === item,
-            'hover:bg-button-gray-hover text-white': selected !== item,
-          }"
-          class="bg-button-gray cursor-pointer text-nowrap text-center leading-6 w-fit text-sm px-3 h-8 flex items-center justify-center rounded-full"
-          @click="selectHandler(item)"
-        >
-          {{ item }}
-        </div>
+        <template v-if="selectedItems?.length === 2">
+          <i
+            @click="
+              () => {
+                selectedItems.length = 0;
+                selected = '';
+              }
+            "
+            class="fa-solid fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
+          ></i>
+          <div class="text-white cursor-pointer flex items-center gap-1">
+            <div
+              v-for="item in selectedItems"
+              :key="item"
+              @click="selectHandler(item)"
+              class="hover:bg-primary-400 text-nowrap text-center flex items-center leading-6 w-fit text-sm px-3 h-8 rounded-full bg-primary-500"
+            >
+              {{ item }}
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="item in props.filterNames"
+            :key="item"
+            :class="{
+              'bg-primary-500 text-white hover:bg-primary-400':
+                selected === item,
+              'hover:bg-button-gray-hover text-white': selected !== item,
+            }"
+            class="bg-button-gray cursor-pointer text-nowrap text-center leading-6 w-fit text-sm px-3 h-8 flex items-center justify-center rounded-full"
+            @click="selectHandler(item)"
+          >
+            {{ item }}
+          </div>
+        </template>
       </div>
     </div>
     <transition name="slide-fade-left">
