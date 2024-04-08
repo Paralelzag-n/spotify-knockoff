@@ -5,7 +5,7 @@ export function useDrag(onDrag: (deltaX: number) => void) {
   const isDragging = ref(false);
 
   const onMousedown = (event: MouseEvent) => {
-    document.body.style.cursor = "grabbing";
+    document.body.style.cursor = "col-resize";
     lastX.value = event.clientX;
     isDragging.value = true;
   };

@@ -2,25 +2,17 @@
 import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
 
-import { useElementSize } from "@vueuse/core";
-
 import BaseDropDown from "../../components/base/BaseDropdown.vue";
 import YourLibrarySearchComponent from "./YourLibrarySearchComponent.vue";
 import YourLibraryPlaylistCardComponent from "./YourLibraryPlaylistCardComponent.vue";
 
-const sidebarHeaderRef = ref<HTMLElement | null>(null);
-const sidebarComponentRef = ref<HTMLElement | null>(null);
+import { useLayoutStore } from "../../pinia/layout.pinia";
 
-const { height: sidebarHeaderRefHeight } = useElementSize(sidebarHeaderRef);
-const { height: sidebarComponentHeight } = useElementSize(sidebarComponentRef);
+const layoutStore = useLayoutStore();
 
-const computedPlaylistsContainerHeight = computed<number>(() => {
-  return sidebarComponentHeight.value - sidebarHeaderRefHeight.value - 26;
-});
-
-const computedPlaylistsContainerHeightStyle = computed(() => {
-  return { height: `${computedPlaylistsContainerHeight.value}px` };
-});
+const computedYourLibraryWidth = computed(
+  () => layoutStore.getYourLibraryWidth
+);
 
 const filterNames = [
   "Playlists",
@@ -35,6 +27,22 @@ const searchedContent = ref<string>();
 const selectedName = ref<string>("");
 const selectableDropdownSelectedValue = ref<string>("");
 const searchActive = ref<boolean>(false);
+const isExpanded = computed(() => {
+  return layoutStore.getYourLibraryWidth > 130;
+});
+
+const sizingToggler = (): void => {
+  console.log("isExpanded :", isExpanded.value);
+  if (!isExpanded.value) {
+    layoutStore.setYourLibraryWidth(300);
+
+    console.log("if");
+  } else {
+    layoutStore.setYourLibraryWidth(120);
+
+    console.log("else");
+  }
+};
 
 const contentClickedHandler = (value: string): string => {
   return value;
@@ -43,32 +51,48 @@ const contentClickedHandler = (value: string): string => {
 
 <template>
   <div
-    ref="sidebarComponentRef"
+    :class="!isExpanded ? ` items-start` : ``"
     class="bg-black rounded-r-lg h-full flex flex-col"
   >
-    <div class="flex flex-col bg-module rounded-lg">
+    <div
+      :class="!isExpanded ? ` gap-3 items-center pt-3` : ``"
+      class="flex flex-col h-full w-full bg-module rounded-lg"
+    >
       <div
         ref="sidebarHeaderRef"
-        class="flex flex-col gap-2 justify-between p-4 pb-2"
+        class="flex flex-col gap-2 justify-between p-4"
       >
         <div class="flex justify-between items-center">
-          <div class="flex gap-2 items-center">
-            <i class="fa-solid fa-xl text-white fa-compact-disc"></i>
-            <h1 class="text-white font-bold">Your library</h1>
+          <div
+            @click="sizingToggler"
+            class="flex group gap-2 items-center cursor-pointer"
+          >
+            <i
+              class="fa-solid fa-xl text-white/60 bg-button-gray-hover transition-all group-hover:text-white fa-compact-disc"
+            ></i>
+            <h1
+              v-if="isExpanded"
+              class="text-white/60 transition-all group-hover:text-white font-bold"
+            >
+              Your library
+            </h1>
           </div>
           <BaseDropDown
+            v-if="isExpanded"
             :content="['create a new playlist', 'create a playlist folder']"
             @contentClicked="contentClickedHandler"
           />
         </div>
-        <BaseFilter v-model:primary="selectedName" :filterNames="filterNames" />
+        <BaseFilter
+          v-if="isExpanded"
+          v-model:primary="selectedName"
+          :filterNames="filterNames"
+          :style="{ width: `${computedYourLibraryWidth - 36}px` }"
+        />
       </div>
 
-      <div
-        :style="computedPlaylistsContainerHeightStyle"
-        class="overflow-auto px-3 pb-2"
-      >
-        <div class="flex items-center justify-between pb-2">
+      <div class="overflow-auto px-2">
+        <div v-if="isExpanded" class="flex items-center justify-between pb-2">
           <YourLibrarySearchComponent
             v-model="searchedContent"
             v-model:primary="searchActive"
@@ -80,7 +104,11 @@ const contentClickedHandler = (value: string): string => {
             :selectable="true"
           />
         </div>
-        <YourLibraryPlaylistCardComponent ref="playlistCardComponent" />
+
+        <YourLibraryPlaylistCardComponent
+          ref="playlistCardComponent"
+          :isExpanded="isExpanded"
+        />
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen">
+  <main class="min-h-screen overflow-hidden">
     <RouterView />
     <div
       id="fixed-components"

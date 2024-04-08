@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { computed, defineModel, ref } from "vue";
+import { computed, defineModel, ref, watch } from "vue";
+
+import { useElementSize } from "@vueuse/core";
 
 const props = defineProps<{
   filterNames: string[];
@@ -11,11 +13,30 @@ const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
 const scrolledToEnd = ref<boolean>(false);
 const scrolledToStart = ref<boolean>(true);
+const { width: visibleElementWidth } = useElementSize(visibleElement);
 
 const translateX = ref<number>(0);
 const shouldScrollExist = computed(() => {
   if (fullElement.value && visibleElement.value) {
-    return visibleElement.value.clientWidth < fullElement.value.scrollWidth;
+    return visibleElementWidth.value < fullElement.value.scrollWidth - 5;
+  }
+});
+
+watch(visibleElementWidth, (newVal, oldVal) => {
+  if (!fullElement.value) return;
+
+  translateX.value = 0;
+  scrolledToStart.value = true;
+  scrolledToEnd.value = false;
+
+  if (visibleElementWidth.value < fullElement.value.scrollWidth) {
+    scrolledToEnd.value = false;
+  }
+
+  if (newVal > oldVal) {
+    translateX.value > visibleElementWidth.value
+      ? (translateX.value = 0)
+      : null;
   }
 });
 
@@ -37,27 +58,32 @@ const selectHandler = (item: string): void => {
 const scrollByVisibleWidth = (back: boolean) => {
   if (visibleElement.value && fullElement.value) {
     const actualWidth = fullElement.value.scrollWidth;
-    const visibleWidth = visibleElement.value.clientWidth;
 
     if (!back) {
-      if (translateX.value + visibleWidth >= actualWidth - visibleWidth) {
-        translateX.value = actualWidth - visibleWidth;
+      if (
+        translateX.value + visibleElementWidth.value >=
+        actualWidth - visibleElementWidth.value
+      ) {
+        translateX.value = actualWidth - visibleElementWidth.value;
 
         scrolledToEnd.value = true;
         scrolledToStart.value = false;
         return;
       }
-      translateX.value += visibleWidth;
+      translateX.value += visibleElementWidth.value;
       scrolledToStart.value = false;
     } else {
-      if (translateX.value - visibleWidth <= 0 || translateX.value === 0) {
+      if (
+        translateX.value - visibleElementWidth.value <= 0 ||
+        translateX.value === 0
+      ) {
         translateX.value = 0;
         scrolledToStart.value = true;
         scrolledToEnd.value = false;
         return;
       }
 
-      translateX.value -= visibleWidth;
+      translateX.value -= visibleElementWidth.value;
       scrolledToEnd.value = false;
     }
   }
@@ -92,7 +118,7 @@ const scrollByVisibleWidth = (back: boolean) => {
         class="absolute top-1/2 -translate-y-1/2 -left-1"
       >
         <div
-          class="w-24 h-8 absolute pointer-events-none top-0 left-0 -z-50 bg-gradient-to-r from-gray-back/80 to-transparent"
+          class="w-24 h-8 absolute pointer-events-none top-0 left-0 -z-50 bg-gradient-to-r from-module/80 to-transparent"
         />
         <button
           class="text-white shadow-card bg-button-gray rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
@@ -108,7 +134,7 @@ const scrollByVisibleWidth = (back: boolean) => {
         class="absolute top-1/2 -translate-y-1/2 -right-1"
       >
         <div
-          class="w-24 h-8 absolute pointer-events-none top-0 right-0 -z-50 bg-gradient-to-l from-gray-back/80 to-transparent"
+          class="w-24 h-8 absolute pointer-events-none top-0 right-0 -z-50 bg-gradient-to-l from-module/80 to-transparent"
         />
         <button
           class="text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"

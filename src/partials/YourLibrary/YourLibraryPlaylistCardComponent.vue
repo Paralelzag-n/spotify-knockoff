@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import { usePlaylistsStore } from "../../pinia/playlists.pinia";
 import { useSongStore } from "../../pinia/songs.pinia";
+import { useLayoutStore } from "../../pinia/layout.pinia";
 
 import { useRouter } from "vue-router";
 import { computed, ref } from "vue";
 
 import YourLibrarySkeleton from "./YourLibrarySkeleton.vue";
 
+const props = defineProps<{
+  isExpanded: boolean;
+}>();
+
+const layoutStore = useLayoutStore();
 const playlistStore = usePlaylistsStore();
 const songStore = useSongStore();
 
@@ -19,6 +25,10 @@ const numOfSongs = (id: string): number => {
 const computedPlaylists = computed(() => playlistStore.getAllPlaylists);
 
 const dataLoaded = ref<boolean>(false);
+
+const computedYourLibraryWidth = computed(
+  () => layoutStore.getYourLibraryWidth
+);
 
 setTimeout(() => (dataLoaded.value = true), 500);
 </script>
@@ -36,16 +46,22 @@ setTimeout(() => (dataLoaded.value = true), 500);
         <img
           :src="playlist.thumbnail"
           alt=""
-          class="w-12 h-12 bg-black rounded"
+          :class="!props.isExpanded ? 'w-full' : 'w-12 h-12'"
+          class="bg-black rounded"
         />
 
-        <div>
-          <h1 class="text-white">
+        <div v-if="props.isExpanded">
+          <h1
+            :style="{ width: `${computedYourLibraryWidth - 100}px` }"
+            class="text-white truncate ..."
+          >
             {{ playlist.name }}
           </h1>
           <div class="flex text-white/60 items-center gap-3">
-            <h2 class="text-sm">playlist</h2>
-            <h2 class="text-sm">{{ numOfSongs(playlist.id) }} songs</h2>
+            <h2 class="text-sm truncate ...">playlist</h2>
+            <h2 v-if="computedYourLibraryWidth > 220" class="text-sm">
+              {{ numOfSongs(playlist.id) }} songs
+            </h2>
           </div>
         </div>
       </div>
