@@ -44,7 +44,7 @@ export const useLayoutStore = defineStore("layout", {
     },
     adjustYourLibraryWidth(delta: number): void {
       const yourLibraryMaxWidth = 400;
-      const yourLibraryMinWidth = 120;
+      const yourLibraryMinWidth = 80;
 
       const newWidth = this.yourLibraryWidth + delta;
       this.yourLibraryWidth = Math.max(
