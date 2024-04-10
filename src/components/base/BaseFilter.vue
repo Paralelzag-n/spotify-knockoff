@@ -7,20 +7,23 @@ const props = defineProps<{
   filterNames: string[];
 }>();
 
-const selected = defineModel<string>("primary");
-
-const selectedItems = ref<string[]>([]);
+const selected = defineModel<string[]>({ default: [] });
 
 const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
+const twoFilters = ref<HTMLElement | null>(null);
 const scrolledToEnd = ref<boolean>(false);
 const scrolledToStart = ref<boolean>(true);
 const { width: visibleElementWidth } = useElementSize(visibleElement);
+const { width: twoFiltersWidth } = useElementSize(twoFilters);
 
 const translateX = ref<number>(0);
 const shouldScrollExist = computed(() => {
   if (fullElement.value && visibleElement.value) {
-    return visibleElementWidth.value < fullElement.value.scrollWidth - 5;
+    if (selected.value.length !== 2) {
+      return visibleElementWidth.value < fullElement.value.scrollWidth;
+    }
+    return visibleElementWidth.value < twoFiltersWidth.value + 40;
   }
 });
 
@@ -49,41 +52,22 @@ const isScrolledToEnd = computed(
   () => scrolledToEnd.value && !scrolledToStart.value
 );
 
+const clearSelected = (): void => {
+  selected.value = [];
+};
+
 const selectHandler = (item: string): void => {
-  if (selected.value === item) {
-    selected.value = "";
-    selectedItems.value = [];
+  if (selected.value?.includes(item)) {
+    const index = selected.value.findIndex((value) => value === item);
+    selected.value.splice(index, 1);
+
     return;
   }
 
-  if (selectedItems.value.length < 2) {
-    selected.value = item;
-    selectedItems.value?.push(item);
-    console.log(selectedItems.value);
-    return;
-  }
+  selected.value?.push(item);
 
-  if (
-    selectedItems.value?.length === 2 &&
-    !selectedItems.value.includes(item)
-  ) {
-    return;
-  }
-  if (selectedItems.value?.length === 2 && selectedItems.value.includes(item)) {
-    selected.value = selectedItems.value.find((element) => element !== item);
-    console.log(selected.value);
-    selectedItems.value = selectedItems.value.filter(
-      (element) => element === selected.value
-    );
-
-    console.log(3);
-    return;
-  }
-
-  if (selected.value && selected.value != item) {
-    selectedItems.value?.push(item);
-    console.log(selectedItems.value);
-    return;
+  if (selected.value.length === 2) {
+    translateX.value = 0;
   }
 };
 
@@ -129,22 +113,31 @@ const scrollByVisibleWidth = (back: boolean) => {
         ref="fullElement"
         :style="{ transform: `translateX(-${translateX}px)` }"
         class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
+        :class="selected.length !== 0 ? 'ps-10' : ''"
       >
-        <template v-if="selectedItems?.length === 2">
+        <transition name="slide-fade-close">
           <i
-            @click="
-              () => {
-                selectedItems.length = 0;
-                selected = '';
-              }
-            "
-            class="fa-solid fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
+            v-if="selected?.length > 0"
+            @click="clearSelected"
+            class="fa-solid absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           ></i>
-          <div class="text-white cursor-pointer flex items-center gap-1">
+        </transition>
+        <template v-if="selected?.length === 2">
+          <div
+            ref="twoFilters"
+            class="text-white text-nowrap text-center flex items-center leading-6 w-fit text-sm justify-between h-8 rounded-full bg-primary-500"
+          >
             <div
-              v-for="item in selectedItems"
+              v-for="(item, index) in selected"
               :key="item"
               @click="selectHandler(item)"
+              :class="[
+                'h-8 cursor-pointer rounded-full px-3 text-sm w-fit leading-6 items-center flex text-nowrap hover:bg-primary-400',
+                'bg-primary-500',
+                index < selected.length - 1
+                  ? 'border-r rounded-r-none border-white'
+                  : 'rounded-l-none',
+              ]"
               class="hover:bg-primary-400 text-nowrap text-center flex items-center leading-6 w-fit text-sm px-3 h-8 rounded-full bg-primary-500"
             >
               {{ item }}
@@ -157,8 +150,9 @@ const scrollByVisibleWidth = (back: boolean) => {
             :key="item"
             :class="{
               'bg-primary-500 text-white hover:bg-primary-400':
-                selected === item,
-              'hover:bg-button-gray-hover text-white': selected !== item,
+                selected?.includes(item),
+              'hover:bg-button-gray-hover text-white':
+                !selected?.includes(item),
             }"
             class="bg-button-gray cursor-pointer text-nowrap text-center leading-6 w-fit text-sm px-3 h-8 flex items-center justify-center rounded-full"
             @click="selectHandler(item)"
@@ -204,6 +198,21 @@ const scrollByVisibleWidth = (back: boolean) => {
 </template>
 
 <style scoped>
+.slide-fade-close-enter-active,
+.slide-fade-close-leave-active {
+  transition: all 220ms ease-in-out;
+}
+.slide-fade-close-enter-from,
+.slide-fade-close-leave-to {
+  opacity: 0;
+  transform: translateX(4px) translateY(-50%);
+}
+.slide-fade-close-enter-to,
+.slide-fade-close-leave-from {
+  opacity: 1;
+  transform: translateX(0) translateY(-50%);
+}
+
 .slide-fade-right-enter-active,
 .slide-fade-right-leave-active,
 .slide-fade-left-enter-active,

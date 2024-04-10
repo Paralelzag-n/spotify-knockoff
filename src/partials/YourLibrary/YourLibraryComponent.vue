@@ -24,7 +24,7 @@ const filterNames = [
 ];
 
 const searchedContent = ref<string>();
-const selectedName = ref<string>("");
+const selectedName = ref<string[]>([]);
 const selectableDropdownSelectedValue = ref<string>("");
 const searchActive = ref<boolean>(false);
 const isExpanded = computed(() => {
@@ -85,7 +85,7 @@ const contentClickedHandler = (value: string): string => {
         </div>
         <BaseFilter
           v-if="isExpanded"
-          v-model:primary="selectedName"
+          v-model="selectedName"
           :filterNames="filterNames"
           :style="{ width: `${computedYourLibraryWidth - 36}px` }"
         />

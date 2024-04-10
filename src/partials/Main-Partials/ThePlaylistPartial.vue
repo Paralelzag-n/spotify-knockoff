@@ -25,6 +25,7 @@ const currentId = ref<string>("");
 const filterNames = ref<string[]>([
  "Scala", "Javascript", "PHP", "Java", "Rust"
 ])
+const selectedFilters = ref<string[]>([]);
 
 const currentPlaylistSongs = computed<ISong[]>(() => {
   return songStore.getSongsByPlaylistId(currentId.value) ?? [];
@@ -88,7 +89,7 @@ watch(
     </div>
     <div class="flex flex-col">
       <div >
-        <BaseFilter  :filterNames="filterNames"></BaseFilter>
+        <BaseFilter v-model="selectedFilters"  :filterNames="filterNames"></BaseFilter>
       </div>
       <div
         class="flex items-center gap-4 p-3 cursor-pointer transition-all border-b-2 border-button-gray-hover"
