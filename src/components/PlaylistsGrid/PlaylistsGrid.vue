@@ -17,7 +17,11 @@ function changeRoute(currentId: string) {
   router.push({ name: "playlist", params: { id: currentId } });
 }
 
-async function generateNewBackdrop(playlist: IPlaylist) {
+async function generateNewBackdrop(playlist: IPlaylist | null) {
+  if (!playlist) {
+    layoutStore.setMainPartialColor(null);
+    return;
+  }
   try {
     const averageColorHex = playlist.thumbnailAverageColor;
     layoutStore.setMainPartialColor(averageColorHex);
@@ -51,6 +55,7 @@ const computedGridSize = computed(() => {
       class="flex rounded overflow-hidden group cursor-pointer"
       @click="changeRoute(playlist.id)"
       @mouseenter="generateNewBackdrop(playlist)"
+      @mouseleave="generateNewBackdrop"
     >
       <img
         :src="playlist.thumbnail"

@@ -59,9 +59,11 @@ export const useLayoutStore = defineStore("layout", {
       this.sidebarItem = sidebarKey;
     },
     setMainPartialColor(color: string | null): void {
-      color
-        ? (this.mainPartialColor = color)
-        : (this.mainPartialColor = "#5963ee");
+      if (color) {
+        this.mainPartialColor = color;
+        return;
+      }
+      this.mainPartialColor = "#5963ee";
     },
     setMainPartialScrolledDown(scrolled: boolean): void {
       this.mainPartialScrolledDown = scrolled;
