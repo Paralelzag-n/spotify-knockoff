@@ -19,14 +19,14 @@ const emits = defineEmits<{
   (e: "contentClicked", value: string): void;
 }>();
 
-const selected = defineModel<string>();
+const selected = defineModel<string>({ default: "" });
 const dropDownOpen = ref(false);
 
 const dropdownToggleButtonRef = ref<HTMLElement | null>(null);
 const dropdownToggleItemsRef = ref<HTMLElement | null>(null);
 
 const { width: dropdownToggleItemsWidth } = useElementSize(
-  dropdownToggleItemsRef,
+  dropdownToggleItemsRef
 );
 const { width: screenWidth } = useWindowSize();
 

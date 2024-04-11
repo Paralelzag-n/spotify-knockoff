@@ -8,11 +8,11 @@ import { IPlaylist } from "../../ts/pinia/playlist.types.ts";
 import { usePlaylistsStore } from "../../pinia/playlists.pinia.ts";
 
 const filters = ref<string[]>(["All", "Music", "Podcasts"]);
-const selectedFilters = ref<string>("");
+const selectedFilters = ref<string[]>([]);
 
 const playlistStore = usePlaylistsStore();
 const computedPlaylists = computed<IPlaylist[]>(
-  () => playlistStore.getAllPlaylists,
+  () => playlistStore.getAllPlaylists
 );
 </script>
 
@@ -20,11 +20,13 @@ const computedPlaylists = computed<IPlaylist[]>(
   <div class="flex flex-col gap-6 p-4">
     <div class="flex flex-col gap-6 px-2">
       <TheAnnouncement />
-      <BaseFilter
-        v-model="selectedFilters"
-        :filter-names="filters"
-        :size-minimized="false"
-      />
+      <div class="w-full flex-grow">
+        <BaseFilter
+          v-model="selectedFilters"
+          :filter-names="filters"
+          :size-minimized="false"
+        />
+      </div>
       <PlaylistsGrid :playlists="computedPlaylists" />
     </div>
 

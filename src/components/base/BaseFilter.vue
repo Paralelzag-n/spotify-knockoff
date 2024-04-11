@@ -68,6 +68,8 @@ const selectHandler = (item: string): void => {
 
   if (selected.value.length === 2) {
     translateX.value = 0;
+    scrolledToEnd.value = false;
+    scrolledToStart.value = true;
   }
 };
 
@@ -117,7 +119,7 @@ const scrollByVisibleWidth = (back: boolean) => {
       >
         <transition name="slide-fade-close">
           <i
-            v-if="selected?.length > 0"
+            v-if="selected?.length > 0 && translateX === 0"
             @click="clearSelected"
             class="fa-solid absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           ></i>

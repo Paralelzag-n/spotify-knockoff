@@ -1,13 +1,18 @@
 import { defineStore } from "pinia";
-import { ESidebarItem, ILayoutState } from "../ts/pinia/layout.types.ts";
+import {
+  ILayoutState,
+  sidebarComponentMap,
+  SidebarItemKey,
+} from "../ts/pinia/layout.types.ts";
 
 export const useLayoutStore = defineStore("layout", {
   state: (): ILayoutState => ({
     yourLibraryWidth: 360,
     sidebarWidth: 360,
-    sidebarItem: ESidebarItem.SONG_DETAILS_SIDEBAR,
+    sidebarItem: "SONG_DETAILS_SIDEBAR",
 
     mainPartialColor: "#5963ee",
+    mainPartialScrolledDown: false,
   }),
   getters: {
     getYourLibraryWidth: (state: ILayoutState): number => {
@@ -16,11 +21,14 @@ export const useLayoutStore = defineStore("layout", {
     getSidebarWidth: (state: ILayoutState): number => {
       return state.sidebarWidth;
     },
-    getSelectedSidebarItem: (state: ILayoutState): ESidebarItem => {
-      return state.sidebarItem;
+    getSidebarComponent: (state: ILayoutState): any => {
+      return sidebarComponentMap[state.sidebarItem];
     },
     getMainPartialColor: (state: ILayoutState): string => {
       return state.mainPartialColor;
+    },
+    getMainPartialScrolledDown: (state: ILayoutState): boolean => {
+      return state.mainPartialScrolledDown;
     },
   },
   actions: {
@@ -36,7 +44,7 @@ export const useLayoutStore = defineStore("layout", {
     },
     adjustYourLibraryWidth(delta: number): void {
       const yourLibraryMaxWidth = 400;
-      const yourLibraryMinWidth = 120;
+      const yourLibraryMinWidth = 80;
 
       const newWidth = this.yourLibraryWidth + delta;
       this.yourLibraryWidth = Math.max(
@@ -47,13 +55,16 @@ export const useLayoutStore = defineStore("layout", {
     setYourLibraryWidth(width: number): void {
       this.yourLibraryWidth = width;
     },
-    setSidebarItem(sidebar: ESidebarItem): void {
-      this.sidebarItem = sidebar;
+    setSidebarItem(sidebarKey: SidebarItemKey): void {
+      this.sidebarItem = sidebarKey;
     },
     setMainPartialColor(color: string | null): void {
       color
         ? (this.mainPartialColor = color)
         : (this.mainPartialColor = "#5963ee");
+    },
+    setMainPartialScrolledDown(scrolled: boolean): void {
+      this.mainPartialScrolledDown = scrolled;
     },
   },
 });

@@ -7,12 +7,12 @@ import { ISong } from "../../ts/pinia/songs.types";
 import { IPlaylist } from "../../ts/pinia/playlist.types";
 import BasePlayButton from "../../components/base/BasePlayButton.vue";
 import BaseDropdown from "../../components/base/BaseDropdown.vue";
-import userPfp from "../../assets/img/user_pfp_temporary.png"
+import userPfp from "../../assets/img/user_pfp_temporary.png";
 import BaseFilter from "../../components/base/BaseFilter.vue";
 import YourLibrarySearchComponent from "../YourLibrary/YourLibrarySearchComponent.vue";
-import {useLayoutStore} from "../../pinia/layout.pinia.ts";
+import { useLayoutStore } from "../../pinia/layout.pinia.ts";
 
-const selectableDropdownSelectedValue = ref<string>('recents')
+const selectableDropdownSelectedValue = ref<string>("recents");
 
 const route = useRoute();
 const router = useRouter();
@@ -23,8 +23,12 @@ const layoutStore = useLayoutStore();
 
 const currentId = ref<string>("");
 const filterNames = ref<string[]>([
- "Scala", "Javascript", "PHP", "Java", "Rust"
-])
+  "Scala",
+  "Javascript",
+  "PHP",
+  "Java",
+  "Rust",
+]);
 const selectedFilters = ref<string[]>([]);
 
 const currentPlaylistSongs = computed<ISong[]>(() => {
@@ -35,12 +39,13 @@ const currentPlaylist = computed<IPlaylist | null>(() => {
   return playlistsStore.getPlaylistById(currentId.value);
 });
 
-
 watch(
   () => route.path,
   () => {
     currentId.value = route.params.id[0];
-    layoutStore.setMainPartialColor(currentPlaylist.value?.thumbnailAverageColor || null)
+    layoutStore.setMainPartialColor(
+      currentPlaylist.value?.thumbnailAverageColor || null
+    );
   },
   { immediate: true }
 );
@@ -48,13 +53,11 @@ watch(
 
 <template>
   <div class="p-4 flex flex-col gap-4">
-    <div
-      class="flex rounded-lg items-center p-4 gap-2"
-    >
+    <div class="flex rounded-lg items-center p-4 gap-2">
       <img
-        class="w-48 h-48 object-cover rounded-lg"
         :src="currentPlaylist?.thumbnail"
         alt=""
+        class="w-48 h-48 object-cover rounded-lg"
       />
       <div class="flex flex-col">
         <h1 class="text-white">Playlist</h1>
@@ -62,8 +65,18 @@ watch(
           {{ currentPlaylist?.name }}
         </h1>
         <div class="flex items-center gap-3">
-          <img @click="router.push({name:'profile'})" :src="userPfp" class="w-8 h-8 rounded-full hover:scale-110 cursor-pointer transition-all"alt="">
-          <h1 @click="router.push({name:'profile'})" class="text-white/60 hover:text-white hover:underline hover:scale-110 cursor-pointer ">user</h1>
+          <img
+            :src="userPfp"
+            alt=""
+            class="w-8 h-8 rounded-full hover:scale-110 cursor-pointer transition-all"
+            @click="router.push({ name: 'profile' })"
+          />
+          <h1
+            class="text-white/60 hover:text-white hover:underline hover:scale-110 cursor-pointer"
+            @click="router.push({ name: 'profile' })"
+          >
+            user
+          </h1>
           <p class="text-white text-xs">●</p>
           <h1 class="text-white">{{ currentPlaylistSongs.length }} songs</h1>
         </div>
@@ -71,7 +84,7 @@ watch(
     </div>
     <div class="flex items-center px-5 justify-between">
       <div class="flex items-center gap-5">
-        <BasePlayButton :size="12"></BasePlayButton>
+        <BasePlayButton :size="12" />
         <i
           class="fa-solid fa-shuffle scale-125 hover:scale-150 cursor-pointer text-primary-500 transition-all"
         ></i>
@@ -79,23 +92,28 @@ watch(
           class="fa-regular fa-circle-down scale-125 hover:scale-150 cursor-pointer text-primary-500 transition-all"
         ></i>
       </div>
-      
+
       <div class="flex items-center gap-2">
         <YourLibrarySearchComponent></YourLibrarySearchComponent>
 
-        <BaseDropdown  v-model="selectableDropdownSelectedValue"
-              :content="['recents', 'recently added', 'alphabetical', 'creator']" :selectable="true" </BaseDropdown>
+        <BaseDropdown
+          v-model="selectableDropdownSelectedValue"
+          :content="['recents', 'recently added', 'alphabetical', 'creator']"
+          :selectable="true"
+        />
       </div>
     </div>
     <div class="flex flex-col">
-      <div >
-        <BaseFilter v-model="selectedFilters"  :filterNames="filterNames"></BaseFilter>
-      </div>
+      <BaseFilter
+        :filterNames="filterNames"
+        v-model="selectedFilters"
+      ></BaseFilter>
+
       <div
         class="flex items-center gap-4 p-3 cursor-pointer transition-all border-b-2 border-button-gray-hover"
       >
         <h1 class="text-white/60 text-sm w-5">#</h1>
-        <h1 class="text-white/60 text-sm">Title</h1> 
+        <h1 class="text-white/60 text-sm">Title</h1>
       </div>
       <div v-for="(song, index) in currentPlaylistSongs">
         <div
@@ -104,8 +122,8 @@ watch(
           <h1 class="text-white text-xs w-5">{{ index + 1 }}</h1>
           <img
             :src="song.thumbnail"
-            class="w-10 h-10 object-cover rounded-lg"
             alt=""
+            class="w-10 h-10 object-cover rounded-lg"
           />
           <div>
             <h1 class="text-white text-xs font-bold">{{ song.name }}</h1>
