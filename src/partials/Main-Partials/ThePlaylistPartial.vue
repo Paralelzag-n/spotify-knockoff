@@ -29,6 +29,7 @@ const filterNames = ref<string[]>([
   "Java",
   "Rust",
 ]);
+const selectedFilters = ref<string[]>([]);
 
 const currentPlaylistSongs = computed<ISong[]>(() => {
   return songStore.getSongsByPlaylistId(currentId.value) ?? [];
@@ -43,10 +44,10 @@ watch(
   () => {
     currentId.value = route.params.id[0];
     layoutStore.setMainPartialColor(
-      currentPlaylist.value?.thumbnailAverageColor || null,
+      currentPlaylist.value?.thumbnailAverageColor || null
     );
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 
@@ -103,9 +104,11 @@ watch(
       </div>
     </div>
     <div class="flex flex-col">
-      <div>
-        <BaseFilter :filterNames="filterNames"></BaseFilter>
-      </div>
+      <BaseFilter
+        :filterNames="filterNames"
+        v-model="selectedFilters"
+      ></BaseFilter>
+
       <div
         class="flex items-center gap-4 p-3 cursor-pointer transition-all border-b-2 border-button-gray-hover"
       >
