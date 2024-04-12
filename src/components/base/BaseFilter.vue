@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, defineModel, ref, watch } from "vue";
 
-import { useElementSize } from "@vueuse/core";
+import { useElementSize, useResizeObserver } from "@vueuse/core";
 
 const props = defineProps<{
   filterNames: string[];
@@ -12,45 +12,50 @@ const selected = defineModel<string[]>({ default: [] });
 const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
 const twoFilters = ref<HTMLElement | null>(null);
-const scrolledToEnd = ref<boolean>(false);
-const scrolledToStart = ref<boolean>(true);
+const slideAmount = ref<number>(0);
+const scrollWidth = ref<number>(0);
+const handleResize = () => {
+  if (fullElement.value) {
+    scrollWidth.value = fullElement.value.scrollWidth;
+    console.log(scrollWidth.value);
+  }
+};
+
+useResizeObserver(visibleElement, handleResize);
+useResizeObserver(fullElement, handleResize);
+
 const { width: visibleElementWidth } = useElementSize(visibleElement);
 const { width: twoFiltersWidth } = useElementSize(twoFilters);
+const { width: fullElementWidth } = useElementSize(fullElement);
 
 const translateX = ref<number>(0);
+watch(
+  fullElementWidth,
+  (val) => {
+    console.log(val);
+  },
+  { immediate: true }
+);
+
+const computedScrolledToStart = computed(() => {
+  return translateX.value === 0;
+});
+const computedScrolledToEnd = computed(() => {
+  return translateX.value === scrollWidth.value - visibleElementWidth.value;
+});
+
+watch(visibleElementWidth, () => {
+  translateX.value = 0;
+});
+
 const shouldScrollExist = computed(() => {
-  if (fullElement.value && visibleElement.value) {
+  if (visibleElement.value) {
     if (selected.value.length !== 2) {
-      return visibleElementWidth.value < fullElement.value.scrollWidth;
+      return visibleElementWidth.value < scrollWidth.value;
     }
     return visibleElementWidth.value < twoFiltersWidth.value + 40;
   }
 });
-
-watch(visibleElementWidth, (newVal, oldVal) => {
-  if (!fullElement.value) return;
-
-  translateX.value = 0;
-  scrolledToStart.value = true;
-  scrolledToEnd.value = false;
-
-  if (visibleElementWidth.value < fullElement.value.scrollWidth) {
-    scrolledToEnd.value = false;
-  }
-
-  if (newVal > oldVal) {
-    translateX.value > visibleElementWidth.value
-      ? (translateX.value = 0)
-      : null;
-  }
-});
-
-const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value
-);
-const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value
-);
 
 const clearSelected = (): void => {
   selected.value = [];
@@ -68,43 +73,34 @@ const selectHandler = (item: string): void => {
 
   if (selected.value.length === 2) {
     translateX.value = 0;
-    scrolledToEnd.value = false;
-    scrolledToStart.value = true;
   }
 };
 
 const scrollByVisibleWidth = (back: boolean) => {
-  if (visibleElement.value && fullElement.value) {
-    const actualWidth = fullElement.value.scrollWidth;
+  if (!visibleElement.value || !fullElement.value) return;
+  const maxSlide = Math.floor(scrollWidth.value / visibleElementWidth.value);
+  console.log(maxSlide);
+  const minSlide = 0;
 
-    if (!back) {
-      if (
-        translateX.value + visibleElementWidth.value >=
-        actualWidth - visibleElementWidth.value
-      ) {
-        translateX.value = actualWidth - visibleElementWidth.value;
-
-        scrolledToEnd.value = true;
-        scrolledToStart.value = false;
-        return;
-      }
-      translateX.value += visibleElementWidth.value;
-      scrolledToStart.value = false;
-    } else {
-      if (
-        translateX.value - visibleElementWidth.value <= 0 ||
-        translateX.value === 0
-      ) {
-        translateX.value = 0;
-        scrolledToStart.value = true;
-        scrolledToEnd.value = false;
-        return;
-      }
-
-      translateX.value -= visibleElementWidth.value;
-      scrolledToEnd.value = false;
+  if (!back) {
+    slideAmount.value++;
+    if (slideAmount.value >= maxSlide) {
+      slideAmount.value = maxSlide;
+      translateX.value = scrollWidth.value - visibleElementWidth.value;
+      return;
     }
   }
+
+  if (back) {
+    slideAmount.value--;
+    if (slideAmount.value < minSlide) {
+      slideAmount.value = minSlide;
+      translateX.value = 0;
+      return;
+    }
+  }
+
+  translateX.value = visibleElementWidth.value * slideAmount.value;
 };
 </script>
 
@@ -166,15 +162,15 @@ const scrollByVisibleWidth = (back: boolean) => {
     </div>
     <transition name="slide-fade-left">
       <div
-        v-if="shouldScrollExist && !isScrolledToStart"
+        v-if="shouldScrollExist && !computedScrolledToStart"
         class="absolute top-1/2 -translate-y-1/2 -left-1"
       >
         <div
           class="w-24 h-8 absolute pointer-events-none top-0 left-0 -z-50 bg-gradient-to-r from-module/80 to-transparent"
         />
         <button
-          class="text-white shadow-card bg-button-gray rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           @click="scrollByVisibleWidth(true)"
+          class="text-white shadow-card bg-button-gray rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
         >
           <i class="fa-solid text-white fa-chevron-left"></i>
         </button>
@@ -182,15 +178,15 @@ const scrollByVisibleWidth = (back: boolean) => {
     </transition>
     <transition name="slide-fade-right">
       <div
-        v-if="shouldScrollExist && !isScrolledToEnd"
+        v-if="shouldScrollExist && !computedScrolledToEnd"
         class="absolute top-1/2 -translate-y-1/2 -right-1"
       >
         <div
           class="w-24 h-8 absolute pointer-events-none top-0 right-0 -z-50 bg-gradient-to-l from-module/80 to-transparent"
         />
         <button
-          class="text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           @click="scrollByVisibleWidth(false)"
+          class="text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
         >
           <i class="fa-solid text-white p-4 fa-chevron-right"></i>
         </button>
