@@ -12,56 +12,72 @@ const selected = defineModel<string[]>({ default: [] });
 const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
 const twoFilters = ref<HTMLElement | null>(null);
-const slideAmount = ref<number>(0);
-const scrollWidth = ref<number>(0);
-const handleResize = () => {
-  if (fullElement.value) {
-    scrollWidth.value = fullElement.value.scrollWidth;
-    console.log(scrollWidth.value);
-  }
-};
-
-useResizeObserver(visibleElement, handleResize);
-useResizeObserver(fullElement, handleResize);
-
 const { width: visibleElementWidth } = useElementSize(visibleElement);
 const { width: twoFiltersWidth } = useElementSize(twoFilters);
-const { width: fullElementWidth } = useElementSize(fullElement);
 
-const translateX = ref<number>(0);
-watch(
-  fullElementWidth,
-  (val) => {
-    console.log(val);
-  },
-  { immediate: true }
-);
-
-const computedScrolledToStart = computed(() => {
-  return translateX.value === 0;
-});
-const computedScrolledToEnd = computed(() => {
-  return translateX.value === scrollWidth.value - visibleElementWidth.value;
-});
+const slideAmount = ref<number>(0);
+const scrollWidth = ref<number>(0);
 
 watch(visibleElementWidth, () => {
-  translateX.value = 0;
+  slideAmount.value = 0;
 });
 
-const shouldScrollExist = computed(() => {
-  if (visibleElement.value) {
-    if (selected.value.length !== 2) {
-      return visibleElementWidth.value < scrollWidth.value;
-    }
-    return visibleElementWidth.value < twoFiltersWidth.value + 40;
+const computedTranslateX = computed<number>(() => {
+  const maxSlide = Math.floor(scrollWidth.value / visibleElementWidth.value);
+  const minSlide = 0;
+
+  if (slideAmount.value >= maxSlide) {
+    slideAmount.value = maxSlide;
+    return scrollWidth.value - visibleElementWidth.value;
   }
+  if (slideAmount.value < minSlide) {
+    slideAmount.value = minSlide;
+
+    return 0;
+  }
+
+  return visibleElementWidth.value * slideAmount.value;
+});
+
+const computedFilterNames = computed<string[]>(() => {
+  const selectedItemIndex = props.filterNames.findIndex(
+    (el) => el === selected.value[0]
+  );
+  const newCopy = [...props.filterNames];
+  const splicedElement = newCopy.splice(selectedItemIndex, 1);
+  newCopy.unshift(splicedElement[0]);
+  return newCopy;
+});
+
+const computedScrolledToStart = computed<boolean>(() => {
+  return computedTranslateX.value === 0;
+});
+const computedScrolledToEnd = computed<boolean>(() => {
+  return (
+    computedTranslateX.value === scrollWidth.value - visibleElementWidth.value
+  );
+});
+
+const shouldScrollExist = computed<boolean | null>(() => {
+  if (!visibleElement.value) return null;
+  if (selected.value.length !== 2)
+    return visibleElementWidth.value < scrollWidth.value;
+  return visibleElementWidth.value < twoFiltersWidth.value + 40;
 });
 
 const clearSelected = (): void => {
   selected.value = [];
 };
 
+const handleResize = (): void => {
+  if (fullElement.value) {
+    scrollWidth.value = fullElement.value.scrollWidth;
+    console.log(scrollWidth.value);
+  }
+};
+
 const selectHandler = (item: string): void => {
+  slideAmount.value = 0;
   if (selected.value?.includes(item)) {
     const index = selected.value.findIndex((value) => value === item);
     selected.value.splice(index, 1);
@@ -72,36 +88,16 @@ const selectHandler = (item: string): void => {
   selected.value?.push(item);
 
   if (selected.value.length === 2) {
-    translateX.value = 0;
+    slideAmount.value = 0;
   }
 };
 
-const scrollByVisibleWidth = (back: boolean) => {
-  if (!visibleElement.value || !fullElement.value) return;
-  const maxSlide = Math.floor(scrollWidth.value / visibleElementWidth.value);
-  console.log(maxSlide);
-  const minSlide = 0;
-
-  if (!back) {
-    slideAmount.value++;
-    if (slideAmount.value >= maxSlide) {
-      slideAmount.value = maxSlide;
-      translateX.value = scrollWidth.value - visibleElementWidth.value;
-      return;
-    }
-  }
-
-  if (back) {
-    slideAmount.value--;
-    if (slideAmount.value < minSlide) {
-      slideAmount.value = minSlide;
-      translateX.value = 0;
-      return;
-    }
-  }
-
-  translateX.value = visibleElementWidth.value * slideAmount.value;
+const changeCurrentPage = (back: boolean) => {
+  back ? slideAmount.value-- : slideAmount.value++;
 };
+
+useResizeObserver(visibleElement, handleResize);
+useResizeObserver(fullElement, handleResize);
 </script>
 
 <template>
@@ -109,13 +105,13 @@ const scrollByVisibleWidth = (back: boolean) => {
     <div ref="visibleElement" class="overflow-hidden py-2 rounded-full">
       <div
         ref="fullElement"
-        :style="{ transform: `translateX(-${translateX}px)` }"
+        :style="{ transform: `translateX(-${computedTranslateX}px)` }"
         class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
         :class="selected.length !== 0 ? 'ps-10' : ''"
       >
         <transition name="slide-fade-close">
           <i
-            v-if="selected?.length > 0 && translateX === 0"
+            v-if="selected?.length > 0 && computedTranslateX === 0"
             @click="clearSelected"
             class="fa-solid absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
           ></i>
@@ -144,7 +140,7 @@ const scrollByVisibleWidth = (back: boolean) => {
         </template>
         <template v-else>
           <div
-            v-for="item in props.filterNames"
+            v-for="item in computedFilterNames"
             :key="item"
             :class="{
               'bg-primary-500 text-white hover:bg-primary-400':
@@ -169,7 +165,7 @@ const scrollByVisibleWidth = (back: boolean) => {
           class="w-24 h-8 absolute pointer-events-none top-0 left-0 -z-50 bg-gradient-to-r from-module/80 to-transparent"
         />
         <button
-          @click="scrollByVisibleWidth(true)"
+          @click="changeCurrentPage(true)"
           class="text-white shadow-card bg-button-gray rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
         >
           <i class="fa-solid text-white fa-chevron-left"></i>
@@ -185,7 +181,7 @@ const scrollByVisibleWidth = (back: boolean) => {
           class="w-24 h-8 absolute pointer-events-none top-0 right-0 -z-50 bg-gradient-to-l from-module/80 to-transparent"
         />
         <button
-          @click="scrollByVisibleWidth(false)"
+          @click="changeCurrentPage(false)"
           class="text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
         >
           <i class="fa-solid text-white p-4 fa-chevron-right"></i>
