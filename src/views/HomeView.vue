@@ -6,10 +6,13 @@ import TheHeader from "../partials/TheHeader.vue";
 import DragHandle from "../components/DragHandle.vue";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
 import MainPartialHeader from "../components/MainPartialHeader.vue";
+import ThePlayBar from "../partials/ThePlayBar.vue";
 
 const yourLibraryHandleRef = ref<HTMLElement | null>(null);
 const sidebarHandleRef = ref<HTMLElement | null>(null);
+
 const headerRef = ref<HTMLElement | null>(null);
+const playBarRef = ref<HTMLElement | null>(null);
 
 const mainPartialContainerRef = ref<HTMLElement | null>(null);
 const { y: mainPartialContainerScroll } = useScroll(mainPartialContainerRef);
@@ -23,6 +26,7 @@ watch(mainPartialContainerScroll, (value, oldValue) => {
 });
 
 const { height: headerHeight } = useElementSize(headerRef);
+const { height: playBarHeight } = useElementSize(playBarRef);
 const { height: screenHeight, width: screenWidth } = useWindowSize();
 
 const layoutStore = useLayoutStore();
@@ -44,7 +48,8 @@ const computedSelectedSidebarItem = computed(
 );
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
-  if (screenHeight) return screenHeight.value - headerHeight.value;
+  if (screenHeight)
+    return screenHeight.value - headerHeight.value - playBarHeight.value;
   return 0;
 });
 
@@ -82,21 +87,19 @@ const handleDragSidebar = (deltaX: number) => {
       <!--  START PARTIAL -->
       <div
         :style="{ width: `${computedYourLibraryWidth}px` }"
-        class="flex-grow flex-shrink-0 ps-2 pb-2 h-full"
+        class="flex-grow flex-shrink-0 ps-2 h-full"
       >
         <SidebarComponent class="h-full w-full" />
       </div>
-
       <DragHandle
         ref="yourLibraryHandleRef"
         :height="computedDragHandleHeight"
         :onDrag="handleDragYourLibrary"
       />
-
       <!--  MAIN PARTIAL -->
       <div
         :style="{ width: `${computedMainViewWidth}px` }"
-        class="pb-2 relative rounded-lg overflow-hidden"
+        class="relative rounded-lg overflow-hidden"
       >
         <MainPartialHeader :width="computedMainViewWidth" />
         <div ref="mainPartialContainerRef" class="mainPartialContainer">
@@ -107,20 +110,20 @@ const handleDragSidebar = (deltaX: number) => {
           <router-view />
         </div>
       </div>
-
       <DragHandle
         ref="sidebarHandleRef"
         :height="computedDragHandleHeight"
         :onDrag="handleDragSidebar"
       />
-
+      <!--  END PARTIAL -->
       <div
         :style="{ width: `${computedSidebarWidth}px` }"
-        class="pe-2 pb-2 flex-shrink-0"
+        class="pe-2 flex-shrink-0"
       >
         <component :is="computedSelectedSidebarItem" class="h-full bg-module" />
       </div>
     </div>
+    <ThePlayBar ref="playBarRef" />
   </div>
 </template>
 
