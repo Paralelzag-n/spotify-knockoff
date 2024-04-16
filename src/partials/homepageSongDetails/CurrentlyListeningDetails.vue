@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import tempImg from "../../assets/lofi-girl-lofi.gif";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const goToArtisPage = () => {
+  console.log("xui");
+  router.push({ name: "artist" });
+};
 </script>
 
 <template>
@@ -12,6 +20,7 @@ import tempImg from "../../assets/lofi-girl-lofi.gif";
         </h1>
         <p
           class="text-white/60 text-sm cursor-pointer hover:underline hover:text-white"
+          @click="goToArtisPage"
         >
           Gorillaz
         </p>
