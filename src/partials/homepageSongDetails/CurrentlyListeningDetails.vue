@@ -1,10 +1,18 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import tempImg from "../../assets/lofi-girl-lofi.gif";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const goToArtisPage = () => {
+  console.log("xui");
+  router.push({ name: "artist" });
+};
 </script>
 
 <template>
   <div class="flex flex-col gap-2">
-    <img class="w-72 rounded-lg" :src="tempImg" alt="" />
+    <img :src="tempImg" alt="" class="w-72 rounded-lg" />
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-white font-bold text-xl hover:underline cursor-pointer">
@@ -12,6 +20,7 @@ import tempImg from "../../assets/lofi-girl-lofi.gif";
         </h1>
         <p
           class="text-white/60 text-sm cursor-pointer hover:underline hover:text-white"
+          @click="goToArtisPage"
         >
           Gorillaz
         </p>
