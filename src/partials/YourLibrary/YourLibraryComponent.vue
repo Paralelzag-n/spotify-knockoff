@@ -2,25 +2,20 @@
 import { computed, ref } from "vue";
 import BaseFilter from "../../components/base/BaseFilter.vue";
 
-import { useElementSize } from "@vueuse/core";
-
 import BaseDropDown from "../../components/base/BaseDropdown.vue";
 import YourLibrarySearchComponent from "./YourLibrarySearchComponent.vue";
 import YourLibraryPlaylistCardComponent from "./YourLibraryPlaylistCardComponent.vue";
 
-const sidebarHeaderRef = ref<HTMLElement | null>(null);
-const sidebarComponentRef = ref<HTMLElement | null>(null);
+import { useLayoutStore } from "../../pinia/layout.pinia";
+import { useElementSize } from "@vueuse/core";
 
-const { height: sidebarHeaderRefHeight } = useElementSize(sidebarHeaderRef);
-const { height: sidebarComponentHeight } = useElementSize(sidebarComponentRef);
+const layoutStore = useLayoutStore();
+const sidebarHeaderRef = ref<HTMLElement | null>();
+const { width: sidebarHeaderRefWidth } = useElementSize(sidebarHeaderRef);
 
-const computedPlaylistsContainerHeight = computed<number>(() => {
-  return sidebarComponentHeight.value - sidebarHeaderRefHeight.value - 26;
-});
-
-const computedPlaylistsContainerHeightStyle = computed(() => {
-  return { height: `${computedPlaylistsContainerHeight.value}px` };
-});
+const computedYourLibraryWidth = computed(
+  () => layoutStore.getYourLibraryWidth
+);
 
 const filterNames = [
   "Playlists",
@@ -32,9 +27,27 @@ const filterNames = [
 ];
 
 const searchedContent = ref<string>();
-const selectedName = ref<string>("");
+const selectedName = ref<string[]>([]);
 const selectableDropdownSelectedValue = ref<string>("");
 const searchActive = ref<boolean>(false);
+const isExpanded = computed(() => {
+  return layoutStore.getYourLibraryWidth > 130;
+});
+
+function toggleSize(): void {
+  if (isExpanded.value) {
+    layoutStore.setYourLibraryWidth(80);
+    return;
+  }
+
+  layoutStore.setYourLibraryWidth(300);
+}
+
+const computedYourLibraryTitleWidth = computed(() => {
+  const sidebarHeaderTitleWidth =
+    sidebarHeaderRefWidth.value > 210 ? 90 : sidebarHeaderRefWidth.value - 70;
+  return { width: `${sidebarHeaderTitleWidth}px` };
+});
 
 const contentClickedHandler = (value: string): string => {
   return value;
@@ -42,46 +55,68 @@ const contentClickedHandler = (value: string): string => {
 </script>
 
 <template>
-  <div
-    ref="sidebarComponentRef"
-    class="bg-black rounded-r-lg h-full flex flex-col"
-  >
-    <div class="flex flex-col bg-module rounded-lg">
-      <div
-        ref="sidebarHeaderRef"
-        class="flex flex-col gap-2 justify-between p-4 pb-2"
-      >
-        <div class="flex justify-between items-center">
-          <div class="flex gap-2 items-center">
-            <i class="fa-solid fa-xl text-white fa-compact-disc"></i>
-            <h1 class="text-white font-bold">Your library</h1>
-          </div>
-          <BaseDropDown
-            :content="['create a new playlist', 'create a playlist folder']"
-            @contentClicked="contentClickedHandler"
+  <div class="flex flex-col bg-module rounded-lg">
+    <div
+      ref="sidebarHeaderRef"
+      :class="{ 'items-center pe-6': !isExpanded }"
+      class="flex flex-col gap-2 justify-between ps-6 pe-2 py-4"
+    >
+      <div class="flex justify-between items-center">
+        <div
+          class="flex group gap-2 items-center cursor-pointer"
+          @click="toggleSize"
+        >
+          <i
+            class="fa-solid text-2xl fa-compact-disc text-white/60 transition-color group-hover:text-white"
           />
+          <h1
+            v-if="isExpanded"
+            :style="computedYourLibraryTitleWidth"
+            class="text-white/60 transition-color group-hover:text-white font-bold flex-shrink truncate ..."
+          >
+            Your library
+          </h1>
         </div>
-        <BaseFilter v-model:primary="selectedName" :filterNames="filterNames" />
+        <BaseDropDown
+          v-if="isExpanded"
+          :content="['create a new playlist', 'create a playlist folder']"
+          @contentClicked="contentClickedHandler"
+        />
+      </div>
+    </div>
+    <div class="px-4">
+      <BaseFilter
+        v-if="isExpanded"
+        v-model="selectedName"
+        :filterNames="filterNames"
+        :style="{ width: `${computedYourLibraryWidth - 36}px` }"
+      />
+    </div>
+
+    <div :class="{ 'px-2': isExpanded }" class="overflow-auto">
+      <div v-if="isExpanded" class="flex items-center justify-between pb-2">
+        <YourLibrarySearchComponent
+          v-model="searchedContent"
+          v-model:primary="searchActive"
+          class="flex-grow pr-2"
+        />
+        <BaseDropDown
+          v-model="selectableDropdownSelectedValue"
+          :content="['recents', 'recently added', 'alphabetical', 'creator']"
+          :selectable="true"
+        />
       </div>
 
-      <div
-        :style="computedPlaylistsContainerHeightStyle"
-        class="overflow-auto px-3 pb-2"
-      >
-        <div class="flex items-center justify-between pb-2">
-          <YourLibrarySearchComponent
-            v-model="searchedContent"
-            v-model:primary="searchActive"
-            class="flex-grow pr-2"
-          />
-          <BaseDropDown
-            v-model="selectableDropdownSelectedValue"
-            :content="['recents', 'recently added', 'alphabetical', 'creator']"
-            :selectable="true"
-          />
-        </div>
-        <YourLibraryPlaylistCardComponent ref="playlistCardComponent" />
-      </div>
+      <YourLibraryPlaylistCardComponent
+        ref="playlistCardComponent"
+        :isExpanded="isExpanded"
+      />
     </div>
   </div>
 </template>
+
+<style scoped>
+.transition-color {
+  transition: color 200ms ease;
+}
+</style>

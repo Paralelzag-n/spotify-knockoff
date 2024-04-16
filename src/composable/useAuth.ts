@@ -1,12 +1,15 @@
-import { auth } from "../firebase";
+import { auth, storage } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
+import { getDownloadURL, ref as storageRef } from "firebase/storage";
 import { ref } from "vue";
+import { capitalizeFirstChar } from "../utils/string-manipulation.ts";
 
 export function useAuth() {
   const signInLoading = ref<boolean>(false);
@@ -30,6 +33,14 @@ export function useAuth() {
         email,
         password,
       );
+
+      const defaultPictureUrl = storageRef(storage, "img/default-user-pfp.jpg");
+      const pictureUrl = await getDownloadURL(defaultPictureUrl);
+
+      await updateProfile(user, {
+        displayName: capitalizeFirstChar(email.split("@")[0]),
+        photoURL: pictureUrl,
+      });
 
       return user;
     } catch (error: any) {

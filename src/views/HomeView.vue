@@ -1,17 +1,32 @@
 <script lang="ts" setup>
 import SidebarComponent from "../partials/YourLibrary/YourLibraryComponent.vue";
-import { computed, ref } from "vue";
-import { useElementSize, useWindowSize } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
+import { useElementSize, useScroll, useWindowSize } from "@vueuse/core";
 import TheHeader from "../partials/TheHeader.vue";
 import DragHandle from "../components/DragHandle.vue";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
-import { ESidebarItem } from "../ts/pinia/layout.types.ts";
+import MainPartialHeader from "../components/MainPartialHeader.vue";
+import ThePlayBar from "../partials/ThePlayBar.vue";
 
 const yourLibraryHandleRef = ref<HTMLElement | null>(null);
 const sidebarHandleRef = ref<HTMLElement | null>(null);
+
 const headerRef = ref<HTMLElement | null>(null);
+const playBarRef = ref<HTMLElement | null>(null);
+
+const mainPartialContainerRef = ref<HTMLElement | null>(null);
+const { y: mainPartialContainerScroll } = useScroll(mainPartialContainerRef);
+const scrollEnabledWidth = 225;
+
+watch(mainPartialContainerScroll, (value, oldValue) => {
+  if (value > scrollEnabledWidth && oldValue <= scrollEnabledWidth)
+    layoutStore.setMainPartialScrolledDown(true);
+  else if (value <= scrollEnabledWidth && oldValue > scrollEnabledWidth)
+    layoutStore.setMainPartialScrolledDown(false);
+});
 
 const { height: headerHeight } = useElementSize(headerRef);
+const { height: playBarHeight } = useElementSize(playBarRef);
 const { height: screenHeight, width: screenWidth } = useWindowSize();
 
 const layoutStore = useLayoutStore();
@@ -19,6 +34,7 @@ const computedSidebarWidth = computed(() => layoutStore.getSidebarWidth);
 const computedYourLibraryWidth = computed(
   () => layoutStore.getYourLibraryWidth,
 );
+
 const computedMainViewWidth = computed(
   () =>
     screenWidth.value -
@@ -27,12 +43,13 @@ const computedMainViewWidth = computed(
     16,
 );
 
-const computedSelectedSidebarItem = computed<ESidebarItem>(
-  () => layoutStore.sidebarItem,
+const computedSelectedSidebarItem = computed(
+  () => layoutStore.getSidebarComponent,
 );
 
 const computedMainPartialContainerHeight = computed<number | null>(() => {
-  if (screenHeight) return screenHeight.value - headerHeight.value;
+  if (screenHeight)
+    return screenHeight.value - headerHeight.value - playBarHeight.value;
   return 0;
 });
 
@@ -70,20 +87,22 @@ const handleDragSidebar = (deltaX: number) => {
       <!--  START PARTIAL -->
       <div
         :style="{ width: `${computedYourLibraryWidth}px` }"
-        class="flex-shrink-0 ps-2 pb-2 h-full"
+        class="flex-grow flex-shrink-0 ps-2 h-full"
       >
-        <SidebarComponent class="h-full" />
+        <SidebarComponent class="h-full w-full" />
       </div>
-
       <DragHandle
         ref="yourLibraryHandleRef"
         :height="computedDragHandleHeight"
         :onDrag="handleDragYourLibrary"
       />
-
       <!--  MAIN PARTIAL -->
-      <div :style="{ width: `${computedMainViewWidth}px` }" class="pb-2">
-        <div class="mainPartialContainer">
+      <div
+        :style="{ width: `${computedMainViewWidth}px` }"
+        class="relative rounded-lg overflow-hidden"
+      >
+        <MainPartialHeader :width="computedMainViewWidth" />
+        <div ref="mainPartialContainerRef" class="mainPartialContainer">
           <div
             :style="computedMainPartialGradientStyle"
             class="h-80 absolute top-0 left-0 bg-gradient-to-b from-pink-300/50 to-module -z-10"
@@ -91,20 +110,20 @@ const handleDragSidebar = (deltaX: number) => {
           <router-view />
         </div>
       </div>
-
       <DragHandle
         ref="sidebarHandleRef"
         :height="computedDragHandleHeight"
         :onDrag="handleDragSidebar"
       />
-
+      <!--  END PARTIAL -->
       <div
         :style="{ width: `${computedSidebarWidth}px` }"
-        class="pe-2 pb-2 flex-shrink-0"
+        class="pe-2 flex-shrink-0"
       >
         <component :is="computedSelectedSidebarItem" class="h-full bg-module" />
       </div>
     </div>
+    <ThePlayBar ref="playBarRef" />
   </div>
 </template>
 

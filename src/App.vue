@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen">
+  <main class="min-h-screen overflow-hidden">
     <RouterView />
     <div
       id="fixed-components"
@@ -7,3 +7,4 @@
     />
   </main>
 </template>
+<script lang="ts" setup></script>

@@ -12,7 +12,7 @@ const { onMousedown } = useDrag(props.onDrag);
 <template>
   <div
     ref="handleRef"
-    class="h-full w-[1px] group px-1 flex items-center justify-center cursor-grab"
+    class="h-full w-[1px] group px-1 flex items-center justify-center cursor-col-resize"
     @mousedown="onMousedown"
   >
     <div

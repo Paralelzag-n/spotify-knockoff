@@ -3,4 +3,5 @@ export interface IBaseButtonProps {
   border?: boolean;
   type?: string;
   loading?: boolean;
+  text?: string;
 }

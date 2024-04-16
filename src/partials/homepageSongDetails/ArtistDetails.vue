@@ -5,11 +5,7 @@ import ArtistImg from "../../assets/img/Gorillaz-announce-top.webp";
 <template>
   <div class="text-white rounded-lg shadow-card flex flex-col">
     <div class="relative cursor-pointer">
-      <img
-        class="w-72 h-56 object-cover rounded-t-lg"
-        :src="ArtistImg"
-        alt=""
-      />
+      <img class="w-full object-cover rounded-t-lg" :src="ArtistImg" alt="" />
       <div
         class="absolute inset-0 rounded-lg bg-gradient-to-b from-transparent to-black/50 opacity-0 hover:opacity-100 transition-all duration-300"
       ></div>
@@ -24,7 +20,7 @@ import ArtistImg from "../../assets/img/Gorillaz-announce-top.webp";
           Follow
         </div>
       </div>
-      <p class="text-white/50 text-xs max-w-72 truncate-custom">
+      <p class="text-white/50 text-xs w-full truncate-custom">
         Gorillaz is the most dedismtyvnel group of all time Gorillaz is the most
         dedismtyvnel group of all time Gorillaz is the most dedismtyvnel group
         of all time Gorillaz is the most dedismtyvnel group of all time Gorillaz

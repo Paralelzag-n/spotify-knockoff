@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import tempImg from "../../assets/lofi-girl-lofi.gif";
 import { useRouter } from "vue-router";
 
@@ -12,7 +12,7 @@ const goToArtisPage = () => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <img :src="tempImg" alt="" class="w-72 rounded-lg" />
+    <img class="w-full rounded-lg" :src="tempImg" alt="" />
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-white font-bold text-xl hover:underline cursor-pointer">
