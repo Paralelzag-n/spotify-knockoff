@@ -60,7 +60,7 @@ const seeMoreSongsText = computed<string>(() =>
 );
 
 onMounted(() => {
-  layoutStore.setMainPartialColor("#9A1B57");
+  layoutStore.setMainPartialColor("#4c162f");
 });
 
 const toggleDisplayedSongs = (): void => {
