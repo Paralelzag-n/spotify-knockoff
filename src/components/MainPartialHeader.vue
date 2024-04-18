@@ -26,8 +26,12 @@ const computedProfileHeader = computed(() => {
   return route.path.includes("profile") && computedScrolledDown.value;
 });
 
-const computedMainPartialHeaderBarStyle = computed(() => {
-  const gradientColorValue = layoutStore.getMainPartialColor;
+const computedMainPartialHeaderBarStyle = computed<{
+  width: string;
+  background: string;
+}>(() => {
+  const gradientColorValue: string =
+    layoutStore.getMainPartialColor || layoutStore.getDefaultPartialColor;
   return {
     width: `${props.width}px`,
     background: gradientColorValue,

@@ -7,6 +7,7 @@ import DragHandle from "../components/DragHandle.vue";
 import { useLayoutStore } from "../pinia/layout.pinia.ts";
 import MainPartialHeader from "../components/MainPartialHeader.vue";
 import ThePlayBar from "../partials/ThePlayBar.vue";
+import TheGradientOverlayComponent from "../components/TheGradientOverlayComponent.vue";
 
 const yourLibraryHandleRef = ref<HTMLElement | null>(null);
 const sidebarHandleRef = ref<HTMLElement | null>(null);
@@ -63,14 +64,6 @@ const computedDragHandleHeight = computed(() => {
   return 0;
 });
 
-const computedMainPartialGradientStyle = computed(() => {
-  const gradientHexValue = layoutStore.getMainPartialColor;
-  return {
-    width: `${computedMainViewWidth.value}px`,
-    background: `linear-gradient(180deg, ${gradientHexValue}70, transparent)`,
-  };
-});
-
 const handleDragYourLibrary = (deltaX: number) => {
   layoutStore.adjustYourLibraryWidth(deltaX);
 };
@@ -103,10 +96,7 @@ const handleDragSidebar = (deltaX: number) => {
       >
         <MainPartialHeader :width="computedMainViewWidth" />
         <div ref="mainPartialContainerRef" class="mainPartialContainer">
-          <div
-            :style="computedMainPartialGradientStyle"
-            class="h-80 absolute top-0 left-0 bg-gradient-to-b from-pink-300/50 to-module -z-10"
-          />
+          <TheGradientOverlayComponent :width="computedMainViewWidth" />
           <router-view />
         </div>
       </div>
