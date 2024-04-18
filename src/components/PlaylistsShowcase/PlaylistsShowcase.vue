@@ -4,15 +4,11 @@ import { IPlaylist } from "../../ts/pinia/playlist.types.ts";
 import { computed, ref } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import BaseFilter from "../base/BaseFilter.vue";
 
 const props = defineProps<{
   showcaseTitle?: string;
   playlists: IPlaylist[];
   showAllPlaylists?: boolean;
-  filter?: boolean;
-  filters?: string[];
-  filterRef?: any;
 }>();
 
 const router = useRouter();
@@ -21,13 +17,6 @@ const playlistsContainerRef = ref<HTMLElement | null>(null);
 const { width: playlistsContainerWidth } = useElementSize(
   playlistsContainerRef,
 );
-
-const selectedFilters = ref();
-const discographyFilters = ref([
-  "Popular releases",
-  "Albums",
-  "Singles and EPs",
-]);
 
 const computedFrontPagePlaylists = computed(() => {
   let numberOfPlaylists: number;
@@ -75,13 +64,6 @@ function viewPlaylistCollection() {
         Show All
       </p>
     </div>
-    <BaseFilter
-      v-if="props.filter"
-      v-model="props.filterRef"
-      :filter-names="props.filters"
-      :size-minimized="false"
-      class="ml-2"
-    />
     <div ref="playlistsContainerRef" :style="computedFrontPagePlaylists.style">
       <PlaylistComponent
         v-for="playlist in computedFrontPagePlaylists.playlists"

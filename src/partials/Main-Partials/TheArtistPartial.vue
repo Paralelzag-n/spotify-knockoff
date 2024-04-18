@@ -12,18 +12,9 @@ const layoutStore = useLayoutStore();
 const playlistStore = usePlaylistsStore();
 
 const artistPageRef = ref();
-
 const { width: pageWidth } = useElementSize(artistPageRef);
 
 const seeMore = ref<boolean>(false);
-
-const selectedFilters = ref();
-const discographyFilters = ref<string[]>([
-  "Popular releases",
-  "Albums",
-  "Singles and EPs",
-]);
-
 const songs = ref([
   { name: "Colar", streams: "123,321,532", duration: "2:43" },
   { name: "Colar", streams: "123,321,532", duration: "2:43" },
@@ -36,7 +27,7 @@ const songs = ref([
   { name: "Colar", streams: "123,321,532", duration: "2:43" },
 ]);
 
-const filteredSongs = computed<object[]>(() => {
+const filteredSongs = computed<any[]>(() => {
   if (seeMore.value) {
     return songs.value.slice(0, 5);
   }
@@ -47,7 +38,7 @@ const computedPlaylists = computed<IPlaylist[]>(
   () => playlistStore.getAllPlaylists,
 );
 
-const computedMainPartialGradientStyle = computed<object>(() => {
+const computedMainPartialGradientStyle = computed<any>(() => {
   const gradientHexValue = layoutStore.getMainPartialColor;
   return {
     width: pageWidth.value + "px",
@@ -139,11 +130,8 @@ const toggleDisplayedSongs = (): void => {
     </h3>
     <article class="flex flex-col gap-6 w-full">
       <PlaylistsShowcase
-        :filter-ref="selectedFilters"
-        :filters="discographyFilters"
         :playlists="computedPlaylists"
         class="px-5"
-        filter
         showcase-title="Discography"
       />
       <PlaylistsShowcase
