@@ -11,7 +11,9 @@ const selected = defineModel<string[]>({ default: [] });
 
 const visibleElement = ref<HTMLElement | null>(null);
 const fullElement = ref<HTMLElement | null>(null);
+const itemsContainerRef = ref<HTMLElement | null>(null);
 const twoFilters = ref<HTMLElement | null>(null);
+const { width: itemsContainerWidth } = useElementSize(itemsContainerRef);
 const { width: visibleElementWidth } = useElementSize(visibleElement);
 const { width: twoFiltersWidth } = useElementSize(twoFilters);
 
@@ -61,7 +63,7 @@ const computedScrolledToEnd = computed<boolean>(() => {
 const shouldScrollExist = computed<boolean | null>(() => {
   if (!visibleElement.value) return null;
   if (selected.value.length !== 2)
-    return visibleElementWidth.value < scrollWidth.value;
+    return visibleElementWidth.value < itemsContainerWidth.value;
   return visibleElementWidth.value < twoFiltersWidth.value + 40;
 });
 
@@ -72,7 +74,6 @@ const clearSelected = (): void => {
 const handleResize = (): void => {
   if (fullElement.value) {
     scrollWidth.value = fullElement.value.scrollWidth;
-    console.log(scrollWidth.value);
   }
 };
 
@@ -105,19 +106,23 @@ useResizeObserver(fullElement, handleResize);
     <div ref="visibleElement" class="overflow-hidden py-2 rounded-full">
       <div
         ref="fullElement"
-        :style="{ transform: `translateX(-${computedTranslateX}px)` }"
-        class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
+        :style="{
+          transform: `translateX(-${computedTranslateX}px)`,
+        }"
+        class="transition-all duration-[400ms] gap-2"
         :class="selected.length !== 0 ? 'ps-10' : ''"
       >
-        <transition name="slide-fade-close">
-          <i
-            v-if="selected?.length > 0 && computedTranslateX === 0"
-            @click="clearSelected"
-            class="fa-solid absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
-          ></i>
-        </transition>
-        <template v-if="selected?.length === 2">
+        <div ref="itemsContainerRef" class="w-fit">
+          <transition name="slide-fade-close">
+            <i
+              v-if="selected?.length > 0"
+              @click="clearSelected"
+              class="fa-solid absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
+            ></i>
+          </transition>
+
           <div
+            v-if="selected?.length === 2"
             ref="twoFilters"
             class="text-white text-nowrap text-center flex items-center leading-6 w-fit text-sm justify-between h-8 rounded-full bg-primary-500"
           >
@@ -137,23 +142,24 @@ useResizeObserver(fullElement, handleResize);
               {{ item }}
             </div>
           </div>
-        </template>
-        <template v-else>
-          <div
-            v-for="item in computedFilterNames"
-            :key="item"
-            :class="{
-              'bg-primary-500 text-white hover:bg-primary-400':
-                selected?.includes(item),
-              'hover:bg-button-gray-hover text-white':
-                !selected?.includes(item),
-            }"
-            class="bg-button-gray cursor-pointer text-nowrap text-center leading-6 w-fit text-sm px-3 h-8 flex items-center justify-center rounded-full"
-            @click="selectHandler(item)"
-          >
-            {{ item }}
+
+          <div v-else class="w-fit flex-nowrap flex items-center gap-2">
+            <div
+              v-for="item in computedFilterNames"
+              :key="item"
+              :class="{
+                'bg-primary-500 text-white hover:bg-primary-400':
+                  selected?.includes(item),
+                'hover:bg-button-gray-hover text-white':
+                  !selected?.includes(item),
+              }"
+              class="bg-button-gray cursor-pointer text-nowrap text-center leading-6 w-fit text-sm px-3 h-8 flex items-center justify-center rounded-full"
+              @click="selectHandler(item)"
+            >
+              {{ item }}
+            </div>
           </div>
-        </template>
+        </div>
       </div>
     </div>
     <transition name="slide-fade-left">
