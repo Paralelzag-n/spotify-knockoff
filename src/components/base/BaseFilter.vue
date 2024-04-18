@@ -46,10 +46,10 @@ watch(visibleElementWidth, (newVal, oldVal) => {
 });
 
 const isScrolledToStart = computed(
-  () => scrolledToStart.value && !scrolledToEnd.value
+  () => scrolledToStart.value && !scrolledToEnd.value,
 );
 const isScrolledToEnd = computed(
-  () => scrolledToEnd.value && !scrolledToStart.value
+  () => scrolledToEnd.value && !scrolledToStart.value,
 );
 
 const clearSelected = (): void => {
@@ -113,15 +113,15 @@ const scrollByVisibleWidth = (back: boolean) => {
     <div ref="visibleElement" class="overflow-hidden py-2 rounded-full">
       <div
         ref="fullElement"
+        :class="selected.length !== 0 ? 'ps-10' : ''"
         :style="{ transform: `translateX(-${translateX}px)` }"
         class="transition-all duration-[400ms] flex-nowrap flex items-center gap-2"
-        :class="selected.length !== 0 ? 'ps-10' : ''"
       >
         <transition name="slide-fade-close">
           <i
             v-if="selected?.length > 0 && translateX === 0"
-            @click="clearSelected"
             class="fa-solid absolute left-0 top-1/2 -translate-y-1/2 flex-shrink-0 fa-xmark cursor-pointer text-white bg-button-gray shadow-card rounded-full w-8 h-8 flex items-center justify-center hover:bg-button-gray-hover"
+            @click="clearSelected"
           ></i>
         </transition>
         <template v-if="selected?.length === 2">
@@ -132,15 +132,15 @@ const scrollByVisibleWidth = (back: boolean) => {
             <div
               v-for="(item, index) in selected"
               :key="item"
-              @click="selectHandler(item)"
               :class="[
                 'h-8 cursor-pointer rounded-full px-3 text-sm w-fit leading-6 items-center flex text-nowrap hover:bg-primary-400',
                 'bg-primary-500',
                 index < selected.length - 1
-                  ? 'border-r rounded-r-none border-white'
+                  ? 'border-r rounded-r-none border-white/40'
                   : 'rounded-l-none',
               ]"
               class="hover:bg-primary-400 text-nowrap text-center flex items-center leading-6 w-fit text-sm px-3 h-8 rounded-full bg-primary-500"
+              @click="selectHandler(item)"
             >
               {{ item }}
             </div>
@@ -204,11 +204,13 @@ const scrollByVisibleWidth = (back: boolean) => {
 .slide-fade-close-leave-active {
   transition: all 220ms ease-in-out;
 }
+
 .slide-fade-close-enter-from,
 .slide-fade-close-leave-to {
   opacity: 0;
   transform: translateX(4px) translateY(-50%);
 }
+
 .slide-fade-close-enter-to,
 .slide-fade-close-leave-from {
   opacity: 1;

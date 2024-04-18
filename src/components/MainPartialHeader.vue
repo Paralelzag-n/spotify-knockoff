@@ -35,7 +35,7 @@ const computedMainPartialHeaderBarStyle = computed(() => {
   const gradientColorValue = layoutStore.getMainPartialColor;
   return {
     width: `${props.width}px`,
-    background: gradientColorValue,
+    background: gradientColorValue ?? "#00000000",
   };
 });
 </script>
