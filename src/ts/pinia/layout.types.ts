@@ -8,8 +8,10 @@ export interface ILayoutState {
   sidebarWidth: number;
   sidebarItem: SidebarItemKey;
 
-  mainPartialColor: string;
+  defaultPartialColor: string;
+  mainPartialColor: string | null;
   mainPartialScrolledDown: boolean;
+  timeoutId: any;
 }
 
 export type SidebarItemKey =

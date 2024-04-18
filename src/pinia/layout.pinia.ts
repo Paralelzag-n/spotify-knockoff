@@ -11,8 +11,10 @@ export const useLayoutStore = defineStore("layout", {
     sidebarWidth: 360,
     sidebarItem: "SONG_DETAILS_SIDEBAR",
 
-    mainPartialColor: "#5963ee",
+    defaultPartialColor: "#5963ee",
+    mainPartialColor: null,
     mainPartialScrolledDown: false,
+    timeoutId: null,
   }),
   getters: {
     getYourLibraryWidth: (state: ILayoutState): number => {
@@ -24,8 +26,11 @@ export const useLayoutStore = defineStore("layout", {
     getSidebarComponent: (state: ILayoutState): any => {
       return sidebarComponentMap[state.sidebarItem];
     },
-    getMainPartialColor: (state: ILayoutState): string => {
+    getMainPartialColor: (state: ILayoutState): string | null => {
       return state.mainPartialColor;
+    },
+    getDefaultPartialColor: (state: ILayoutState): string => {
+      return state.defaultPartialColor;
     },
     getMainPartialScrolledDown: (state: ILayoutState): boolean => {
       return state.mainPartialScrolledDown;
@@ -58,12 +63,21 @@ export const useLayoutStore = defineStore("layout", {
     setSidebarItem(sidebarKey: SidebarItemKey): void {
       this.sidebarItem = sidebarKey;
     },
-    setMainPartialColor(color: string | null): void {
-      if (color) {
-        this.mainPartialColor = color;
+    setMainPartialColor(color: string | null) {
+      if (this.timeoutId) clearTimeout(this.timeoutId);
+
+      if (!color) {
+        this.timeoutId = setTimeout(() => {
+          this.mainPartialColor = null;
+          this.timeoutId = null;
+        }, 300);
         return;
       }
-      this.mainPartialColor = "#5963ee";
+
+      this.mainPartialColor = null;
+      setTimeout(() => {
+        this.mainPartialColor = color;
+      }, 0);
     },
     setMainPartialScrolledDown(scrolled: boolean): void {
       this.mainPartialScrolledDown = scrolled;

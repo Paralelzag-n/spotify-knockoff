@@ -55,7 +55,7 @@ const computedGridSize = computed(() => {
       class="flex rounded overflow-hidden group cursor-pointer"
       @click="changeRoute(playlist.id)"
       @mouseenter="generateNewBackdrop(playlist)"
-      @mouseleave="generateNewBackdrop"
+      @mouseleave="generateNewBackdrop(null)"
     >
       <img
         :src="playlist.thumbnail"

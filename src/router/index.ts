@@ -10,7 +10,7 @@ const SignUpForm = () => import("../components/auth/SignUpFormComponent.vue");
 // Home partials
 const viewHome = () => import("../partials/Main-Partials/TheHomePartial.vue");
 const viewArtist = () =>
-  import("../partials/Main-Partials/TheArtistArtist.vue");
+  import("../partials/Main-Partials/TheArtistPartial.vue");
 const viewNotifications = () =>
   import("../partials/Main-Partials/TheNotificationsPartial.vue");
 const viewPlaylist = () =>

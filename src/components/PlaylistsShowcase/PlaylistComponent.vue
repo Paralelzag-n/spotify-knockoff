@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import BasePlayButton from "../base/BasePlayButton.vue";
 import { IPlaylist } from "../../ts/pinia/playlist.types.ts";
 import { useElementSize } from "@vueuse/core";

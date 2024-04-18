@@ -6,7 +6,7 @@ import { useElementSize } from "@vueuse/core";
 import { useRouter } from "vue-router";
 
 const props = defineProps<{
-  showcaseTitle: string;
+  showcaseTitle?: string;
   playlists: IPlaylist[];
   showAllPlaylists?: boolean;
 }>();
@@ -15,7 +15,7 @@ const router = useRouter();
 
 const playlistsContainerRef = ref<HTMLElement | null>(null);
 const { width: playlistsContainerWidth } = useElementSize(
-  playlistsContainerRef
+  playlistsContainerRef,
 );
 
 const computedFrontPagePlaylists = computed(() => {
@@ -66,9 +66,9 @@ function viewPlaylistCollection() {
     </div>
     <div ref="playlistsContainerRef" :style="computedFrontPagePlaylists.style">
       <PlaylistComponent
-        @click="router.push({ name: 'playlist', params: { id: playlist.id } })"
         v-for="playlist in computedFrontPagePlaylists.playlists"
         :playlist="playlist"
+        @click="router.push({ name: 'playlist', params: { id: playlist.id } })"
       />
     </div>
   </div>

@@ -4,6 +4,7 @@ import { useLayoutStore } from "../pinia/layout.pinia.ts";
 import { useRoute } from "vue-router";
 import { useUserStore } from "../pinia/user.pinia.ts";
 import { User } from "firebase/auth";
+import BasePlayButton from "./base/BasePlayButton.vue";
 
 const props = defineProps<{
   width: number;
@@ -26,16 +27,31 @@ const computedProfileHeader = computed(() => {
   return route.path.includes("profile") && computedScrolledDown.value;
 });
 
+const computedArtistHeader = computed(() => {
+  return route.path.includes("artist") && computedScrolledDown.value;
+});
+
 const computedMainPartialHeaderBarStyle = computed(() => {
   const gradientColorValue = layoutStore.getMainPartialColor;
   return {
     width: `${props.width}px`,
-    background: gradientColorValue,
+    background: gradientColorValue ?? "#00000000",
   };
 });
 </script>
 
 <template>
+  <Transition>
+    <template v-if="computedArtistHeader">
+      <div
+        :style="computedMainPartialHeaderBarStyle"
+        class="flex absolute h-[80px] top-0 left-0 z-50 p-4 gap-4 items-center"
+      >
+        <BasePlayButton :size="13" />
+        <h1 class="text-white text-xl font-bold">Gorillaz</h1>
+      </div>
+    </template>
+  </Transition>
   <Transition>
     <template v-if="computedProfileHeader">
       <div

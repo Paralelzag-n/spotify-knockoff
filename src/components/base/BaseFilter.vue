@@ -129,15 +129,15 @@ useResizeObserver(fullElement, handleResize);
             <div
               v-for="(item, index) in selected"
               :key="item"
-              @click="selectHandler(item)"
               :class="[
                 'h-8 cursor-pointer rounded-full px-3 text-sm w-fit leading-6 items-center flex text-nowrap hover:bg-primary-400',
                 'bg-primary-500',
                 index < selected.length - 1
-                  ? 'border-r rounded-r-none border-white'
+                  ? 'border-r rounded-r-none border-white/40'
                   : 'rounded-l-none',
               ]"
               class="hover:bg-primary-400 text-nowrap text-center flex items-center leading-6 w-fit text-sm px-3 h-8 rounded-full bg-primary-500"
+              @click="selectHandler(item)"
             >
               {{ item }}
             </div>
@@ -202,11 +202,13 @@ useResizeObserver(fullElement, handleResize);
 .slide-fade-close-leave-active {
   transition: all 220ms ease-in-out;
 }
+
 .slide-fade-close-enter-from,
 .slide-fade-close-leave-to {
   opacity: 0;
   transform: translateX(4px) translateY(-50%);
 }
+
 .slide-fade-close-enter-to,
 .slide-fade-close-leave-from {
   opacity: 1;
