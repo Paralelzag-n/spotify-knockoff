@@ -133,7 +133,7 @@ useResizeObserver(fullElement, handleResize);
                 'h-8 cursor-pointer rounded-full px-3 text-sm w-fit leading-6 items-center flex text-nowrap hover:bg-primary-400',
                 'bg-primary-500',
                 index < selected.length - 1
-                  ? 'border-r rounded-r-none border-white/40'
+                  ? 'border-r rounded-r-none border-white/20'
                   : 'rounded-l-none',
               ]"
               class="hover:bg-primary-400 text-nowrap text-center flex items-center leading-6 w-fit text-sm px-3 h-8 rounded-full bg-primary-500"
