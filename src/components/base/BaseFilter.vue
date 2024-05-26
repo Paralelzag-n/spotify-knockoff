@@ -42,13 +42,23 @@ const computedTranslateX = computed<number>(() => {
 });
 
 const computedFilterNames = computed<string[]>(() => {
-  const selectedItemIndex = props.filterNames.findIndex(
-    (el) => el === selected.value[0]
-  );
+  if (selected.value.length === 0) {
+    return props.filterNames;
+  }
+
   const newCopy = [...props.filterNames];
-  const splicedElement = newCopy.splice(selectedItemIndex, 1);
-  newCopy.unshift(splicedElement[0]);
-  return newCopy;
+  const selectedItems = selected.value;
+
+  // Remove selected items from the newCopy array
+  selectedItems.forEach((item) => {
+    const index = newCopy.indexOf(item);
+    if (index !== -1) {
+      newCopy.splice(index, 1);
+    }
+  });
+
+  // Prepend selected items to the newCopy array
+  return [...selectedItems, ...newCopy];
 });
 
 const computedScrolledToStart = computed<boolean>(() => {
@@ -130,7 +140,7 @@ useResizeObserver(fullElement, handleResize);
               v-for="(item, index) in selected"
               :key="item"
               :class="[
-                'h-8 cursor-pointer rounded-full px-3 text-sm w-fit leading-6 items-center flex text-nowrap hover:bg-primary-400',
+                'h-8 cursor-pointer rounded-full  text-sm w-fit leading-6 items-center flex text-nowrap hover:bg-primary-400',
                 'bg-primary-500',
                 index < selected.length - 1
                   ? 'border-r rounded-r-none border-white/20'
